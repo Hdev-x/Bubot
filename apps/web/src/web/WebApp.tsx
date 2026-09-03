@@ -3,9 +3,7 @@ import type { AuthUser } from '../api/authApi';
 import { WebMarketPanel } from './components/WebMarketPanel';
 import { useCoinLogos } from './components/marketShared';
 import { WebWatchlist } from './components/WebWatchlist';
-import { WebPaperOrder } from './components/WebPaperOrder';
-import { PaperStatusPanel } from '../components/PaperStatusPanel';
-import { WebMonitoringPanel } from './components/WebMonitoringPanel';
+import StrategyComingSoon from '../components/StrategyComingSoon';
 import botzMark from '../assets/botz-mark.svg';
 import { EXCHANGES } from '../constants/exchanges';
 import { getOfficialLogo } from '../utils/coinFormatters';
@@ -14,7 +12,6 @@ import { fetchHeaderTicker } from '../api/headerTicker';
 import { krwDecimals } from '../api/krwTickers';
 import { fetchCoinMarketCap } from '../api/marketApi';
 import { useMainTrade } from '../hooks/useMainTrade';
-import { usePaperTrade } from '../hooks/usePaperTrade';
 import { useUsdKrw } from '../hooks/useUsdKrw';
 import { useOrderbook } from '../hooks/useOrderbook';
 import { useFundingRate } from '../hooks/useFundingRate';
@@ -457,33 +454,9 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
   }, [indiOpen, chartSetOpen, drawOpen]);
 
   // ── 실데이터 — 총자산/포지션 (모바일과 동일 세션) ──
-  const [paperMode, setPaperMode] = usePersistentState('web_paper_mode', false); // 내투자 → 모의투자 전환
-  const [stratTab, setStratTab] = usePersistentState<'paper' | 'monitoring'>('web_strat_tab', 'paper'); // 전략 섹션 서브탭
-  const [paperOrderOpen, setPaperOrderOpen] = useState(false); // 모의 주문 미니창
-  const { data: trade } = useMainTrade(section === 'invest' && sidebarOpen && !paperMode);
+  const { data: trade } = useMainTrade(section === 'invest' && sidebarOpen);
   const usdKrw = useUsdKrw();
-  const { hasKey: realHasKey, positions: realPositions, available: realAvailable, equity: realEquity } = trade;
-
-  // 모의투자 가상계좌 — 켜졌을 때만 조회. 평가손익/총자산은 실시간가로 프론트 계산(서버는 진입정보+잔고만).
-  const paper = usePaperTrade(section === 'invest' && sidebarOpen && paperMode);
-  const paperPrices = useRealtimePrices(paperMode ? paper.account.positions.map((p) => p.symbol) : [], true);
-  const paperPositions = useMemo<MainPosition[]>(() => paper.account.positions.map((p) => {
-    const dir = p.direction === 'long' ? 1 : -1;
-    const mark = paperPrices[p.symbol] ?? p.entryPrice;
-    return {
-      symbol: p.symbol, direction: p.direction, entryPrice: p.entryPrice, size: p.size,
-      markPrice: mark, unrealizedPl: (mark - p.entryPrice) * p.size * dir, leverage: p.leverage,
-      marginMode: 'isolated', liqPrice: 0, mmr: 0, margin: p.margin, realizedPl: 0, takeProfit: 0, stopLoss: 0,
-      paperId: p.id, // 청산용(Phase C)
-    } as MainPosition & { paperId: number };
-  }), [paper.account, paperPrices]);
-  const paperEquity = paper.account.balance + paperPositions.reduce((s, p) => s + p.margin + p.unrealizedPl, 0);
-
-  // 모의투자 ON이면 내투자(선물) 데이터를 가상계좌로 교체
-  const positions = paperMode ? paperPositions : realPositions;
-  const available = paperMode ? paper.account.balance : realAvailable;
-  const equity = paperMode ? paperEquity : realEquity;
-  const hasKey = paperMode ? true : realHasKey;
+  const { hasKey, positions, available, equity } = trade;
   // 모바일과 동일: 데이터(equity>0) 도착 전까지 스켈레톤, 빈 계정은 1500ms 폴백
   const mainReady = useDelayedReady(equity > 0);
   const unrealTotal = positions.reduce((s, p) => s + p.unrealizedPl, 0);
@@ -878,7 +851,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
   const marketActive = section === 'market' && sidebarOpen;
 
   // ── 실데이터 — 현물 보유자산 (투자탭 '현물' 선택 시) ──
-  const spotActive = section === 'invest' && investTab === '현물' && sidebarOpen && !paperMode;
+  const spotActive = section === 'invest' && investTab === '현물' && sidebarOpen;
   const { data: spot } = useSpotTrade(spotActive);
   const spotPriceSymbols = spot.holdings
     .filter((h) => h.coin !== 'USDT' && h.coin !== 'USDC')
@@ -893,7 +866,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
   const spotReady = useDelayedReady(spot.holdings.length === 0 || spotTotal > 0);
 
   // 사이드바 자산 스켈레톤 표시 여부
-  const mainSkeleton = section === 'invest' && sidebarOpen && !mainReady && (paperMode || investTab === '선물');
+  const mainSkeleton = section === 'invest' && sidebarOpen && !mainReady && investTab === '선물';
   const spotSkeleton = spotActive && !spotReady;
 
   // 마켓/현물 가격 표기 — krw 토글 반영 (USDT 견적 기준)
@@ -1571,22 +1544,6 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
           <div className="sidebar-header">
             <span className="sidebar-title-wrap">
               {SECTIONS.find((s) => s.id === section)?.title}
-              {/* 내투자 타이틀 옆 작은 모의투자 토글 */}
-              {section === 'invest' && (
-                <button
-                  type="button"
-                  className={`paper-toggle${paperMode ? ' on' : ''}`}
-                  onClick={() => setPaperMode((v) => !v)}
-                  title={paperMode ? '실거래로' : '모의투자로'}
-                >모의투자</button>
-              )}
-              {section === 'invest' && paperMode && (
-                <button type="button" className={`paper-order-open${paperOrderOpen ? ' on' : ''}`} onClick={() => setPaperOrderOpen((v) => !v)} title="모의 주문창">주문</button>
-              )}
-              {section === 'invest' && paperMode && (
-                <button type="button" className="paper-reset-btn" title="모의계좌 초기화"
-                  onClick={() => { if (window.confirm('초기화 하시겠습니까?\n되돌릴 수 없습니다.')) paper.reset(); }}>초기화</button>
-              )}
             </span>
             {/* 원화/USD 전환은 내 잔고에만 적용되므로 내투자 섹션에서만 노출 */}
             {section === 'invest' && (
@@ -1609,7 +1566,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
                 ))}
               </div>
 
-              {(!paperMode && investTab === '현물') ? (
+              {(investTab === '현물') ? (
                 spotSkeleton ? <SidebarAssetSkeleton /> : (
                 <div className="assets-scroll">
                   <div className="tas-hero">
@@ -1666,9 +1623,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
                 <button className={`view-chip${positionsOn ? ' on' : ''}`} onClick={togglePositions}>포지션</button>
               </div>
 
-              {paperMode && (investTab === '현물' || investTab === '주식') ? (
-                <div className="paper-soon">모의 {investTab}은 준비 중이에요.<br />현재는 선물만 지원합니다.</div>
-              ) : mainSkeleton ? <SidebarAssetSkeleton /> : (
+              {mainSkeleton ? <SidebarAssetSkeleton /> : (
               <div className="assets-scroll">
                 <div className="tas-hero">
                   <span className="tas-hero-label">총자산</span>
@@ -1796,13 +1751,6 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
                               </span>
                             </div>
                           </div>
-                          {paperMode && (selPos as MainPosition & { paperId?: number }).paperId != null && (
-                            <div className="poscard-actions">
-                              <button type="button" className="pc-action" onClick={() => window.alert('TP/SL은 준비 중입니다')}>TP/SL</button>
-                              <button type="button" className="pc-action" onClick={() => window.alert('Reverse는 준비 중입니다')}>Reverse</button>
-                              <button type="button" className="pc-action pc-close" onClick={() => paper.close((selPos as MainPosition & { paperId: number }).paperId, selPos.markPrice)}>Close</button>
-                            </div>
-                          )}
                         </div>
                       );
                     })() : (
@@ -1828,15 +1776,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
           )}
           {section === 'strategy' && (
             <div className="sidebar-section">
-              <div className="strat-subtabs">
-                <button className={`strat-subtab${stratTab === 'paper' ? ' active' : ''}`} onClick={() => setStratTab('paper')}>실증</button>
-                <button className={`strat-subtab${stratTab === 'monitoring' ? ' active' : ''}`} onClick={() => setStratTab('monitoring')}>모니터링</button>
-              </div>
-              {stratTab === 'paper' ? (
-                <PaperStatusPanel active={section === 'strategy' && sidebarOpen && stratTab === 'paper'} onSelectSymbol={(sym) => handleSelectChart(sym, 'futures', 'BITGET')} />
-              ) : (
-                <WebMonitoringPanel active={section === 'strategy' && sidebarOpen && stratTab === 'monitoring'} onSelectSymbol={(sym) => handleSelectChart(sym, 'futures', 'BITGET')} onOpenTrackerChart={handleOpenTrackerChart} />
-              )}
+              <StrategyComingSoon compact />
             </div>
           )}
         </aside>
@@ -1870,23 +1810,6 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
         <span>© 2026 Bullum · Web</span>
         <span>v0.1</span>
       </footer>
-
-      {/* 모의 주문 미니창 — 모의투자 ON + 열림일 때 */}
-      {user && paperMode && paperOrderOpen && (
-        <WebPaperOrder
-          symbol={CHART_SYMBOL}
-          isFutures={chartIsFutures}
-          exchange={chartSel.exchange}
-          price={livePrice ?? null}
-          balance={paper.account.balance}
-          orders={paper.account.orders}
-          onSubmit={async (type, direction, marginUsdt, leverage, orderPrice) => {
-            await paper.place({ type, symbol: CHART_SYMBOL, direction, marginUsdt, leverage, price: orderPrice });
-          }}
-          onCancel={(id) => paper.cancel(id)}
-          onClose={() => setPaperOrderOpen(false)}
-        />
-      )}
 
       {/* 관심 미니 시세창 — float 모드: 화면 위에 떠있는 드래그 창 */}
       {effWatchMode === 'float' && (

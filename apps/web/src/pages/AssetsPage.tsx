@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback, useRef, useLayoutEffect } from 'react';
-import { getWorkerStatus, type WorkerStatus } from '../api/adminApi';
 import { useMainTrade } from '../hooks/useMainTrade';
 import { useDelayedReady } from '../hooks/useDelayedReady';
 import { useSpotValueUsdt } from '../hooks/useSpotValueUsdt';
@@ -7,7 +6,7 @@ import { TotalAssetHero } from '../components/TotalAssetHero';
 import { fetchUsdKrwRate } from '../api/exchangeRate';
 import { useCurrency, currencyLabel } from '../contexts/CurrencyContext';
 import { useRealtimePrices } from '../hooks/useRealtimePrices';
-import type { BotState, PositionState } from '../types/bot';
+import type { BotState } from '../types/bot';
 import ApiKeyManager from '../components/settings/ApiKeyManager';
 import PullToRefresh from '../components/PullToRefresh';
 
@@ -51,61 +50,6 @@ function CurrencyToggleBtn({ displayCurrency, setDisplayCurrency }: { displayCur
 function formatAssetPrice(price: number) {
   if (price > 0 && price < 1) return formatPrice(price, 4);
   return formatPrice(price, 1);
-}
-
-function mapWorkerStatusToBotState(workerStatus: WorkerStatus): BotState | null {
-  const snapshot = workerStatus.snapshot;
-  if (!snapshot) return null;
-
-  const positions: PositionState[] = snapshot.configs
-    .filter(config => config.hasPosition && config.direction && config.entryPrice != null && config.size != null)
-    .map(config => ({
-      symbol: config.symbol,
-      direction: config.direction as 'long' | 'short',
-      entryPrice: config.entryPrice ?? 0,
-      size: config.size ?? 0,
-      tpPrice: config.tpPrice ?? 0,
-      sl1Price: config.sl1Price ?? 0,
-      sl2Price: config.sl2Price ?? 0,
-      entryTime: snapshot.ts,
-      botName: config.botName ?? 'Worker',
-    }));
-
-  const byPhase = snapshot.trackers.reduce<Record<string, number>>((acc, tracker) => {
-    acc[tracker.phase] = (acc[tracker.phase] ?? 0) + 1;
-    return acc;
-  }, {});
-
-  return {
-    status: workerStatus.alive ? 'running' : 'stopped',
-    startedAt: snapshot.ts,
-    balance: snapshot.subBalance ?? 0,
-    balanceUpdatedAt: snapshot.ts,
-    mainBalance: snapshot.mainBalance ?? 0,
-    mainUnrealized: 0,
-    mainPositions: snapshot.mainPositions ?? [],
-    position: positions[0] ?? null,
-    positions,
-    pendingOrder: null,
-    lastPrice: {},
-    engineStatus: {
-      trackers: snapshot.trackers.length,
-      activePositions: positions.map(position => position.symbol),
-      byPhase,
-      trackersList: snapshot.trackers.map(tracker => ({
-        symbol: tracker.symbol,
-        type: tracker.type,
-        phase: tracker.phase,
-        mid: tracker.mid,
-        obTime: tracker.obTime,
-        lookAfterTime: tracker.lookAfterTime,
-        waitCount: tracker.waitCount,
-        holdCount: tracker.holdCount,
-        botName: tracker.botName ?? 'Worker',
-      })),
-    },
-    trades: [],
-  };
 }
 
 function ActionButtons({ futures = false }: { futures?: boolean }) {
@@ -271,7 +215,6 @@ function OverviewPanel({
             }
           />
         </div>
-        <ActionButtons />
       </section>
 
       {/* 기존 자산/계정 세션 100% 유지 */}
@@ -323,36 +266,7 @@ function OverviewPanel({
         })()}
       </section>
 
-      {/* 시안 디자인과 동일한 다크 배너 보증 카드 */}
-      <section className="asset-info-block" style={{ paddingBottom: '120px' }}>
-        <div className="protection-card">
-          <div className="protection-content">
-            <h4>Your asset safety, our responsibility</h4>
-            <p>Our 483.14M Bitget Protection Fund ensures the safety of your funds.</p>
-            <a href="#/assets" className="more-link">More</a>
-          </div>
-          <div className="protection-icon-shield">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#00c8df" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.85 }}>
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="protection-card" style={{ marginTop: '16px' }}>
-          <div className="protection-content">
-            <h4>Proof of Reserves</h4>
-            <a href="#/assets" className="more-link">More</a>
-          </div>
-          <div className="protection-icon-reserves" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8e9197" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
-              <path d="M4 19h16" />
-              <path d="M4 15h16" />
-              <path d="M4 11h16" />
-              <path d="M5 6h14" />
-            </svg>
-          </div>
-        </div>
-      </section>
+      <div style={{ height: '120px' }} aria-hidden="true" />
     </>
   );
 }
@@ -474,7 +388,6 @@ function FuturesPanel({ data, usdKrw, realtimePrices, displayCurrency, setDispla
             </p>
           </div>
         </div>
-        <ActionButtons futures />
       </section>
 
       {/* 기존 선물 상세 자산/자동예치 세션 보존 */}
@@ -575,12 +488,11 @@ export default function AssetsPage({ active = true, onTabBar }: { active?: boole
     if (br.width === 0) return;
     onTabBar?.({ x: br.left + br.width / 2 - 11, y: nav.getBoundingClientRect().bottom - 6 });
   }, [activeTab, active, onTabBar]);
-  const [data, setData] = useState<BotState | null>(null);
+  const data: BotState | null = null;
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { displayCurrency, setDisplayCurrency } = useCurrency();
   const [usdKrw, setUsdKrw] = useState<number>(1380);
-  const activeSymbols = Array.from(new Set((data?.positions ?? []).map(pos => pos.symbol)));
+  const activeSymbols: string[] = [];
   const realtimePrices = useRealtimePrices(active ? activeSymbols : []);
   // 워커 데이터 없으면 MAIN 직접조회로 총자산 폴백(워커 오프라인에도 표시)
   const { data: directMain } = useMainTrade(active && !data);
@@ -590,19 +502,8 @@ export default function AssetsPage({ active = true, onTabBar }: { active?: boole
 
   const fetchStatus = useCallback(async () => {
     setLoading(true);
-    const [nextUsdKrw, workerStatus] = await Promise.all([
-      fetchUsdKrwRate(1380),
-      getWorkerStatus().catch(() => null),
-    ]);
+    const nextUsdKrw = await fetchUsdKrwRate(1380);
     setUsdKrw(nextUsdKrw);
-
-    const mappedData = workerStatus ? mapWorkerStatusToBotState(workerStatus) : null;
-    if (mappedData) {
-      setData(mappedData);
-      setError(null);
-    } else {
-      setError('Worker API 연동 지연');
-    }
     setLoading(false);
   }, []);
 
@@ -627,14 +528,6 @@ export default function AssetsPage({ active = true, onTabBar }: { active?: boole
             {tab.label}
           </button>
         ))}
-        {/* 거래 탭과 같은 위치(우측 끝)의 + 버튼 — 현재 기능 없음(자리만) */}
-        <button
-          type="button"
-          className="assets-tab-add-btn"
-          aria-label="추가"
-          /* .assets-top-tabs button의 700/scaleX(0.95) 상속을 끊어 거래 탭 +와 동일하게 */
-          style={{ marginLeft: 'auto', flex: '0 0 auto', background: 'none', border: 'none', color: '#848e9c', fontSize: 22, fontWeight: 400, transform: 'none', lineHeight: 1, padding: '0 2px 4px', cursor: 'pointer' }}
-        >+</button>
         {loading && (
           <span style={{
             position: 'absolute',

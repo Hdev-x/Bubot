@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-02-beta-boundary
 title: Beta 제외 기능을 실행 경로에서 분리
 workstream: refactor
-state: planned
+state: active
 updated: 2026-09-03
 depends_on: [wp-01-rename-tpm]
 supersedes: []
@@ -18,12 +18,20 @@ deliveries:
   - id: wp-02-d01-web-decouple
     title: "Beta entry의 자동매매 정적 import 끊기와 준비 화면"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: []
     branch: refactor/web-decouple-trading
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "npm test 22 passed, build·build:web 통과; dist·dist-web에 /api/paper·/api/admin·/api/bot·backtest-runs·trade-configs 문자열 0; Beta 파일→labs 후보 import 0"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: browser
+        locator: "Desktop 5174 새 탭: React 오류 0(ws-coin 빈 토큰만), 차트·호가·커뮤니티 패널 렌더링, 전략 섹션은 로그인 게이트 뒤 준비 화면"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-02-d02-web-labs
     title: "Web 자동매매 묶음을 labs/trading/web으로 이동"
     kind: git
@@ -101,9 +109,13 @@ extensions: {}
 
 ### wp-02-d01-web-decouple
 
-- 주요 Task: 위 1번. `AssetsPage`·`CoinListPage`의 `getWorkerStatus`는 "봇 상태" 표시라 Beta에서는 제거. `AlertSheet`의 하모닉 알림(admin)·push는
-  Beta 범위 밖이라 제거. `strategyConstants`가 `backtestEngine`의 기본 파라미터를 쓰는데 차트 자동 패턴(`useAutoPatterns`)이 이 상수를 쓰면
-  `shared/strategy-schema` 기본값으로 대체한다 — 시작 시 확인.
+- 주요 Task: 위 1번. `AssetsPage`·`CoinListPage`의 `getWorkerStatus`는 "봇 상태" 표시라 Beta에서는 제거. `ProfileMenu`의 push 구독 항목 제거.
+- 시작 시 확인 결과(2026-09-03): `AlertSheet`는 `LivePage`만 쓰므로 Beta entry가 아니라 d02 이동 대상으로 재분류. `strategyConstants`·
+  `hooks/useBotStreams`·`config/bots`·`utils/botAggregates`·`api/botStatus`도 labs 후보만 쓰므로 d02 이동. `types/bot`은 `MarketChart`·
+  `useAutoPatterns`·`OrderPage`가 타입으로 쓰므로 Beta에 유지. Community 패널은 이 WP 범위 밖이라 건드리지 않았다(`config/features.ts`의
+  `community` 플래그는 미사용 선언).
+- 참고 branch의 `WebApp.tsx`를 그대로 가져오면 `createRoot` 중복·`removeChild` 오류가 나서, 현재 파일에서 paper·monitoring 결합(85줄)만 직접
+  제거했다. `App.tsx`·`AssetsPage`·`CoinListPage`는 참고 branch 결과를 채택하되 헤더 로고 제거(브랜드 범위)는 되돌렸다.
 - 추가 Gate: 원본 저장소 `refactor/bullum-beta` 브랜치의 어제 D03 결과(`StrategyComingSoon`, 35개 이동 목록)와 대조해 누락 확인. cherry-pick은 하지 않는다.
 - Blocker·재개 조건: 없음.
 

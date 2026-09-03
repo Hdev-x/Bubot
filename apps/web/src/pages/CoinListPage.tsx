@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { fetchCoinLogos } from '../api/marketApi';
-import { getWorkerStatus } from '../api/adminApi';
 import { fetchMainTrade } from '../api/mainTradeApi';
 import { fetchUsdKrwRate } from '../api/exchangeRate';
 import { useCurrency, currencyLabel } from '../contexts/CurrencyContext';
@@ -10,9 +9,9 @@ import { usePricePrecision } from '../hooks/usePricePrecision';
 import { useWatchlist } from '../hooks/useWatchlist';
 import type { CoinTicker } from '../types/market';
 import { EXCHANGE_SELECT_OPTIONS, isKrwExchange as isKrwExchangeId, type ExchangeId } from '../constants/exchanges';
-import botzMark from '../assets/botz-mark.svg';
 
 // Utilities
+import botzMark from '../assets/botz-mark.svg';
 import { formatRate, formatDisplaySymbol, coinColor } from '../utils/coinFormatters';
 import type { ProductFilter } from '../utils/coinFormatters';
 
@@ -49,7 +48,6 @@ type ExchangeFilter = ExchangeId;
 type AssetSummary = {
   totalAssetUsdt: number;
   usdKrw: number;
-  rawMergedData?: any;
 };
 
 const ASSET_REFRESH_MS = 10_000;
@@ -132,47 +130,13 @@ export default function CoinListPage({ active = true, selectedSymbol, onSelectSy
   }, []);
 
   const refreshAssetSummary = useCallback(async () => {
-    const [usdKrw, workerStatus] = await Promise.all([
+    const [usdKrw, main] = await Promise.all([
       fetchUsdKrwRate(1380),
-      getWorkerStatus().catch(() => null),
+      fetchMainTrade().catch(() => null),
     ]);
-
-    const snapshot = workerStatus?.snapshot;
-    if (!snapshot) {
-      // 워커 오프라인: MAIN 직접조회 equity로 총자산 표시(워커 없이도)
-      const main = await fetchMainTrade().catch(() => null);
-      setAssetSummary(prev => ({
-        ...prev,
-        usdKrw,
-        totalAssetUsdt: main?.hasKey ? main.equity : 0,
-        rawMergedData: undefined,
-      }));
-      return;
-    }
-
-    // 총자산 미실현손익은 메인계정 실제 포지션(mainPositions) 단일 소스로 계산.
-    // (configs 기반은 실제 포지션을 못 담아 누락되던 버그가 있어 폐기 — 거래탭과 동일 기준)
-    const positions = [...(snapshot.mainPositions ?? []), ...(snapshot.subPositions ?? [])]
-      .filter(p => p.direction && p.entryPrice != null && p.size != null)
-      .map(p => ({
-        symbol: p.symbol,
-        direction: p.direction,
-        entryPrice: p.entryPrice ?? 0,
-        size: p.size ?? 0,
-      }));
-
-    const rawMergedData = {
-      mainBalance: snapshot.mainBalance ?? 0,
-      balance: snapshot.subBalance ?? 0,
-      mainUnrealized: 0,
-      positions,
-      lastPrice: {},
-    };
-
     setAssetSummary({
-      totalAssetUsdt: (snapshot.mainBalance ?? 0) + (snapshot.subBalance ?? 0),
+      totalAssetUsdt: main?.hasKey ? main.equity : 0,
       usdKrw,
-      rawMergedData,
     });
   }, []);
 
@@ -198,19 +162,9 @@ export default function CoinListPage({ active = true, selectedSymbol, onSelectSy
     return ordered.map(ticker => liveBySymbol.get(ticker.symbol) ?? ticker);
   }, [allTickers, sortSnapshot, exchangeFilter, marketFilter, sortFilter]);
 
-  // 현물 평가(USDT) — 총자산에 합산(선물+봇 + 현물). 워커 연결과 무관.
+  // 현물 평가(USDT) — read-only 선물 계정과 합산.
   const spot = useSpotValueUsdt(active);
-  // 선물+봇(현물 제외) 기준액 — 게이팅용으로 별도 분리.
-  const baseAssetUsdt = useMemo(() => {
-    if (!assetSummary.rawMergedData) return assetSummary.totalAssetUsdt;
-    const merged = assetSummary.rawMergedData;
-    const botUnrealizedUsdt = (merged.positions ?? []).reduce((sum: number, pos: any) => {
-       const ticker = allTickers.find(t => t.symbol === pos.symbol);
-       const currentPrice = ticker ? ticker.last : (merged.lastPrice[pos.symbol] ?? pos.entryPrice);
-       return sum + (pos.direction === 'long' ? 1 : -1) * (currentPrice - pos.entryPrice) * pos.size;
-    }, 0);
-    return (merged.mainBalance ?? 0) + merged.balance + (merged.mainUnrealized ?? 0) + botUnrealizedUsdt;
-  }, [assetSummary.rawMergedData, assetSummary.totalAssetUsdt, allTickers]);
+  const baseAssetUsdt = assetSummary.totalAssetUsdt;
   const realtimeTotalAssetUsdt = baseAssetUsdt + spot.value;
   // 선물(base) + 현물 시세 둘 다 도착한 뒤에만 표시(부분합 점프 방지). 1.5초 폴백.
   const assetReady = useDelayedReady(baseAssetUsdt > 0 && spot.priced);
@@ -400,7 +354,7 @@ export default function CoinListPage({ active = true, selectedSymbol, onSelectSy
         setDetailDragEnabled={setDetailDragEnabled}
         onTickDecimalsChange={onTickDecimalsChange}
         onOpenChart={handleOpenChart}
-        onOpenTrade={handleOpenTrade}
+        onOpenTrade={onOpenTrade ? handleOpenTrade : undefined}
       />
     </main>
   );
