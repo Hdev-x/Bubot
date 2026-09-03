@@ -85,7 +85,7 @@
 - job: `web`(`apps/web` — `npm ci`, `npm test`, `npm run build`, `npm run build:web`), `api`(`apps/api` — `./gradlew compileJava`).
   로컬 `docs/COMMANDS.md`와 같은 명령만 쓴다. CI 전용 명령을 만들지 않는다.
 - 운영 안전장치: `permissions: contents: read`, 같은 ref의 이전 실행 취소(`concurrency`), job별 `timeout-minutes`, npm·Gradle 캐시.
-- 처음에는 전체를 실행한다. 실행 시간이 10분을 넘기 시작하면 경로 필터(`apps/web/**`+`shared/**` → web, `apps/api/**` → api)를 도입하되,
+- 폴더 가져오기 동안 쓰던 폴더 부재 guard는 2026-09-03에 제거했다. 처음에는 전체를 실행한다. 실행 시간이 10분을 넘기 시작하면 경로 필터(`apps/web/**`+`shared/**` → web, `apps/api/**` → api)를 도입하되,
   required check와 함께 쓸 때는 skip된 job이 merge를 막지 않도록 처리한다.
 - 아직 CI에 없는 것: Web lint(기존 오류 정리 후 추가), API `test`(DB·env 의존 제거 후 추가), Worker verify(`labs`·`ops` 가져온 뒤 추가).
 - Check가 실패·대기·취소된 PR은 merge하지 않는다. Ruleset을 적용하면 required check로 서버에서도 강제한다.

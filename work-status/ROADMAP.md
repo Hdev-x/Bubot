@@ -6,7 +6,7 @@
 > 항목 문형 `roadmap-item@1`: `- [x]|[ ] <ID> <한 문장> | <참조>`. 참조는 `plan:<workstream>/<work-package>` 또는 `doc:<경로>` 하나.
 > `[x]`는 PLAN `state: completed`이거나 `doc:` 문서가 완료를 선언할 때만 쓴다.
 
-- 마지막 갱신: 2026-09-03
+- 마지막 갱신: 2026-09-03 (T-01 완료)
 
 ## North Star
 
@@ -14,7 +14,7 @@
 
 ## 기준선 Track
 
-- [ ] T-01 원본 저장소의 정리된 코드를 폴더 단위로 가져와 `main`이 빌드·기동된다 | `doc:work-status/CURRENT.md`
+- [x] T-01 원본 저장소의 정리된 코드를 폴더 단위로 가져와 `main`이 빌드된다 (PR #3~#7, 2026-09-03) | `doc:work-status/CURRENT.md`
 
 ## 정리 Track
 
