@@ -1,6 +1,6 @@
 # 현재 상태
 
-- 마지막 갱신: 2026-09-03 (wp-03 완료)
+- 마지막 갱신: 2026-09-03 (wp-04 PLAN 작성)
 
 > 이 문서는 다음 세션을 위한 상태판이다. 이력을 쌓지 않고 덮어쓴다.
 > Branch·Commit·작업 트리는 Git에서, 완료 작업의 상세·증거는 PLAN과 Git History에서 확인한다.
@@ -13,13 +13,15 @@
 - 기준선 Track 완료(2026-09-03, PR #3~#7): `shared`·`apps/api`·`apps/web`·`labs/trading/worker`·`ops`가 원본 `develop`과 blob hash 동일하게 들어왔고, Web tests 22·build 2종·API bootWar·`ops/verify` 6종이 원본과 같은 결과다.
 - 배포 전 품질 정리 완료(2026-09-03): README, CI lint(error 0·warning baseline 320), API test(H2 test 프로필), Ruleset `main-protection`.
 - `apps/web` 폴더 구조 재편 완료(2026-09-03, `wp-03-web-structure`, PR #24~#30): `app/{mobile,desktop}` · `chart` · `hooks/{market,account,ui}` · `api/{client,server,exchange}` · `shared`. 의존 방향 규칙은 `docs/PROJECT.md`.
-- 프로젝트가 지금 달성하려는 결과: 다음 Work Package 선택 대기. 후보는 CSS 정리(wp-04: 컴포넌트별 CSS 분리·미사용 규칙 삭제·OQ-12)와 큰 파일 분해(`WebApp.tsx` 1,811·`MarketChart.tsx` 1,585·`useAutoPatterns.ts` 990·`OrderPage.tsx` 910). 사용자와 항목 단위로 진행.
+- 프로젝트가 지금 달성하려는 결과: `apps/web` CSS 정리(`wp-04-css-cleanup`) — 미사용 규칙 삭제, 컴포넌트별 분리. 사용자와 Delivery 단위로 진행. 큰 파일 분해(`WebApp.tsx` 1,811·`MarketChart.tsx` 1,585·`useAutoPatterns.ts` 990·`OrderPage.tsx` 910)는 그 다음 WP.
+- 완료 기준: Milestone `css-clean` 통과 (중복 선택자 0, 미참조 클래스 0, computed style 동일, 화면 동일).
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. 다음 Work Package 결정(CSS 정리 vs 큰 파일 분해) 후 PLAN 작성
+1. `wp-04-d00-survey` (CSS 구역 지도·미사용 후보·labs 전용·중복 선택자 조사 문서)
+2. `wp-04-d01-unused` (d00 목록 검토 후 삭제, labs 전용 규칙 처리 방식 결정)
 
 ## Deferred
 
@@ -30,7 +32,7 @@
 
 ## 활성 Work Package
 
-- 없음.
+- [refactor/wp-04-css-cleanup](work/refactor/wp-04-css-cleanup/PLAN.md) — d00 조사부터
 
 ## 완료된 Work Package (링크만)
 
