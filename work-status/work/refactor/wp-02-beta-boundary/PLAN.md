@@ -10,7 +10,7 @@ supersedes: []
 outcome: "Beta 번들·API에는 시세·차트·호가·관심종목·로그인·거래소 계좌 Read-only 조회만 남고, 자동매매·Paper·Backtest·Admin·Push 코드는 삭제 없이 labs 또는 비활성 프로필로 보존된다."
 acceptance:
   - "AC-001: Web Beta 번들(dist·dist-web)에 /api/paper·/api/admin·/api/bot·backtest-runs·trade-configs 호출 문자열이 없다."
-  - "AC-002: apps/web/src가 labs/를 import하지 않고, labs/trading/web이 apps/web을 import하지 않는다 (shared만 공용)."
+  - "AC-002: apps/web/src가 labs/를 import하지 않는다. labs/trading/web은 shared와 apps/web(@web/* 경로 alias)을 import할 수 있다 — 의존 방향은 labs → apps/web 단방향 (2026-09-03 d02에서 조정: 보존 코드가 authApi·types/bot·CurrencyContext 등 Beta 공용 모듈에 의존하므로 복제 대신 단방향 참조 허용)."
   - "AC-003: Beta 프로필(spring.profiles.active=beta)로 기동한 API에서 제외 컨트롤러의 endpoint가 404이고, Beta 컨트롤러(auth·main-trade·spot-trade·positions·api-keys·spot-manual-cost·/coin/api/**)는 그대로 동작한다."
   - "AC-004: 기준선 Gate(Web tests·build 2종, API compile·bootWar, ops/verify 6종)가 원본과 같은 결과를 낸다."
   - "AC-005: 로컬 기동에서 Mobile·Desktop의 Market·Chart·Watchlist·Assets(Read-only)·Login이 동작하고 Strategy 탭은 준비 화면을 보여준다."
@@ -35,12 +35,20 @@ deliveries:
   - id: wp-02-d02-web-labs
     title: "Web 자동매매 묶음을 labs/trading/web으로 이동"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-02-d01-web-decouple]
     branch: refactor/web-move-trading-to-labs
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "38개 git mv rename(내용 변경은 import 경로 줄뿐), ApiKeyManager는 config/accountTargets 분리로 Beta 유지; git grep 'labs/' -- apps/web/src = 0"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: command
+        locator: "apps/web npm test 22·build·build:web 통과; labs/trading/web tsc --noEmit 통과(@web alias, apps/web node_modules symlink)"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-02-d03-api-profile
     title: "API 제외 컨트롤러·서비스를 trading 프로필로 묶고 beta 프로필 기본화"
     kind: git
@@ -122,6 +130,9 @@ extensions: {}
 ### wp-02-d02-web-labs
 
 - 주요 Task: 위 2번. `labs/trading/web`은 독립 실행 대상이 아니라 보존·타입체크 대상이다. Vite 진입점은 만들지 않는다.
+- 실행 결과(2026-09-03): d01 재분류분을 합쳐 38개 파일(9,3xx줄) 이동. `settings/ApiKeyManager`는 Beta 유지하고 그것이 쓰던 `SUB_ACCOUNT_NAMES`를
+  `config/accountTargets.ts`로 분리, `config/bots.ts`는 이동. 이동 파일의 Beta 모듈 참조는 `@web/*`(tsconfig paths)로, `shared`는 깊이 조정.
+  `apps/web/tsconfig.app.json`의 `include: ["src"]`는 labs를 잡지 않는다. 로컬 타입체크는 `apps/web/node_modules` symlink로 수행하며 CI에는 넣지 않았다.
 - 추가 Gate: `apps/web` `tsconfig`의 `include`가 `labs`를 잡지 않는지 확인.
 - Blocker·재개 조건: d01 merge 후.
 

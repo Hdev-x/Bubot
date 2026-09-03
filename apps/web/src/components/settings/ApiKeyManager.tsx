@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchApiKeys, saveApiKey, activateApiKey, deleteApiKey, type ApiKeyItem } from '../../api/apiKeysApi';
 import { fetchMe } from '../../api/authApi';
-import { SUB_ACCOUNT_NAMES } from '../../config/bots';
+import { SUB_ACCOUNT_NAMES } from '../../config/accountTargets';
 import { EXCHANGES, EXCHANGE_OPTIONS, type ExchangeId } from '../../constants/exchanges';
 
 // 봇 슬롯 선택지 — MAIN + Bot 1~7

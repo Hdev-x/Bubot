@@ -1,0 +1,9 @@
+{
+  "extends": "../../../apps/web/tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./.tmp/tsconfig.tsbuildinfo",
+    "paths": { "@web/*": ["../../../apps/web/src/*"] },
+    "types": ["vite/client"]
+  },
+  "include": ["src", "../../../apps/web/src/vite-env.d.ts"]
+}

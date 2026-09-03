@@ -111,3 +111,6 @@ dev-dist/
 # 배포 스크립트 중 비밀값 포함 파일 (추적 금지)
 ops/back-end.sh
 ops/worker.sh
+
+# labs/trading/web 로컬 타입체크용 symlink (apps/web/node_modules)
+labs/trading/web/node_modules
