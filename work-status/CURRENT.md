@@ -12,19 +12,19 @@
 
 - 기준선 Track 완료(2026-09-03, PR #3~#7): `shared`·`apps/api`·`apps/web`·`labs/trading/worker`·`ops`가 원본 `develop`과 blob hash 동일하게 들어왔고, Web tests 22·build 2종·API bootWar·`ops/verify` 6종이 원본과 같은 결과다.
 - 배포 전 품질 정리 완료(2026-09-03): README, CI lint(error 0·warning baseline 320), API test(H2 test 프로필), Ruleset `main-protection`.
-- 프로젝트가 지금 달성하려는 결과: 다음 단계 선택 대기 — (a) 배포 `wp-03`(도메인·DB 위치 결정 필요, Deferred) 또는 (b) 코드 품질 리팩터링 WP(lint warning baseline 축소·큰 파일 분해, 사용자와 항목별 진행).
-- 완료 기준: 사용자가 (a)/(b) 중 하나를 고르고 해당 PLAN이 승인된다.
+- 프로젝트가 지금 달성하려는 결과: `apps/web` 폴더 구조 재편(`wp-03-web-structure`) — 사용자와 Delivery 단위로 진행.
+- 완료 기준: Milestone `web-structure-locked` 통과 (목표 트리 일치, import 방향 규칙, Gate 유지, 화면 동일).
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. 다음 Work Package 선택: 배포(`wp-03`, 도메인·DB 결정 후) 또는 코드 품질 리팩터링(OQ-11 baseline 축소부터, 사용자와 항목별)
-2. 원본 AutoTrade 저장소 정리: 병합된 branch 삭제(승인 대기), CURRENT에 "제품 작업은 Bubot으로 이관" 기록
+1. `wp-03-d00-dead-code` (dead code 8개 + labs 잔여 CSS 구역)
+2. `wp-03-d01-api` (`client.ts` 분리 내용 사전 공유 후 진행)
 
 ## Deferred
 
-- Beta 배포(`wp-03`): 도메인 구입 여부와 DB 위치가 정해질 때까지 보류. 후보 구성은 OQ-20260903-04. jar 전환·`ops/deploy.sh` 교체·`static/web` 생성 bundle 처리(OQ-08)는 이때 함께
+- Beta 배포(`wp-04` 예정): 도메인 구입 여부와 DB 위치가 정해질 때까지 보류. 후보 구성은 OQ-20260903-04. jar 전환·`ops/deploy.sh` 교체·`static/web` 생성 bundle 처리(OQ-08)는 이때 함께
 
 - Private Worklog 연결(`.ai-workflow.local`) — OQ-20260903-07 결정 후
 - `labs/trading/worker/.env`·`ecosystem.config.cjs` 복사 — 워커를 다시 쓸 때(모의투자 Track)

@@ -34,6 +34,8 @@ YYYY-MM-DD | D-YYYYMMDD-NN | kind | 결정 | 이유 | 영향 범위
 
 - 2026-09-03 | D-20260903-08 | durable | `main`에 GitHub Ruleset `main-protection`을 적용한다 — PR 필수(squash만), force push·삭제 금지, linear history, required check(Web test · build, API test, strict), bypass 없음 | 훅·절차로 지키던 하한을 서버에서 강제한다. 이력 재작성이 필요하면 Ruleset을 잠시 비활성화한다 | OQ-01 닫음, `docs/GIT-WORKFLOW.md` 8절
 
+- 2026-09-03 | D-20260903-09 | durable | `apps/web` 폴더 구조를 계층 우선으로 재편한다 — `app/{mobile,desktop}`(진입점·화면·앱별 CSS), `chart/`(공용 차트 스택), `api/{client,server,exchange}`(누구를 부르는가 기준), `hooks/{market,account,ui}`, `shared/`(types·constants·contexts·utils·tokens.css). 전역 `components/`는 두지 않고 공용 UI는 `chart/` 또는 `shared/ui/`. CSS는 쓰는 코드 옆, 클래스 이름은 유지 | 기능이 3개뿐이라 기능 우선(features/)보다 백엔드 계층과 같은 감각의 계층 우선이 단순하고 이동량이 작다. api는 서버 컨트롤러와 1:1 대조가 되도록 server/exchange로 나눈다 | `docs/architecture/WEB-STRUCTURE-REVIEW.md` 4절, `wp-03-web-structure`
+
 ## 대체된 결정
 
 - 2026-09-01 | Bullum 제품명·`archive/legacy-community` 보관 → D-20260903-01·D-20260902-01로 대체됨
