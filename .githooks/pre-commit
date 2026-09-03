@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# commit 직전 staged 파일의 민감 파일명·secret 패턴 검사. FAIL이면 commit이 만들어지지 않는다.
+exec bash "$(git rev-parse --show-toplevel)/ops/check-secrets.sh"

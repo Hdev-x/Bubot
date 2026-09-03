@@ -1,7 +1,7 @@
 # Bubot Git 규칙
 
 > 채택: **GitHub Flow** (`main` 하나 + 작업 브랜치) · **Squash merge** · **태그 기반 릴리즈**
-> 확정일: 2026-09-03. 변경은 사용자 결정으로만 하고 `docs/DECISIONS.md`에 기록한다.
+> 확정일: 2026-09-03 (D-20260903-02). 변경은 사용자 결정으로만 하고 `work-status/DECISIONS.md`에 기록한다.
 
 ## 1. 기본 흐름
 
@@ -43,6 +43,8 @@
 - commit은 완료됐거나 복구 가치가 있는 의미 단위로 남긴다.
 - commit 전에 순서대로 확인한다: `git status --short --branch` → 전체 diff → stage 대상 →
   `git diff --staged` → Secret·개인정보·로컬 전용 파일·생성물 → 대상 remote·브랜치.
+- `.githooks/pre-commit`이 commit 직전 staged 파일의 민감 파일명·secret 패턴을 검사한다(`ops/check-secrets.sh`).
+  FAIL이면 commit이 만들어지지 않는다.
 - `main` 직접 push는 금지하며 `.githooks/pre-push`가 차단한다. clone 후 한 번
   `git config core.hooksPath .githooks`를 실행한다. `--no-verify` 우회는 하지 않는다.
 - force push, 공유 이력의 reset·rebase·amend는 금지한다. 공유 전 commit의 문제도 새 commit으로 고친다.
