@@ -17,33 +17,47 @@ jobs:
     name: Web test · build
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # 폴더 단위 가져오기 중에는 apps/web이 없을 수 있다. 없으면 성공으로 건너뛴다.
+      - id: present
+        run: |
+          if [ -f apps/web/package-lock.json ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "ok=false" >> "$GITHUB_OUTPUT"; echo "apps/web 없음 — 건너뜀"; fi
+      - if: steps.present.outputs.ok == 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
-      - run: npm ci
-      - run: npm test
-      - run: npm run build
-      - run: npm run build:web
+      - if: steps.present.outputs.ok == 'true'
+        working-directory: apps/web
+        run: npm ci
+      - if: steps.present.outputs.ok == 'true'
+        working-directory: apps/web
+        run: npm test
+      - if: steps.present.outputs.ok == 'true'
+        working-directory: apps/web
+        run: npm run build
+      - if: steps.present.outputs.ok == 'true'
+        working-directory: apps/web
+        run: npm run build:web
 
   api:
     name: API compile
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: apps/api
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - id: present
+        run: |
+          if [ -f apps/api/build.gradle ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "ok=false" >> "$GITHUB_OUTPUT"; echo "apps/api 없음 — 건너뜀"; fi
+      - if: steps.present.outputs.ok == 'true'
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew compileJava --no-daemon
+      - if: steps.present.outputs.ok == 'true'
+        uses: gradle/actions/setup-gradle@v4
+      - if: steps.present.outputs.ok == 'true'
+        working-directory: apps/api
+        run: ./gradlew compileJava --no-daemon
