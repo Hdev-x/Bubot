@@ -29,12 +29,16 @@ deliveries:
   - id: wp-01-d02-web
     title: "Web tpmApi·tpm_token·tpm- ticket rename"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-01-d01-api]
     branch: refactor/rename-web-tpm
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "tpmApi.ts → marketApi.ts R100, importer 13개 경로만 변경, tpm_token → bubot_token, ticket tpm- → bubot-; npm test 22 passed, build·build:web 통과; git grep 식별자 잔여 0 (web.css·WebApp.tsx 주석 7줄과 apps/api static/web 생성 bundle 제외)"
+        revision: working-tree
+        observed_at: 2026-09-03
 milestones:
   - id: tpm-name-free
     title: "TPM 이름 0"
@@ -66,6 +70,8 @@ extensions: {}
 - 기능·로직 변경. 이 Work Package는 이름과 경로만 바꾼다.
 - `web.css`·`web-mockup.html`·`WebApp.tsx` 주석의 "tpm 스타일" 디자인 참조 서술. 코드 식별자가 아니며 3번 코드 정리에서 다룬다.
 - DECISIONS·ROADMAP·CURRENT의 역사 서술(D-20260902-01 등).
+- `apps/api/src/main/resources/static/web/assets/web-*.js`: 과거 Desktop build 산출물이 Git에 추적돼 옛 `tpm_token`·`tpm-` 문자열을
+  담고 있다. 생성물의 Git 소유 여부는 OQ-20260903-08로 분리하고, 재빌드·교체는 배포 Track에서 다룬다.
 - Git 밖 로컬 파일(`application.properties`): `mybatis.mapper-locations`·`mybatis.type-aliases-package` 두 key가 `com.tj.app`을
   참조한다(2026-09-03 원본 로컬 파일 확인, 값은 미열람). d01 merge 후 로컬 기동 전에 사용자가 `com/bubot`·`com.bubot`으로
   수정해야 하며, 수정 전에는 mapper를 못 찾아 기동이 실패한다. `.env`는 패키지와 무관하다.

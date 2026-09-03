@@ -48,7 +48,7 @@ React 앱은 브라우저 hash 기반으로 화면을 전환한다.
 
 ### API 모듈
 
-- `apps/web/src/api/tpmApi.ts`: Spring Boot API 호출 래퍼.
+- `apps/web/src/api/marketApi.ts`: Spring Boot API 호출 래퍼.
 - `apps/web/src/api/coinRealtime.ts`: Spring STOMP WebSocket(`/ws-coin`) 구독 래퍼.
 - `apps/web/src/api/botApi.ts`: Spring 봇 프록시(`/api/bot`, `/api/bot-ws`) 호출 래퍼.
 
@@ -82,7 +82,7 @@ React 앱은 브라우저 hash 기반으로 화면을 전환한다.
 - `apps/api/src/main/java/com/tj/app/market/coin/CoinController.java`
 - `apps/api/src/main/java/com/tj/app/market/coin/CoinMarketService.java`
 
-`apps/web/src/api/tpmApi.ts`에는 `/stock/chart`, `/stock/ticker`, `/stock/db-list` 호출 함수도 남아 있지만 현재 주요 `/mobile` 화면에서는 호출되지 않는다. 레거시 또는 향후 재사용 후보로 본다.
+`apps/web/src/api/marketApi.ts`에는 `/stock/chart`, `/stock/ticker`, `/stock/db-list` 호출 함수도 남아 있지만 현재 주요 `/mobile` 화면에서는 호출되지 않는다. 레거시 또는 향후 재사용 후보로 본다.
 
 ## 5. 실시간 데이터 지도
 

@@ -34,7 +34,7 @@ function connectKrw(
     socket.binaryType = 'arraybuffer'; // 업비트는 바이너리 프레임으로 응답
 
     socket.onopen = () => {
-      const ticket = `tpm-${type}-${Math.random().toString(36).slice(2)}`;
+      const ticket = `bubot-${type}-${Math.random().toString(36).slice(2)}`;
       socket?.send(JSON.stringify([{ ticket }, { type, codes }, { format: 'DEFAULT' }]));
     };
 

@@ -20,5 +20,7 @@
 
 ## 막지는 않음
 
+- 질문: OQ-20260903-08 `apps/api/src/main/resources/static/{web,index.html}`에 추적된 Desktop build 산출물을 Git에서 빼고 배포 시 생성할지, 아니면 계속 추적할지 (현재 bundle은 rename 전 `tpm_token`을 포함) | `work-status/work/refactor/wp-01-rename-tpm/PLAN.md`
+
 - 질문: OQ-20260903-06 `MemberDTO.cash`(주식 예수금)·`members` 컬럼과 미사용 legacy DB 테이블을 언제 정리할지 (DB 변경 승인 필요)
 - 질문: OQ-20260903-07 Private Worklog를 원본 저장소 worklog에 이어 쓸지 Bubot용으로 새로 만들지
