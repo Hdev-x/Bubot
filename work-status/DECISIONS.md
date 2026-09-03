@@ -28,6 +28,8 @@ YYYY-MM-DD | D-YYYYMMDD-NN | kind | 결정 | 이유 | 영향 범위
 - 2026-09-03 | D-20260903-04 | operational | CI는 `pull_request`와 `main` push에서 Web test·build 2종과 API compile을 전체 실행한다. 경로 필터는 실행 시간이 10분을 넘기 시작할 때 도입한다 | 지금 규모에서는 분할 설정 비용이 절감 시간보다 크다 | `.github/workflows/ci.yml`
 - 2026-09-03 | D-20260903-05 | durable | AI Workflow 0.16.2에서 문서 subset(`work-status/` 상태판·DECISIONS·OPEN-QUESTIONS·ROADMAP·planning, `AGENTS.md` 운영 규칙과 Main Session Checklist 표시, `docs/AI-STYLE.md`·`docs/DOCUMENTATION.md`)만 채택하고 CLI·`.ai-workflow/`·Agent Kit·CI/Merge Policy·local gate는 사용하지 않는다. `check-secrets.sh`는 `ops/`로 옮겨 `pre-commit` 훅에 연결한다 | 필요한 것은 현황 관리와 작업 운영 규칙이며 도구가 강제하는 구조·영수증 체계는 개인 포트폴리오에 과하다 | 템플릿 갱신은 사람이 `templates/common`을 보고 옮긴다
 
+- 2026-09-03 | D-20260903-06 | operational | Beta 로고·앱 표시명은 현행(Botz 로고 자산)을 유지한다 | 사이트에는 로고 이미지만 노출되며 포트폴리오 단계 이름은 Bubot으로 충분하다 | OQ-20260903-05 닫음. 잔여 "Bullum" 문구 통일은 OQ-20260903-10
+
 ## 대체된 결정
 
 - 2026-09-01 | Bullum 제품명·`archive/legacy-community` 보관 → D-20260903-01·D-20260902-01로 대체됨
