@@ -11,7 +11,7 @@ import { StrategyPanel } from '../components/strategy/StrategyPanel';
 import { BacktestPanel } from '../components/strategy/BacktestPanel';
 import { AnalysisPanel } from '../components/strategy/AnalysisPanel';
 import ExperimentsPanel from '../components/strategy/ExperimentsPanel';
-import PullToRefresh from '@web/components/PullToRefresh';
+import PullToRefresh from '@web/app/mobile/components/PullToRefresh';
 import LivePage from './LivePage';
 import type { TrackerState } from '@web/types/bot';
 
