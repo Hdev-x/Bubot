@@ -25,7 +25,9 @@ for file in "${staged_files[@]}"; do
   [[ "$file" == "ops/check-secrets.sh" ]] && continue
 
   lower="$(printf '%s' "$file" | tr '[:upper:]' '[:lower:]')"
+  # 파일명 규칙은 설정·키 파일에만 적용한다. 소스 코드(예: *CredentialController.java)는 내용 검사만 받는다.
   case "$lower" in
+    *.java|*.kt|*.ts|*.tsx|*.js|*.mjs|*.cjs|*.py|*.md|*.xml|*.sql|*.sh) ;;
     *.env|*.pem|*.key|*.p12|*.pfx|*credential*|*secret*|*application-local*|*service-account*)
       echo "FAIL 민감 파일명 감지: $file" >&2
       failed=1

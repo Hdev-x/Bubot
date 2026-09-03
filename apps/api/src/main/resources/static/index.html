@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoTrade</title>
+  <script>
+    (function() {
+      // 1. User-Agent 검사 (스마트폰/태블릿 등 모바일 기기 감지)
+      var ua = navigator.userAgent || navigator.vendor || window.opera;
+      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      
+      // 2. 분기 리다이렉트
+      if (isMobile) {
+        window.location.replace('/mobile/');
+      } else {
+        window.location.replace('/web/');
+      }
+    })();
+  </script>
+</head>
+<body style="background: #000; color: #fff; font-family: sans-serif; text-align: center; padding-top: 20vh;">
+  <p>기기에 맞는 화면으로 이동 중입니다...</p>
+  <p>만약 이동하지 않는다면 아래 버튼을 클릭해주세요.</p>
+  <a href="/mobile/" style="display:inline-block; margin:10px; padding:10px 20px; background:#333; color:#fff; text-decoration:none; border-radius:5px;">모바일 화면으로 이동</a>
+  <a href="/web/" style="display:inline-block; margin:10px; padding:10px 20px; background:#333; color:#fff; text-decoration:none; border-radius:5px;">PC 화면으로 이동</a>
+</body>
+</html>
