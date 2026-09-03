@@ -17,7 +17,7 @@ import LiveMonitoringTab from '../components/live/LiveMonitoringTab';
 import LiveTradesModal from '../components/live/LiveTradesModal';
 import AlertSheet from '../components/AlertSheet';
 import PullToRefresh from '@web/app/mobile/components/PullToRefresh';
-import type { TrackerState } from '@web/types/bot';
+import type { TrackerState } from '@web/shared/types/bot';
 
 const LEVERAGE = 5;
 const SEED_RATIO = 100;

@@ -4,9 +4,9 @@ import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
 import { useSpotValueUsdt } from '../../../hooks/account/useSpotValueUsdt';
 import { TotalAssetHero } from '../components/TotalAssetHero';
 import { fetchUsdKrwRate } from '../../../api/exchange/exchangeRate';
-import { useCurrency, currencyLabel } from '../../../contexts/CurrencyContext';
+import { useCurrency, currencyLabel } from '../../../shared/contexts/CurrencyContext';
 import { useRealtimePrices } from '../../../hooks/market/useRealtimePrices';
-import type { BotState } from '../../../types/bot';
+import type { BotState } from '../../../shared/types/bot';
 import ApiKeyManager from '../components/ApiKeyManager';
 import PullToRefresh from '../components/PullToRefresh';
 

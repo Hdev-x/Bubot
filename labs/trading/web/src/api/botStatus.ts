@@ -1,6 +1,6 @@
 import { botFetch } from './botApi';
 import { BOT_KEYS, getBotStatusUrl } from '../config/bots';
-import type { BotState, MainAccountStatus } from '@web/types/bot';
+import type { BotState, MainAccountStatus } from '@web/shared/types/bot';
 
 export interface BotStatusResult {
   botKey: string;

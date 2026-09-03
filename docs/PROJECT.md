@@ -15,6 +15,12 @@
 | Labs | `labs/trading/worker/` | Node 봇 매매·모니터링 워커. Beta에서는 비활성 |
 | Ops | `ops/` | 배포·기동 스크립트, `ops/verify/` 회귀 검사와 baseline fixtures |
 
+## 의존 방향
+
+- `apps/web → shared`, `labs → shared`, `labs/trading/web → apps/web`(`@web/*` alias). `apps`는 `labs`를 import하지 않는다.
+- `apps/web/src` 내부: `app → chart/hooks → api → shared`. 위 계층이 아래를 부르고, 반대 방향은 두지 않는다. 루트 `shared/` 엔진은 `chart/analysis/` 재수출을 통해 가져온다.
+- 상세 트리는 `docs/architecture/STRUCTURE.md`.
+
 ## 문서 정본
 
 - 현재 상태·TODO: `work-status/CURRENT.md`

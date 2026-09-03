@@ -18,8 +18,8 @@ import { useCandleLoader } from '../../../chart/hooks/useCandleLoader';
 import { useCoinCandles } from '../../../chart/hooks/useCoinCandles';
 import PullToRefresh from '../components/PullToRefresh';
 import { DEFAULT_OB_OPTIONS } from '../../../chart/analysis/chartIndicators';
-import type { Candle } from '../../../types/market';
-import type { TrackerState } from '../../../types/bot';
+import type { Candle } from '../../../shared/types/market';
+import type { TrackerState } from '../../../shared/types/bot';
 import binanceLogo from '../../../assets/exchanges/binance.svg';
 import bitgetLogo from '../../../assets/exchanges/bitget.svg';
 

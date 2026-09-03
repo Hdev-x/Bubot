@@ -1,9 +1,9 @@
 // 거래소 단일 소스 — 마켓/거래/자산 전역이 이 메타를 참조한다.
 // 새 거래소 추가는 여기 한 곳만 손대면 되도록 유지.
-import bitgetLogo from '../assets/exchanges/bitget.svg';
-import binanceLogo from '../assets/exchanges/binance.svg';
-import upbitLogo from '../assets/exchanges/upbit.svg';
-import bithumbLogo from '../assets/exchanges/bithumb.svg';
+import bitgetLogo from '../../assets/exchanges/bitget.svg';
+import binanceLogo from '../../assets/exchanges/binance.svg';
+import upbitLogo from '../../assets/exchanges/upbit.svg';
+import bithumbLogo from '../../assets/exchanges/bithumb.svg';
 
 export type ExchangeId = 'BITGET' | 'BINANCE' | 'UPBIT' | 'BITHUMB';
 

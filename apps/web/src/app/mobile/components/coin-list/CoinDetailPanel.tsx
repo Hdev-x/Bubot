@@ -1,9 +1,9 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import MarketChart from '../../../../chart/MarketChart';
-import { formatPriceWithDecimals, formatRate, formatDisplaySymbol, getOfficialLogo, coinColor } from '../../../../utils/coinFormatters';
+import { formatPriceWithDecimals, formatRate, formatDisplaySymbol, getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
 import { CoinLogo } from './CoinLogo';
-import type { ProductFilter } from '../../../../utils/coinFormatters';
+import type { ProductFilter } from '../../../../shared/utils/coinFormatters';
 
 interface CoinDetailPanelProps {
   detailOpen: boolean;

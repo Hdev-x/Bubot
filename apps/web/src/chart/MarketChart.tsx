@@ -7,10 +7,10 @@ import { CandlestickSeries, LineSeries, HistogramSeries, ColorType, createChart,
 import type { IChartApi, ISeriesApi, Time, UTCTimestamp, LineData } from 'lightweight-charts';
 import { DrawingManager, getToolRegistry, SnapDot, getFibLogScaleDefault } from './drawing';
 import type { IDrawing, SerializedDrawing } from './drawing';
-import type { Candle } from '../types/market';
-import { computeRsiCandles, DEFAULT_RSI_SETTINGS } from '../utils/rsiCandles';
-import type { RsiSettings } from '../utils/rsiCandles';
-import { computeMA } from '../utils/movingAverages';
+import type { Candle } from '../shared/types/market';
+import { computeRsiCandles, DEFAULT_RSI_SETTINGS } from '../shared/utils/rsiCandles';
+import type { RsiSettings } from '../shared/utils/rsiCandles';
+import { computeMA } from '../shared/utils/movingAverages';
 import type { ChartTheme } from './settings/ChartSettingsSheet';
 import { getDerivedThemeColors } from './settings/ChartSettingsSheet';
 import { ChartOverlay } from './overlays/ChartOverlay';
@@ -23,7 +23,7 @@ import type { MASetting, BBSetting } from './indicators/IndicatorSheet';
 import { hexToRgba } from './indicators/IndicatorSheet';
 import type { IndicatorSettings, IndicatorLayer, OBOptions } from './overlays/ChartOverlay';
 import type { PivotSetting } from './indicators/IndicatorSheet';
-import type { TrackerState } from '../types/bot';
+import type { TrackerState } from '../shared/types/bot';
 
 type Props = {
   candles: Candle[];

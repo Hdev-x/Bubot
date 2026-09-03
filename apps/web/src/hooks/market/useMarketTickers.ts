@@ -13,8 +13,8 @@ import {
   subscribeBitgetSpotTickers,
 } from '../../api/server/coinRealtime';
 import type { RealtimeTicker } from '../../api/server/coinRealtime';
-import type { CoinTicker } from '../../types/market';
-import type { ExchangeId } from '../../constants/exchanges';
+import type { CoinTicker } from '../../shared/types/market';
+import type { ExchangeId } from '../../shared/constants/exchanges';
 
 type ExchangeFilter = ExchangeId;
 type ProductFilter = 'SPOT' | 'FUTURES';

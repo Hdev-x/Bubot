@@ -111,6 +111,8 @@ apps/web/src/
 
 규칙: import는 `app → chart/hooks → api → shared`로만. 앱 전역 CSS는 `app/*/styles/`, 공용 컴포넌트 CSS는 컴포넌트 옆. 클래스 이름 변경은 별도 주제(CSS Modules 또는 접두어).
 
+4절 트리는 2026-09-03 d06(PR 예정)까지 그대로 적용됐다. 차이는 둘이다. `shared/ui/`는 만들지 않았고(wp-04에서 필요 시), `chart/analysis/` 재수출 4개는 유지하기로 했다(2026-09-03 결정: 루트 `shared/` 경로가 화면 코드에 퍼지지 않게 막는 단일 통로).
+
 ## 5. 실행 순서
 
 `work-status/work/refactor/wp-03-web-structure/PLAN.md`가 정본이다. d00 dead code → d01 api → d02 hooks → d03 chart → d04 app/mobile + CSS 분할 → d05 app/desktop + CSS 분할 → d06 shared·규칙.

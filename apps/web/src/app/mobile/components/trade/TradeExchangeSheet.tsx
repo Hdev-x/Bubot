@@ -1,9 +1,9 @@
 // 거래탭 거래소 선택 바텀시트 — 헤더 거래소 배지(▾) 클릭 시 올라온다.
 // 마켓 ExchangeBottomSheet와 동일한 시각(bottom-sheet/exchange-list) 재사용.
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
-import { EXCHANGE_OPTIONS, type ExchangeId } from '../../../../constants/exchanges';
+import { EXCHANGE_OPTIONS, type ExchangeId } from '../../../../shared/constants/exchanges';
 import { useScrollLock } from '../../../../hooks/ui/useScrollLock';
-import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../../../utils/sheetMotion';
+import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../../../shared/utils/sheetMotion';
 
 type Props = {
   isOpen: boolean;

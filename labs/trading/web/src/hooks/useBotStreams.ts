@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { BotResultMap } from '../utils/botAggregates';
-import type { MainAccountStatus } from '@web/types/bot';
+import type { MainAccountStatus } from '@web/shared/types/bot';
 
 // 레거시 멀티봇(포트 3001~3007 개별 Node 프로세스) 폴링/WS는 제거됨.
 // 봇이 통합워커(autotrade-worker) 단일화되면서 그 엔드포인트(/api/bot/<name>/api/status)는

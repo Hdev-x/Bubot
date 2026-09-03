@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import TradeOrderbook from './TradeOrderbook';
 import { fetchBinanceSpotTickers, fetchBinanceFuturesTickers } from '../../../../api/server/marketApi';
 import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../../../api/exchange/krw/krwTickers';
-import { EXCHANGES, type ExchangeId } from '../../../../constants/exchanges';
-import type { CoinTicker } from '../../../../types/market';
+import { EXCHANGES, type ExchangeId } from '../../../../shared/constants/exchanges';
+import type { CoinTicker } from '../../../../shared/types/market';
 
 type Market = 'spot' | 'futures';
 type Level = { price: number; size: number };

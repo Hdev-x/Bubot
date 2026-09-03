@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fetchBinanceCandles, fetchCoinCandles } from '../../api/server/marketApi';
-import type { Candle } from '../../types/market';
-import type { ExchangeId } from '../../constants/exchanges';
+import type { Candle } from '../../shared/types/market';
+import type { ExchangeId } from '../../shared/constants/exchanges';
 
 type ExchangeFilter = ExchangeId;
 type ProductFilter = 'SPOT' | 'FUTURES';

@@ -12,7 +12,7 @@ import TradeExchangeSheet from '../components/trade/TradeExchangeSheet';
 import DemoTradeView from '../components/trade/DemoTradeView';
 import TradeTabEditSheet, { TAB_LABELS, type TradeTab } from '../components/trade/TradeTabEditSheet';
 import DepthSheet from '../components/trade/DepthSheet';
-import { isFuturesSupported, isKrwExchange, type ExchangeId } from '../../../constants/exchanges';
+import { isFuturesSupported, isKrwExchange, type ExchangeId } from '../../../shared/constants/exchanges';
 import TradeAccountSummary from '../components/trade/TradeAccountSummary';
 import SpotAccountSummary from '../components/trade/SpotAccountSummary';
 import SpotHoldingCard from '../components/trade/SpotHoldingCard';
@@ -24,7 +24,7 @@ import { usePricePrecision } from '../../../hooks/market/usePricePrecision';
 import { useRealtimePrices } from '../../../hooks/market/useRealtimePrices';
 import { useFundingRate } from '../../../hooks/market/useFundingRate';
 import type { DepthPrecision } from '../../../api/exchange/bitget/bitgetMergeDepth';
-import type { TradeLog } from '../../../types/bot';
+import type { TradeLog } from '../../../shared/types/bot';
 
 // 호가 단위(묶음) 라벨 — 심볼 최소 틱(소수점)을 1번으로, ×10씩. scale0=최소틱 … scale3=틱×1000.
 // 예: BTC(소수1자리) → 0.1/1/10/100, ETH(소수2자리) → 0.01/0.1/1/10

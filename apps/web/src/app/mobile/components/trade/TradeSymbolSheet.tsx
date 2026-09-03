@@ -7,9 +7,9 @@ import { fetchCoinFuturesTickers, fetchCoinTickers, fetchBinanceSpotTickers, fet
 import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../../../api/exchange/krw/krwTickers';
 import { subscribeBitgetSpotTickers, subscribeBitgetFuturesTickers, type RealtimeTicker } from '../../../../api/server/coinRealtime';
 import { usePricePrecision } from '../../../../hooks/market/usePricePrecision';
-import { formatPriceWithDecimals } from '../../../../utils/coinFormatters';
-import type { CoinTicker } from '../../../../types/market';
-import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../../constants/exchanges';
+import { formatPriceWithDecimals } from '../../../../shared/utils/coinFormatters';
+import type { CoinTicker } from '../../../../shared/types/market';
+import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../../shared/constants/exchanges';
 
 type Market = 'spot' | 'futures';
 type Filter = 'favorites' | 'spot' | 'futures';

@@ -1,5 +1,5 @@
 import type { SeriesMarker, LineData, Time } from 'lightweight-charts';
-import type { Pivot } from '../chart/analysis/pivots';
+import type { Pivot } from '../../chart/analysis/pivots';
 
 export type SwingMarkerOptions = {
   /** 가격 라벨 표시 */

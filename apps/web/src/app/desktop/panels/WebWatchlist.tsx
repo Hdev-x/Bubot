@@ -3,7 +3,7 @@
 // float(드래그 떠있는 창, 딱 10행 고정+스크롤) ↔ dock(왼쪽 컬럼, 전체 높이) 전환.
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { usePersistentState } from '../../../hooks/ui/usePersistentState';
-import type { ExchangeId } from '../../../constants/exchanges';
+import type { ExchangeId } from '../../../shared/constants/exchanges';
 import { WebFavoritesPanel } from './WebFavoritesPanel';
 import { snapFloat } from './snapFloat';
 import { useWebFavorites, type Market } from './marketShared';

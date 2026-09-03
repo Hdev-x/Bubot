@@ -24,7 +24,7 @@ Bubot/
 ├── apps/
 │   ├── api/        Spring Boot · MyBatis · PostgreSQL — 인증(JWT), 시세 프록시·WebSocket 중계, 계좌 조회
 │   │               (security · market/coin · member · trade / trading 프로필: paper · backtest · bot · push)
-│   └── web/        React · TypeScript · Vite — Desktop(/web, web/)과 Mobile(/mobile, pages/) 두 진입점, 차트·호가 컴포넌트
+│   └── web/        React · TypeScript · Vite — app/{mobile,desktop} 두 진입점, chart/ hooks/ api/ shared/ 계층
 ├── shared/         하모닉·SMC·파동·피벗 계산 엔진, 전략 설정 스키마 (순수 TS, web과 worker가 공유)
 ├── labs/trading/   봇 매매 워커(worker/)와 Beta에서 분리한 자동매매 UI 보존본(web/) — Beta 비활성
 ├── ops/            기동·배포 스크립트, verify/ 회귀 검사와 baseline

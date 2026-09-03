@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import type { IChartApi, ISeriesApi, Time, LineData } from 'lightweight-charts';
 import { LineSeries } from 'lightweight-charts';
-import type { Candle } from '../../types/market';
+import type { Candle } from '../../shared/types/market';
 import type { MASetting, BBSetting } from '../indicators/IndicatorSheet';
 import { hexToRgba } from '../indicators/IndicatorSheet';
-import { computeMA } from '../../utils/movingAverages';
+import { computeMA } from '../../shared/utils/movingAverages';
 import type { IndicatorSettings, IndicatorLayer, OBOptions } from '../overlays/ChartOverlay';
 import type { ChartOverlay } from '../overlays/ChartOverlay';
 import type { BBOverlay, BBData } from '../overlays/BBOverlay';

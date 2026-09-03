@@ -20,17 +20,15 @@ Bubot/
 │   └── web/                       React 19 · TypeScript · Vite · Vitest
 │       ├── vite.config.js         Mobile 진입점 (/mobile, PWA)
 │       ├── vite.config.web.js     Desktop 진입점 (/web)
-│       └── src/
-│           ├── main.tsx  App.tsx  Mobile 앱 (탭 라우팅)
-│           ├── web/               Desktop 앱 — WebApp.tsx, 로그인·가입, 사이드바 패널
-│           ├── pages/             Mobile 페이지 — 마켓·차트·거래·자산·로그인
-│           ├── components/        차트(MarketChart)·지표·드로잉·호가·시트 UI
-│           │   ├── chart-hooks/  indicators/  coin-list/  trade/  settings/
-│           ├── drawing/           차트 드로잉 도구
-│           ├── hooks/             실시간 시세·호가·계좌 조회 훅
-│           ├── api/               서버 호출 래퍼 (marketApi·authApi·mainTradeApi·*Realtime …)
-│           ├── contexts/  config/  constants/  types/  utils/
-│           └── styles.css  web/web.css
+│       └── src/                   계층 우선: app → chart/hooks → api → shared
+│           ├── app/
+│           │   ├── mobile/        main·App, pages/ 5, components/(sheets·coin-list·trade), styles/mobile.css
+│           │   └── desktop/       main·WebApp·WebLogin·WebSignup, panels/ 7, styles/desktop.css
+│           ├── chart/             MarketChart, overlays/ hooks/ indicators/ settings/ drawing/ analysis/(루트 shared 재수출)
+│           ├── hooks/             market/(시세·호가·정밀도) account/(계좌·관심) ui/(persist·scroll·poll)
+│           ├── api/               client.ts(fetch·토큰), server/(Spring 컨트롤러 1:1), exchange/(bitget·binance·krw 직접 호출)
+│           ├── shared/            types/ constants/ contexts/ utils/(포맷터·계산 + tests)
+│           └── config/  assets/   계좌 대상·차트 정책, 정적 자산
 ├── shared/                        하모닉·SMC·엘리어트/AB=CD·피벗 계산, 전략 설정 스키마 (순수 TS, 의존 없음)
 ├── labs/
 │   └── trading/
@@ -54,4 +52,5 @@ Bubot/
 - `apps/web → shared`, `labs/trading/worker → shared`, `ops/verify → labs/trading/worker · shared`
 - `labs/trading/web → apps/web`(`@web/*` alias) · `shared` — 보존 코드가 Beta 공용 모듈을 참조하는 단방향
 - `apps`는 `labs`를 import하지 않는다 (CI 번들 검사·grep으로 확인)
+- `apps/web/src` 내부는 `app → chart/hooks → api → shared` 방향만 허용한다. 루트 `shared/` 계산 엔진은 `chart/analysis/`를 통해서만 가져온다. 앱 전역 CSS는 `app/*/styles/`, 공용 컴포넌트 CSS는 컴포넌트 옆에 둔다
 - API의 `backtest`·`bot`·`push`·`trade/paper`·Admin·Internal·TradeConfig·Trade bean은 `@Profile("trading")`
