@@ -62,7 +62,9 @@ extensions: {}
 - 기능·로직 변경. 이 Work Package는 이름과 경로만 바꾼다.
 - `web.css`·`web-mockup.html`·`WebApp.tsx` 주석의 "tpm 스타일" 디자인 참조 서술. 코드 식별자가 아니며 3번 코드 정리에서 다룬다.
 - DECISIONS·ROADMAP·CURRENT의 역사 서술(D-20260902-01 등).
-- Git 밖 로컬 파일(`application*.properties`, `.env`): MyBatis 설정 key가 패키지를 참조하면 사용자가 로컬에서 함께 수정한다. 2026-09-03 확인 시 원본 로컬 properties에 `com.tj.app` 참조는 0건이었다.
+- Git 밖 로컬 파일(`application.properties`): `mybatis.mapper-locations`·`mybatis.type-aliases-package` 두 key가 `com.tj.app`을
+  참조한다(2026-09-03 원본 로컬 파일 확인, 값은 미열람). d01 merge 후 로컬 기동 전에 사용자가 `com/bubot`·`com.bubot`으로
+  수정해야 하며, 수정 전에는 mapper를 못 찾아 기동이 실패한다. `.env`는 패키지와 무관하다.
 
 ## 실행 순서
 
@@ -76,7 +78,8 @@ extensions: {}
 
 - 주요 Task: 위 1번. Spring Boot는 `@SpringBootApplication` 클래스의 패키지를 기준으로 스캔하므로 한 PR에서 전부 옮긴다. `sourceSets`가 `src/main/java`도 resources로 포함하므로 mapper XML은 Java 파일과 같이 이동한다.
 - 추가 Gate: `git diff -M --stat`에서 77개가 rename으로 잡히고 내용 변경은 `package`·`import`·클래스명 줄뿐인지 확인.
-- Blocker·재개 조건: 없음.
+- Blocker·재개 조건: merge 자체는 막히지 않는다. 로컬 기동(GATE-AC-002)은 사용자가 로컬 `application.properties`의
+  MyBatis key 2개를 `com.bubot` 기준으로 고친 뒤에만 가능하다.
 
 ### wp-01-d02-web
 
