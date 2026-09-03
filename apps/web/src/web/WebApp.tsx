@@ -12,7 +12,7 @@ import { getOfficialLogo } from '../utils/coinFormatters';
 import { type BitgetTicker } from '../api/bitgetTicker';
 import { fetchHeaderTicker } from '../api/headerTicker';
 import { krwDecimals } from '../api/krwTickers';
-import { fetchCoinMarketCap } from '../api/tpmApi';
+import { fetchCoinMarketCap } from '../api/marketApi';
 import { useMainTrade } from '../hooks/useMainTrade';
 import { usePaperTrade } from '../hooks/usePaperTrade';
 import { useUsdKrw } from '../hooks/useUsdKrw';

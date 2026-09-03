@@ -2,7 +2,7 @@
 // 중심가만 해당 거래소 실 티커에서 1회 가져와 현실감 유지, 매수/매도 레벨은 그 주변으로 생성.
 import { useEffect, useMemo, useState } from 'react';
 import TradeOrderbook from './TradeOrderbook';
-import { fetchBinanceSpotTickers, fetchBinanceFuturesTickers } from '../../api/tpmApi';
+import { fetchBinanceSpotTickers, fetchBinanceFuturesTickers } from '../../api/marketApi';
 import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../api/krwTickers';
 import { EXCHANGES, type ExchangeId } from '../../constants/exchanges';
 import type { CoinTicker } from '../../types/market';

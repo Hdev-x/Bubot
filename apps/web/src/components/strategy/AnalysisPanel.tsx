@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { fetchAllBinanceFuturesCandles } from '../../api/tpmApi';
+import { fetchAllBinanceFuturesCandles } from '../../api/marketApi';
 import { detectOBs, classifyCandle } from '../../utils/backtestEngine';
 
 type AnalysisEvent = {

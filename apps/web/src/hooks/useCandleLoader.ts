@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { fetchBinanceCandles, fetchCoinCandles } from '../api/tpmApi';
+import { fetchBinanceCandles, fetchCoinCandles } from '../api/marketApi';
 import { fetchUpbitCandles, fetchBithumbCandles } from '../api/krwTickers';
 
 type Params = {

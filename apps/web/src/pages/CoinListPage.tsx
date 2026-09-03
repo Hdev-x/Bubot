@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
-import { fetchCoinLogos } from '../api/tpmApi';
+import { fetchCoinLogos } from '../api/marketApi';
 import { getWorkerStatus } from '../api/adminApi';
 import { fetchMainTrade } from '../api/mainTradeApi';
 import { fetchUsdKrwRate } from '../api/exchangeRate';

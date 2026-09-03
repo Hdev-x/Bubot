@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fetchBinanceCandles, fetchCoinCandles } from '../api/tpmApi';
+import { fetchBinanceCandles, fetchCoinCandles } from '../api/marketApi';
 import type { Candle } from '../types/market';
 import type { ExchangeId } from '../constants/exchanges';
 

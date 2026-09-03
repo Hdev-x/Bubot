@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAllBinanceFuturesCandles } from '../../api/tpmApi';
+import { fetchAllBinanceFuturesCandles } from '../../api/marketApi';
 import { HARMONIC_PRICE_LOSS_CAP_PCT, runBacktest } from '../../utils/backtestEngine';
 import type { BacktestResult } from '../../utils/backtestEngine';
 import { SYMBOLS_MAIN, SYMBOLS_4H_TOP5, SYMBOLS } from '../../constants/strategyConstants';

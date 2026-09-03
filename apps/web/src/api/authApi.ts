@@ -1,7 +1,7 @@
 // 인증(JWT) API 및 토큰 저장 유틸
 // 토큰은 localStorage에 저장하고, 인증이 필요한 요청에 Authorization: Bearer 헤더로 전송한다.
 
-const TOKEN_KEY = 'tpm_token';
+const TOKEN_KEY = 'bubot_token';
 let memoryToken: string | null = null;
 
 export interface AuthUser {

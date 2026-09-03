@@ -4,7 +4,7 @@ import {
   fetchBinanceSpotTickers,
   fetchCoinFuturesTickers,
   fetchCoinTickers,
-} from '../api/tpmApi';
+} from '../api/marketApi';
 import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../api/krwTickers';
 import {
   subscribeBinanceFuturesTickers,
