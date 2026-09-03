@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-03-web-structure
 title: apps/web 폴더 구조 재편 (계층 우선 + 앱별 분리 + CSS 동반)
 workstream: refactor
-state: active
+state: completed
 updated: 2026-09-03
 depends_on: [wp-02-beta-boundary]
 supersedes: []
@@ -116,11 +116,11 @@ deliveries:
   - id: wp-03-d06-shared
     title: "shared/ 정리(types·constants·contexts·utils), 의존 방향 규칙 문서화"
     kind: git
-    state: planned
+    state: completed
     repository: .
     depends_on: [wp-03-d05-app-desktop]
     branch: refactor/web-d06-shared
-    pull_requests: []
+    pull_requests: [30]
     evidence:
       - kind: parity-check
         locator: "13 rename(types 2·constants 1·contexts 1·utils 9 → shared/), importer 43 + labs 12는 import 줄만(94줄 +/-). chart/analysis 재수출은 유지"
@@ -137,13 +137,21 @@ deliveries:
 milestones:
   - id: web-structure-locked
     title: "구조 재편 완료"
-    state: pending
+    state: passed
     depends_on: [wp-03-d06-shared]
     acceptance:
       - "GATE-AC-001: AC-001~AC-003 자동 검사 통과."
       - "GATE-AC-002: AC-004 스크린샷 대조와 로컬 기동에서 Mobile·Desktop 핵심 화면 동작 확인."
     unlocks: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "GATE-AC-001: main f31cc27에서 src/ 최상위 = app chart hooks api shared config assets(components·web·pages·utils·drawing 없음), lint 0·tests 22·build 2종·번들 문자열 0·labs tsc, CI PR #24~#30 모두 success"
+        revision: f31cc27
+        observed_at: 2026-09-03
+      - kind: manual-check
+        locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Vite 5174/5175)에서 로그인 후 Mobile·Desktop 화면을 확인함(2026-09-03). 스크린샷 파일 대조는 하지 않았고 육안 확인으로 대체"
+        revision: f31cc27
+        observed_at: 2026-09-03
 extensions: {}
 ---
 
