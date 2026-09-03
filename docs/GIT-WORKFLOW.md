@@ -88,7 +88,7 @@
 - 폴더 가져오기 동안 쓰던 폴더 부재 guard는 2026-09-03에 제거했다. 처음에는 전체를 실행한다. 실행 시간이 10분을 넘기 시작하면 경로 필터(`apps/web/**`+`shared/**` → web, `apps/api/**` → api)를 도입하되,
   required check와 함께 쓸 때는 skip된 job이 merge를 막지 않도록 처리한다.
 - 아직 CI에 없는 것: Worker verify(baseline drift 정리 후 추가). API `test`는 2026-09-03부터 포함(test 프로필). Web lint는 2026-09-03부터 포함(error 0 유지, warning은 baseline).
-- Check가 실패·대기·취소된 PR은 merge하지 않는다. Ruleset을 적용하면 required check로 서버에서도 강제한다.
+- Check가 실패·대기·취소된 PR은 merge하지 않는다. Ruleset `main-protection`의 required check로 서버에서도 강제된다(2026-09-03).
 
 ## 8. GitHub 저장소 설정
 
@@ -98,8 +98,8 @@ Squash merge                 enabled  (title: PR title, message: PR body)
 Merge commit                 disabled
 Rebase merge                 disabled
 Delete head branches         enabled
-Ruleset (main)               미정 — 적용 시 PR 필수 · force push 금지 · 브랜치 삭제 금지
+Ruleset (main)               main-protection (2026-09-03): PR 필수(squash만) · force push·삭제 금지 · linear history · required check(Web test · build, API test, strict) · bypass 없음
 CI                           .github/workflows/ci.yml (web · api)
 ```
 
-Ruleset이 없는 동안에는 pre-push 훅, CI 결과 확인, PR 템플릿, 사용자 승인으로 같은 하한을 지킨다.
+Ruleset이 서버에서 강제하므로 CI가 실패·진행 중이면 merge 버튼이 비활성화되고, `main` 직접 push·force push는 거부된다. 이력 재작성이 꼭 필요하면 Ruleset을 잠시 `disabled`로 바꾼 뒤 되돌린다. pre-push 훅은 로컬 1차 방어로 유지한다.
