@@ -2,7 +2,7 @@
 // 마켓 ExchangeBottomSheet와 동일한 시각(bottom-sheet/exchange-list) 재사용.
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { EXCHANGE_OPTIONS, type ExchangeId } from '../../constants/exchanges';
-import { useScrollLock } from '../../hooks/useScrollLock';
+import { useScrollLock } from '../../hooks/ui/useScrollLock';
 import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../utils/sheetMotion';
 
 type Props = {

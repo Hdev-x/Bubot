@@ -5,8 +5,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { MainPosition } from '../../api/server/mainTradeApi';
 import { useSettings, currencyLabel } from '../../contexts/CurrencyContext';
-import { useUsdKrw } from '../../hooks/useUsdKrw';
-import { useDelayedReady } from '../../hooks/useDelayedReady';
+import { useUsdKrw } from '../../hooks/market/useUsdKrw';
+import { useDelayedReady } from '../../hooks/ui/useDelayedReady';
 import { CoinLogo } from '../coin-list/CoinLogo';
 import { getOfficialLogo, coinColor } from '../../utils/coinFormatters';
 

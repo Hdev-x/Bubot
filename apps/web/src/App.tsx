@@ -10,8 +10,8 @@ import { getToken } from './api/client';
 import { fetchMe, logout as authLogout, type AuthUser } from './api/server/authApi';
 import { prefetchBitgetSymbols } from './api/exchange/bitget/bitgetSymbols';
 import { prefetchBinanceSymbols } from './api/exchange/binance/binanceSymbols';
-import { useDocumentVisible } from './hooks/usePageVisible';
-import { useRealtimeTickers } from './hooks/useRealtimePrices';
+import { useDocumentVisible } from './hooks/ui/usePageVisible';
+import { useRealtimeTickers } from './hooks/market/useRealtimePrices';
 
 function getRoute(hash: string): AppRoute {
   const path = hash.replace(/^#/, '');

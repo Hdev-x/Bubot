@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { ChartTheme } from '../components/ChartSettingsSheet';
+import type { ChartTheme } from '../../components/ChartSettingsSheet';
 
 const STORAGE_KEY = 'chart_theme';
 

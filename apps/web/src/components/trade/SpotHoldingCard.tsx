@@ -3,7 +3,7 @@
 // 매입가(avgCost)는 체결내역 재구성값. 없거나 신뢰불가면 사용자가 직접 입력 가능(costSource='manual').
 import type { SpotHolding } from '../../api/server/spotTradeApi';
 import { useSettings, currencyLabel } from '../../contexts/CurrencyContext';
-import { useUsdKrw } from '../../hooks/useUsdKrw';
+import { useUsdKrw } from '../../hooks/market/useUsdKrw';
 
 function fmtPrice(n: number): string {
   if (!Number.isFinite(n)) return '—';

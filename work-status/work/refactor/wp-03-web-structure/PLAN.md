@@ -31,11 +31,11 @@ deliveries:
   - id: wp-03-d01-api
     title: "api/ → client.ts + server/ + exchange/"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-03-d00-dead-code]
     branch: refactor/web-d01-api
-    pull_requests: []
+    pull_requests: [25]
     evidence:
       - kind: parity-check
         locator: "17 rename(server 6 · exchange 10 · config/chartPolicy), client.ts 신설(authApi에서 토큰·인증 헤더·authedGetJson/Mutate 분리), importer 46+labs 13 파일은 import 경로 줄만 변경"
@@ -48,12 +48,20 @@ deliveries:
   - id: wp-03-d02-hooks
     title: "hooks/ → market/ · account/ · ui/, 차트 훅은 chart/hooks"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-03-d01-api]
     branch: refactor/web-d02-hooks
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "20 rename(market 6 · account 4 · ui 5 · chart/hooks 5), importer 32 + labs 3 파일은 import 경로 줄만 변경, 비-import 변경 0"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc 통과"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-03-d03-chart
     title: "chart/ 신설 — MarketChart·overlays·indicators·settings·drawing·analysis + 동반 CSS 추출"
     kind: git

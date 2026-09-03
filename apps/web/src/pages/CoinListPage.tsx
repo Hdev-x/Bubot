@@ -3,10 +3,10 @@ import { fetchCoinLogos } from '../api/server/marketApi';
 import { fetchMainTrade } from '../api/server/mainTradeApi';
 import { fetchUsdKrwRate } from '../api/exchange/exchangeRate';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { useCoinDetailChart } from '../hooks/useCoinDetailChart';
-import { useMarketTickers } from '../hooks/useMarketTickers';
-import { usePricePrecision } from '../hooks/usePricePrecision';
-import { useWatchlist } from '../hooks/useWatchlist';
+import { useCoinDetailChart } from '../chart/hooks/useCoinDetailChart';
+import { useMarketTickers } from '../hooks/market/useMarketTickers';
+import { usePricePrecision } from '../hooks/market/usePricePrecision';
+import { useWatchlist } from '../hooks/account/useWatchlist';
 import type { CoinTicker } from '../types/market';
 import { EXCHANGE_SELECT_OPTIONS, isKrwExchange as isKrwExchangeId, type ExchangeId } from '../constants/exchanges';
 
@@ -25,8 +25,8 @@ import { WatchlistBottomSheet } from '../components/coin-list/WatchlistBottomShe
 import { CoinDetailPanel } from '../components/coin-list/CoinDetailPanel';
 import ProfileMenu from '../components/ProfileMenu';
 import PullToRefresh from '../components/PullToRefresh';
-import { useDelayedReady } from '../hooks/useDelayedReady';
-import { useSpotValueUsdt } from '../hooks/useSpotValueUsdt';
+import { useDelayedReady } from '../hooks/ui/useDelayedReady';
+import { useSpotValueUsdt } from '../hooks/account/useSpotValueUsdt';
 import { TotalAssetHero } from '../components/TotalAssetHero';
 
 type Props = {

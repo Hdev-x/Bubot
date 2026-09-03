@@ -1,7 +1,7 @@
 // 거래탭 순서 편집 시트 — 탭 라인 오른쪽 "+"에서 오픈. 드래그로 순서 변경(영구저장은 부모).
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, Reorder, useDragControls } from 'framer-motion';
-import { useScrollLock } from '../../hooks/useScrollLock';
+import { useScrollLock } from '../../hooks/ui/useScrollLock';
 import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../utils/sheetMotion';
 
 export type TradeTab = 'futures' | 'spot' | 'stock';

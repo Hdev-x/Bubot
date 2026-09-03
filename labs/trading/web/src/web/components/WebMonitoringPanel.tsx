@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { getWorkerStatus, type WorkerStatus } from '../../api/adminApi';
-import { usePricePrecision } from '@web/hooks/usePricePrecision';
-import { useRealtimePrices } from '@web/hooks/useRealtimePrices';
+import { usePricePrecision } from '@web/hooks/market/usePricePrecision';
+import { useRealtimePrices } from '@web/hooks/market/useRealtimePrices';
 import LiveMonitoringTab from '../../components/live/LiveMonitoringTab';
 
 // ── LivePage에서 옮겨온 필터·조립 로직(모바일과 동일 규칙) ──

@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback, useRef, useLayoutEffect } from 'react';
-import { useMainTrade } from '../hooks/useMainTrade';
-import { useDelayedReady } from '../hooks/useDelayedReady';
-import { useSpotValueUsdt } from '../hooks/useSpotValueUsdt';
+import { useMainTrade } from '../hooks/account/useMainTrade';
+import { useDelayedReady } from '../hooks/ui/useDelayedReady';
+import { useSpotValueUsdt } from '../hooks/account/useSpotValueUsdt';
 import { TotalAssetHero } from '../components/TotalAssetHero';
 import { fetchUsdKrwRate } from '../api/exchange/exchangeRate';
 import { useCurrency, currencyLabel } from '../contexts/CurrencyContext';
-import { useRealtimePrices } from '../hooks/useRealtimePrices';
+import { useRealtimePrices } from '../hooks/market/useRealtimePrices';
 import type { BotState } from '../types/bot';
 import ApiKeyManager from '../components/settings/ApiKeyManager';
 import PullToRefresh from '../components/PullToRefresh';

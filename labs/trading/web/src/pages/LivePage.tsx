@@ -2,9 +2,9 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { fetchUsdKrwRate } from '@web/api/exchange/exchangeRate';
 import { getWorkerStatus, type WorkerStatus } from '../api/adminApi';
 import { useBotStreams } from '../hooks/useBotStreams';
-import { useMainTrade } from '@web/hooks/useMainTrade';
-import { usePricePrecision } from '@web/hooks/usePricePrecision';
-import { useRealtimePrices } from '@web/hooks/useRealtimePrices';
+import { useMainTrade } from '@web/hooks/account/useMainTrade';
+import { usePricePrecision } from '@web/hooks/market/usePricePrecision';
+import { useRealtimePrices } from '@web/hooks/market/useRealtimePrices';
 import { getActiveSymbols, getLiveBotAggregates } from '../utils/botAggregates';
 
 // Components

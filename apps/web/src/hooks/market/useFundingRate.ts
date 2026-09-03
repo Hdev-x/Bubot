@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchFundingRate, fetchBinanceFunding, type FundingInfo } from '../api/exchange/bitget/bitgetFunding';
+import { fetchFundingRate, fetchBinanceFunding, type FundingInfo } from '../../api/exchange/bitget/bitgetFunding';
 
 // 선물 펀딩비 표시 문자열 — "0.0072% / 02:30:00(8h)" 형식.
 // 펀딩률은 60초마다 재조회, 카운트다운은 1초마다 갱신.
