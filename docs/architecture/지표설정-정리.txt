@@ -1,0 +1,136 @@
+==========================================================
+차트 보조지표 설정 구조 정리
+(frontend/src/components/IndicatorSheet.tsx 기준)
+최초 정리: 2026-06-06 / 갱신: 2026-06-06
+==========================================================
+
+보조지표 시트(IndicatorSheet)는 7개 그룹으로 구성된다.
+각 그룹은 접었다 펼 수 있는 아코디언 헤더를 가진다.
+
+  1. SMC        - SmcSection
+  2. MA         - MaSection (이동평균)
+  3. BB         - BbSection (볼린저밴드)
+  4. Pivot      - PivotSection (피벗 고저)
+  5. Harmonic   - HarmonicSection (하모닉 패턴)
+  6. Elliott    - ElliottSection (엘리어트 파동)
+  7. AB=CD      - AbcSection (AB=CD 파동)
+
+설정값 정의 위치:
+  - SMC 관련 타입         : components/ChartOverlay.ts
+  - MA/BB/Pivot 타입/기본값: components/indicators/settings.ts
+  - 저장 키(localStorage)  : chart_indicators / chart_pivot_setting
+                            (usePersistentState, CoinChartPage.tsx)
+
+
+----------------------------------------------------------
+1. SMC (Smart Money Concept)
+----------------------------------------------------------
+타입: IndicatorSettings = Record<TFKey, TFIndicators>
+타임프레임(TFKey) 4종: 1M(1달) / 1W(1주) / 3D(3일) / 1D(1일)
+
+각 타임프레임마다 5개 항목을 켜고 끔 (TFIndicators):
+  showOB    : OB (오더블록)
+  showCE    : CE
+  showEQ    : EQ
+  showFVG   : FVG (공정가치갭)
+  showOBBox : OB Box
+
+[UI 구성 — SmcSection]
+  - 항목 표시 순서: OB → CE → EQ → (접기 토글) → FVG → OB Box
+  - 기본 영역: OB / CE / EQ 항상 표시
+  - 고급 영역: "FVG · OB Box" 펼침 토글 아래로 접힘 (advancedOpen)
+  - 항목별 토글 스위치: 해당 항목을 4개 TF 전체에서 on/off
+    (끌 때 smc_row_backup_<key>에 백업, 켤 때 복원)
+  - SMC 마스터 토글(헤더): 20개 전체 on/off
+    · 끌 때  → smc_master_backup에 현재 상태 백업 후 전부 false
+    · 켤 때  → 백업 있으면 복원
+              백업 없는 첫 켜기 디폴트:
+                OB · CE · EQ 의 1달(1M) · 1주(1W) 만 ON
+                (FVG · OB Box 전부 OFF, 모든 항목의 3일·1일 OFF)
+  - 각 TF 버튼으로 개별 on/off 가능
+
+[참고] 과거 OB 톱니바퀴(터치기준 wick/close, 최대터치) 옵션은 제거됨.
+  실제 렌더링에 영향이 없던 죽은 옵션이었음.
+  OB 표시/숨김은 ChartOverlay에서 자체 기준으로 동작:
+    · EQ박스 종가 2회 관통(eqPasses>=2) → 숨김
+    · 10캔들 무터치(eqFaded, 꼬리 기준 고정) → 숨김
+
+
+----------------------------------------------------------
+2. MA (이동평균선)  - DEFAULT_MA_SETTINGS
+----------------------------------------------------------
+타입: MASetting[] (period, show, color, opacity, lineWidth)
+
+기본 6개 라인:
+  period   show   color     opacity  lineWidth
+  ------   -----  -------    -------  ---------
+  5        off    #f85149    100      1
+  20       ON     #f6b146    100      2   <- 기본 켜짐
+  50       off    #4caf50    100      2
+  100      off    #3182f6    100      2
+  200      off    #9c27b0    100      2
+  240      off    #e91e63    100      2
+
+
+----------------------------------------------------------
+3. BB (볼린저밴드)  - DEFAULT_BB_SETTING
+----------------------------------------------------------
+  show        : false   (기본 꺼짐)
+  period      : 20
+  multiplier  : 2
+  lineColor   : #3182f6   lineOpacity : 100
+  fillColor   : #3182f6   fillOpacity : 10
+  lineWidth   : 1
+
+
+----------------------------------------------------------
+4~7. Pivot / Harmonic / Elliott / AB=CD  - DEFAULT_PIVOT_SETTING
+----------------------------------------------------------
+이 4개 그룹은 모두 PivotSetting 하나의 타입을 공유한다.
+
+PivotSetting 기본값 (★ = 최근 변경):
+  [공통/피벗]
+  show          : false        (피벗 표시)
+  length        : 10
+  basis         : 'wick'
+  showWave      : true
+
+  [Harmonic 하모닉]  ★ 마스터 ON, TP 전부 OFF, SL 선만 ON
+  showHarmonic            : true   ★ (false→true)
+  showHarmonicPrediction  : true
+  showHarmonicLines       : true
+  showHarmonicFill        : true
+
+  [Elliott 엘리어트]
+  showElliottWave : false
+  elliottLength   : 21
+
+  [AB=CD]  ★ 마스터 ON, 단일크기, 실시간예측 OFF → 최근완성 파동선만
+  showAbcWave       : true    ★ (false→true)
+  showAbcPrediction : false   ★ (true→false)
+  showAbcText       : false
+  showAbcLines      : true
+  abcMode           : 'single'
+  abcLength         : 21
+
+  [TP/SL 라인 (하모닉/ABC 공용)]  ★ SL 선만 켬
+  showTpLine  : false
+  showTpLabel : false
+  showSlLine  : true    ★ (false→true)
+  showSlLabel : false
+
+  ※ 하모닉 마스터를 껐다 켤 때(백업 없는 경우) 폴백도
+    TP 전부 OFF / SL 선만 ON 으로 정렬됨 (HarmonicSection.tsx)
+
+
+==========================================================
+요약
+==========================================================
+- SMC만 타임프레임(1M/1W/3D/1D)별로 세분화. UI는 OB·CE·EQ(기본) +
+  FVG·OB Box(접기). 마스터 첫 켜기 = OB/CE/EQ의 1달·1주만.
+- MA는 6개 라인 배열, BB는 단일 설정.
+- Pivot/Harmonic/Elliott/AB=CD는 PivotSetting 한 객체를 공유.
+  하모닉·AB=CD는 기본적으로 켜진 상태로, 선 위주(TP off / SL 선만 /
+  텍스트·실시간예측 off)로 표시되도록 디폴트 조정됨.
+- 설정은 localStorage에 저장되므로 기존 기기는 저장값이 우선.
+  새 디폴트 확인 시 해당 키 제거 후 새로고침 필요.

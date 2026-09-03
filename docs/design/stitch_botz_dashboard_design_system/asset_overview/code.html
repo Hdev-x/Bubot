@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AutoTrade - Assets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "text-secondary": "#cfd3da",
+                      "secondary": "#ffb3b5",
+                      "surface-container-high": "#242c26",
+                      "outline-variant": "#3c4a40",
+                      "on-tertiary": "#571f00",
+                      "on-error-container": "#ffdad6",
+                      "surface-tint": "#3be194",
+                      "background": "#0d1510",
+                      "primary-container": "#0ecb81",
+                      "surface-container-lowest": "#08100b",
+                      "on-tertiary-fixed-variant": "#7a3003",
+                      "primary": "#45e89b",
+                      "surface-bright": "#333b35",
+                      "on-secondary-container": "#ffb7b9",
+                      "on-primary-container": "#004f2f",
+                      "bg-base": "#000000",
+                      "surface-dim": "#0d1510",
+                      "surface-primary": "rgba(255, 255, 255, 0.02)",
+                      "secondary-fixed": "#ffdada",
+                      "inverse-primary": "#006d42",
+                      "on-secondary-fixed-variant": "#920026",
+                      "error": "#ffb4ab",
+                      "surface": "#0d1510",
+                      "surface-active": "rgba(255, 255, 255, 0.14)",
+                      "outline": "#859489",
+                      "border-subtle": "rgba(255, 255, 255, 0.05)",
+                      "surface-control": "rgba(255, 255, 255, 0.05)",
+                      "surface-secondary": "rgba(255, 255, 255, 0.04)",
+                      "border-normal": "rgba(255, 255, 255, 0.08)",
+                      "primary-fixed": "#60feae",
+                      "on-background": "#dce5dc",
+                      "secondary-container": "#ac012f",
+                      "on-primary": "#003920",
+                      "primary-fixed-dim": "#3be194",
+                      "on-tertiary-container": "#762e01",
+                      "on-secondary-fixed": "#40000b",
+                      "tertiary-fixed-dim": "#ffb694",
+                      "secondary-fixed-dim": "#ffb3b5",
+                      "on-surface": "#dce5dc",
+                      "text-primary": "#ffffff",
+                      "on-primary-fixed-variant": "#005231",
+                      "error-container": "#93000a",
+                      "accent-blue": "#3182f6",
+                      "surface-container-highest": "#2f3731",
+                      "surface-variant": "#2f3731",
+                      "inverse-on-surface": "#2a322c",
+                      "on-secondary": "#680018",
+                      "on-primary-fixed": "#002111",
+                      "tertiary-fixed": "#ffdbcc",
+                      "on-tertiary-fixed": "#351000",
+                      "on-surface-variant": "#bbcabd",
+                      "tertiary": "#ffbfa2",
+                      "surface-container-low": "#161d18",
+                      "tertiary-container": "#ff9764",
+                      "surface-container": "#1a211c",
+                      "on-error": "#690005",
+                      "status-warning": "#f5a623",
+                      "inverse-surface": "#dce5dc",
+                      "text-muted": "#8b95a1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "gap-compact": "8px",
+                      "touch-target": "40px",
+                      "card-padding": "12px",
+                      "page-margin": "14px",
+                      "gap-section": "20px"
+              },
+              "fontFamily": {
+                      "nav-label": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "display-asset": [
+                              "Inter"
+                      ],
+                      "headline-symbol": [
+                              "Inter"
+                      ],
+                      "body-main": [
+                              "Inter"
+                      ],
+                      "body-numeric": [
+                              "Inter"
+                      ],
+                      "badge-tiny": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "nav-label": [
+                              "15px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-asset": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-symbol": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-main": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-numeric": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "badge-tiny": [
+                              "10px",
+                              {
+                                      "lineHeight": "12px",
+                                      "fontWeight": "800"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        /* Utility for perfect black */
+        .bg-pure-black {
+            background-color: #000000;
+        }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-pure-black font-body-main text-body-main pb-24 md:pb-0 pt-14 text-text-primary antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-surface-container-lowest border-b border-border-subtle flex justify-between items-center h-14 px-page-margin z-50">
+<div class="flex items-center gap-gap-compact cursor-pointer active:scale-95 duration-100">
+<span class="material-symbols-outlined text-primary font-headline-symbol text-headline-symbol">monitoring</span>
+<span class="font-headline-symbol text-headline-symbol text-primary uppercase tracking-wider">AutoTrade</span>
+</div>
+<div class="cursor-pointer active:scale-95 duration-100 hover:bg-surface-active transition-colors p-1 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant font-headline-symbol text-headline-symbol">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-4xl mx-auto px-page-margin mt-gap-section flex flex-col gap-gap-section">
+<!-- Total Balance Overview -->
+<section class="bg-surface-primary border border-border-subtle rounded-xl p-card-padding flex flex-col gap-gap-compact">
+<div class="flex items-center justify-between text-text-muted">
+<span class="font-label-caps text-label-caps uppercase text-text-muted">Total Balance</span>
+<button class="hover:bg-surface-active p-1 rounded-full transition-colors active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined text-text-muted" style="font-size: 18px;">visibility</span>
+</button>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-baseline gap-2">
+<span class="font-display-asset text-display-asset text-text-primary">124,582.45</span>
+<span class="font-headline-symbol text-headline-symbol text-text-muted">USDT</span>
+</div>
+<div class="font-body-numeric text-body-numeric text-text-muted opacity-80">
+                    ≈ 166,420,000 KRW
+                </div>
+</div>
+</section>
+<!-- Quick Actions Row -->
+<section class="grid grid-cols-4 gap-gap-compact">
+<button class="bg-surface-primary border border-border-subtle rounded-lg py-3 flex flex-col items-center justify-center gap-2 hover:bg-surface-active transition-colors active:scale-95">
+<div class="w-10 h-10 rounded-full bg-surface-control flex items-center justify-center">
+<span class="material-symbols-outlined text-text-primary">download</span>
+</div>
+<span class="font-label-caps text-label-caps text-text-muted">Deposit</span>
+</button>
+<button class="bg-surface-primary border border-border-subtle rounded-lg py-3 flex flex-col items-center justify-center gap-2 hover:bg-surface-active transition-colors active:scale-95">
+<div class="w-10 h-10 rounded-full bg-surface-control flex items-center justify-center">
+<span class="material-symbols-outlined text-text-primary">upload</span>
+</div>
+<span class="font-label-caps text-label-caps text-text-muted">Withdraw</span>
+</button>
+<button class="bg-surface-primary border border-border-subtle rounded-lg py-3 flex flex-col items-center justify-center gap-2 hover:bg-surface-active transition-colors active:scale-95">
+<div class="w-10 h-10 rounded-full bg-surface-control flex items-center justify-center">
+<span class="material-symbols-outlined text-text-primary">sync_alt</span>
+</div>
+<span class="font-label-caps text-label-caps text-text-muted">Transfer</span>
+</button>
+<button class="bg-surface-primary border border-border-subtle rounded-lg py-3 flex flex-col items-center justify-center gap-2 hover:bg-surface-active transition-colors active:scale-95">
+<div class="w-10 h-10 rounded-full bg-surface-control flex items-center justify-center">
+<span class="material-symbols-outlined text-text-primary">history</span>
+</div>
+<span class="font-label-caps text-label-caps text-text-muted">PnL Hist</span>
+</button>
+</section>
+<!-- Account Breakdown -->
+<section class="flex flex-col gap-gap-compact">
+<h2 class="font-headline-symbol text-headline-symbol text-text-primary pl-1">Accounts</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gap-compact">
+<!-- Main Account -->
+<div class="bg-surface-primary border border-border-subtle rounded-xl p-card-padding flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 20px;">account_balance_wallet</span>
+<span class="font-headline-symbol text-headline-symbol text-text-primary">Main Account</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted uppercase mb-1">Balance</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">45,000.00 <span class="text-text-muted text-xs">USDT</span></span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-text-muted uppercase mb-1">Unrealized PnL</span>
+<span class="font-body-numeric text-body-numeric text-primary">+1,240.50</span>
+</div>
+</div>
+</div>
+<!-- Bot Aggregate -->
+<div class="bg-surface-primary border border-border-subtle rounded-xl p-card-padding flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-blue" style="font-size: 20px;">smart_toy</span>
+<span class="font-headline-symbol text-headline-symbol text-text-primary">Sub Accounts (Bots)</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted uppercase mb-1">Combined Equity</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">79,582.45 <span class="text-text-muted text-xs">USDT</span></span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-text-muted uppercase mb-1">Active Bots</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">3</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Asset Holdings List -->
+<section class="flex flex-col gap-gap-compact">
+<h2 class="font-headline-symbol text-headline-symbol text-text-primary pl-1">Holdings</h2>
+<div class="bg-surface-primary border border-border-subtle rounded-xl overflow-hidden flex flex-col">
+<!-- Header Row -->
+<div class="flex justify-between items-center px-card-padding py-2 bg-surface-secondary border-b border-border-subtle">
+<div class="w-1/3 font-label-caps text-label-caps text-text-muted uppercase">Asset</div>
+<div class="w-1/3 text-right font-label-caps text-label-caps text-text-muted uppercase">Amount</div>
+<div class="w-1/3 text-right font-label-caps text-label-caps text-text-muted uppercase">Value (USDT)</div>
+</div>
+<!-- Asset Item: BTC -->
+<div class="flex justify-between items-center px-card-padding py-3 border-b border-border-subtle hover:bg-surface-active transition-colors cursor-pointer">
+<div class="w-1/3 flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-[#F7931A] flex items-center justify-center font-bold text-black text-xs">₿</div>
+<div class="flex flex-col">
+<span class="font-headline-symbol text-headline-symbol text-text-primary">BTC</span>
+<span class="font-label-caps text-label-caps text-text-muted text-[10px]">Bitcoin</span>
+</div>
+</div>
+<div class="w-1/3 text-right flex flex-col">
+<span class="font-body-numeric text-body-numeric text-text-primary">1.2450</span>
+</div>
+<div class="w-1/3 text-right flex flex-col">
+<span class="font-body-numeric text-body-numeric text-text-primary">82,170.00</span>
+</div>
+</div>
+<!-- Asset Item: ETH -->
+<div class="flex justify-between items-center px-card-padding py-3 border-b border-border-subtle hover:bg-surface-active transition-colors cursor-pointer">
+<div class="w-1/3 flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-[#627EEA] flex items-center justify-center font-bold text-white text-xs">Ξ</div>
+<div class="flex flex-col">
+<span class="font-headline-symbol text-headline-symbol text-text-primary">ETH</span>
+<span class="font-label-caps text-label-caps text-text-muted text-[10px]">Ethereum</span>
+</div>
+</div>
+<div class="w-1/3 text-right flex flex-col">
+<span class="font-body-numeric text-body-numeric text-text-primary">15.8000</span>
+</div>
+<div class="w-1/3 text-right flex flex-col">
+<span class="font-body-numeric text-body-numeric text-text-primary">42,660.00</span>
+</div>
+</div>
+<!-- Asset Item: USDT -->
+<div class="flex justify-between items-center px-card-padding py-3 hover:bg-surface-active transition-colors cursor-pointer">
+<div class="w-1/3 flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-[#26A17B] flex items-center justify-center font-bold text-white text-xs">₮</div>
+<div class="flex flex-col">
+<span class="font-headline-symbol text-headline-symbol text-text-primary">USDT</span>
+<span class="font-label-caps text-label-caps text-text-muted text-[10px]">Tether</span>
+</div>
+</div>
+<div class="w-1/3 text-right flex flex-col">
+<span class="font-body-numeric text-body-numeric text-text-primary">45,000.00</span>
+</div>
+<div class="w-1/3 text-right flex flex-col">
+<span class="font-body-numeric text-body-numeric text-text-primary">45,000.00</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-2 bg-surface-container-lowest border-t border-border-subtle backdrop-blur-md z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:opacity-80 transition-all" href="#">
+<span class="material-symbols-outlined font-nav-label text-nav-label-mobile mb-1">sensors</span>
+<span class="font-nav-label text-[10px] leading-tight">Live</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:opacity-80 transition-all" href="#">
+<span class="material-symbols-outlined font-nav-label text-nav-label-mobile mb-1">candlestick_chart</span>
+<span class="font-nav-label text-[10px] leading-tight">Markets</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:opacity-80 transition-all" href="#">
+<span class="material-symbols-outlined font-nav-label text-nav-label-mobile mb-1">query_stats</span>
+<span class="font-nav-label text-[10px] leading-tight">Signals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:opacity-80 transition-all" href="#">
+<span class="material-symbols-outlined font-nav-label text-nav-label-mobile mb-1">history</span>
+<span class="font-nav-label text-[10px] leading-tight">History</span>
+</a>
+<!-- Active Profile/Assets Tab -->
+<a class="flex flex-col items-center justify-center text-primary bg-surface-active rounded-xl px-3 py-1 active:opacity-80 transition-all" href="#">
+<span class="material-symbols-outlined font-nav-label text-nav-label-mobile mb-1" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-nav-label text-[10px] leading-tight">Profile</span>
+</a>
+</nav>
+<!-- Desktop Sidebar Placeholder (Hidden on mobile) -->
+<nav class="hidden md:flex flex-col w-64 fixed left-0 top-14 h-[calc(100vh-3.5rem)] bg-surface-container-lowest border-r border-border-subtle p-4 gap-2 z-40">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-active transition-colors" href="#">
+<span class="material-symbols-outlined">sensors</span>
+<span class="font-nav-label text-nav-label">Live</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-active transition-colors" href="#">
+<span class="material-symbols-outlined">candlestick_chart</span>
+<span class="font-nav-label text-nav-label">Markets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-active transition-colors" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-nav-label text-nav-label">Signals</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-active transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-nav-label text-nav-label">History</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-surface-active text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-nav-label text-nav-label">Profile / Assets</span>
+</a>
+</nav>
+<!-- Adjust layout for desktop sidebar -->
+<style>
+        @media (min-width: 768px) {
+            main {
+                margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+                max-width: calc(100% - 16rem - 28px);
+            }
+        }
+    </style>
+</body></html>

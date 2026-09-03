@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AutoTrade - Live Dashboard</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#ffdada",
+                    "surface": "#0d1510",
+                    "on-tertiary": "#571f00",
+                    "on-primary-fixed-variant": "#005231",
+                    "surface-container": "#1a211c",
+                    "secondary-container": "#ac012f",
+                    "surface-secondary": "rgba(255, 255, 255, 0.04)",
+                    "surface-primary": "rgba(255, 255, 255, 0.02)",
+                    "background": "#0d1510",
+                    "on-error": "#690005",
+                    "on-secondary": "#680018",
+                    "on-secondary-container": "#ffb7b9",
+                    "surface-dim": "#0d1510",
+                    "surface-container-highest": "#2f3731",
+                    "surface-active": "rgba(255, 255, 255, 0.14)",
+                    "error": "#ffb4ab",
+                    "on-background": "#dce5dc",
+                    "surface-container-lowest": "#08100b",
+                    "tertiary-fixed": "#ffdbcc",
+                    "accent-blue": "#3182f6",
+                    "surface-tint": "#3be194",
+                    "surface-container-low": "#161d18",
+                    "status-warning": "#f5a623",
+                    "tertiary-fixed-dim": "#ffb694",
+                    "bg-base": "#000000",
+                    "primary-fixed-dim": "#3be194",
+                    "on-primary-container": "#004f2f",
+                    "tertiary": "#ffbfa2",
+                    "secondary-fixed-dim": "#ffb3b5",
+                    "on-surface": "#dce5dc",
+                    "secondary": "#ffb3b5",
+                    "on-tertiary-fixed": "#351000",
+                    "on-secondary-fixed-variant": "#920026",
+                    "inverse-primary": "#006d42",
+                    "tertiary-container": "#ff9764",
+                    "on-surface-variant": "#bbcabd",
+                    "inverse-on-surface": "#2a322c",
+                    "outline-variant": "#3c4a40",
+                    "primary-container": "#0ecb81",
+                    "on-tertiary-container": "#762e01",
+                    "inverse-surface": "#dce5dc",
+                    "primary-fixed": "#60feae",
+                    "primary": "#45e89b",
+                    "on-secondary-fixed": "#40000b",
+                    "error-container": "#93000a",
+                    "text-muted": "#8b95a1",
+                    "surface-container-high": "#242c26",
+                    "on-error-container": "#ffdad6",
+                    "text-secondary": "#cfd3da",
+                    "surface-variant": "#2f3731",
+                    "on-tertiary-fixed-variant": "#7a3003",
+                    "on-primary-fixed": "#002111",
+                    "on-primary": "#003920",
+                    "outline": "#859489",
+                    "surface-control": "rgba(255, 255, 255, 0.05)",
+                    "text-primary": "#ffffff",
+                    "border-normal": "rgba(255, 255, 255, 0.08)",
+                    "surface-bright": "#333b35",
+                    "border-subtle": "rgba(255, 255, 255, 0.05)"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "page-margin": "14px",
+                    "gap-compact": "8px",
+                    "gap-section": "20px",
+                    "card-padding": "12px",
+                    "touch-target": "40px"
+            },
+            "fontFamily": {
+                    "headline-symbol": ["Inter"],
+                    "body-main": ["Inter"],
+                    "body-numeric": ["Inter"],
+                    "badge-tiny": ["Inter"],
+                    "display-asset": ["Inter"],
+                    "nav-label": ["Inter"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-symbol": ["16px", { "lineHeight": "24px", "fontWeight": "700" }],
+                    "body-main": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                    "body-numeric": ["14px", { "lineHeight": "20px", "fontWeight": "700" }],
+                    "badge-tiny": ["10px", { "lineHeight": "12px", "fontWeight": "800" }],
+                    "display-asset": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                    "nav-label": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+                    "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000; /* Strict adherence to design doc */
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Custom scrollbar for high density look */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-base min-h-screen flex flex-col font-body-main selection:bg-surface-active">
+<!-- Header -->
+<header class="flex justify-between items-center h-14 px-page-margin w-full z-50 bg-base border-b border-border-subtle sticky top-0">
+<div class="flex items-center gap-2">
+<img alt="AutoTrade Logo" class="h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw0-ucVLZm5cdajmE03CbIIw6CRQvEVFL5U6VwNLeP11N8XSrtAU80gwGPB895TvExchO4dS3TlZWDFSZzsDFB_lBXwpYVDh_VBdQgaszkaECarHANfm8M6WIHNLszioKQLXcKxYNnTgrTMUUvR1fKm-6xrY4VjjUlGPDn1IZRBYg1AzEIwQDC7GJJ6sA7ZcNWzdLpIbo3h22Sz-bfvo1UyXQjWQ0xjDvngXiW-eWP8BYN2xX5dc4FEwzOUilphyQisUyq2XRRKHwx"/>
+</div>
+<div class="flex items-center gap-2 bg-surface-primary border border-border-subtle px-2 py-1 rounded-full">
+<span class="font-label-caps text-label-caps text-text-secondary uppercase">Worker</span>
+<div class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary-container"></span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Asset Summary -->
+<section class="px-page-margin py-6 flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-text-muted uppercase tracking-wider">Total Assets</span>
+<div class="flex items-baseline gap-2">
+<span class="font-display-asset text-display-asset text-text-primary">14,250.5</span>
+<span class="font-body-numeric text-body-numeric text-text-muted">USDT</span>
+</div>
+<span class="font-body-numeric text-body-numeric text-text-muted">≈ 19,665,690 KRW</span>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-primary border border-border-subtle hover:bg-surface-active transition-colors active:scale-95">
+<span class="material-symbols-outlined text-text-secondary" style="font-variation-settings: 'FILL' 0;">history</span>
+</button>
+</section>
+<!-- Account Accordion -->
+<section class="px-page-margin pb-4">
+<div class="bg-surface-primary border border-border-subtle rounded-xl overflow-hidden">
+<!-- Toggle Header -->
+<button class="w-full flex items-center justify-between p-3 hover:bg-surface-active transition-colors" onclick="document.getElementById('account-grid').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-180')">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-muted text-[18px]">account_balance_wallet</span>
+<span class="font-body-main text-body-main text-text-primary">View Account Status</span>
+</div>
+<span class="material-symbols-outlined text-text-muted chevron transition-transform duration-200">expand_more</span>
+</button>
+<!-- Expanded Content (Grid) -->
+<div class="p-3 border-t border-border-subtle grid grid-cols-2 gap-2 bg-surface-container-lowest" id="account-grid">
+<!-- Main Account -->
+<div class="p-2.5 bg-surface-container border border-border-subtle rounded-lg flex flex-col gap-1.5 hover:bg-surface-active transition-colors cursor-pointer">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-text-secondary">MAIN</span>
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+</div>
+<span class="font-body-numeric text-body-numeric text-text-primary">10,000.0 USDT</span>
+</div>
+<!-- Bot 1 -->
+<div class="p-2.5 bg-surface-container border border-border-subtle rounded-lg flex flex-col gap-1.5 hover:bg-surface-active transition-colors cursor-pointer">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-text-secondary">BOT 1</span>
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+</div>
+<span class="font-body-numeric text-body-numeric text-text-primary">4,250.5 USDT</span>
+</div>
+<!-- Bot 2 (Offline example) -->
+<div class="p-2.5 bg-surface-container border border-border-subtle rounded-lg flex flex-col gap-1.5 hover:bg-surface-active transition-colors cursor-pointer">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-text-secondary">BOT 2</span>
+<div class="w-1.5 h-1.5 rounded-full bg-surface-variant border border-border-subtle"></div>
+</div>
+<span class="font-body-numeric text-body-numeric text-text-primary">0.0 USDT</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Sticky Control Bar -->
+<div class="sticky top-14 bg-base/95 backdrop-blur-md z-40 border-y border-border-subtle px-page-margin pt-2 flex gap-6 overflow-x-auto hide-scrollbar">
+<button class="flex items-center gap-1.5 pb-3 border-b-2 border-primary-container text-text-primary transition-colors">
+<span class="font-nav-label text-nav-label">포지션</span>
+<span class="font-body-numeric text-body-numeric text-text-muted">(2)</span>
+</button>
+<button class="flex items-center gap-1.5 pb-3 border-b-2 border-transparent text-text-muted hover:text-text-primary transition-colors">
+<span class="font-nav-label text-nav-label">미체결</span>
+<span class="font-body-numeric text-body-numeric text-text-muted">(0)</span>
+</button>
+<button class="flex items-center gap-1.5 pb-3 border-b-2 border-transparent text-text-muted hover:text-text-primary transition-colors">
+<span class="font-nav-label text-nav-label">모니터링</span>
+<span class="font-body-numeric text-body-numeric text-text-muted">(12)</span>
+</button>
+</div>
+<!-- Position Tab Content (Active) -->
+<section class="px-page-margin py-4 flex flex-col gap-3">
+<!-- Long Position Card -->
+<div class="bg-surface-primary border border-border-subtle rounded-xl p-card-padding flex flex-col gap-3 relative overflow-hidden">
+<!-- Decorative gradient for active long position -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/5 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
+<div class="flex justify-between items-center z-10">
+<div class="flex items-center gap-2">
+<span class="font-headline-symbol text-headline-symbol text-text-primary">BTCUSDT</span>
+<div class="bg-primary-container/10 border border-primary-container/20 rounded px-1.5 py-0.5 flex items-center gap-1">
+<span class="font-badge-tiny text-badge-tiny text-primary-container">LONG</span>
+<span class="font-badge-tiny text-badge-tiny text-primary-container opacity-80">5x</span>
+</div>
+</div>
+<button class="text-text-muted hover:text-text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="grid grid-cols-3 gap-y-3 gap-x-2 z-10">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">Unrealized PnL</span>
+<span class="font-body-numeric text-body-numeric text-primary-container">+125.50</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-caps text-label-caps text-text-muted">ROE %</span>
+<span class="font-body-numeric text-body-numeric text-primary-container">+12.55%</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-text-muted">Size</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">0.050</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">Margin</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">1,000.00</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-caps text-label-caps text-text-muted">Entry Price</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">64,200.0</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-text-muted">Mark Price</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">65,002.5</span>
+</div>
+</div>
+</div>
+<!-- Short Position Card -->
+<div class="bg-surface-primary border border-border-subtle rounded-xl p-card-padding flex flex-col gap-3 relative overflow-hidden">
+<!-- Decorative gradient for active short position -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-error/5 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
+<div class="flex justify-between items-center z-10">
+<div class="flex items-center gap-2">
+<span class="font-headline-symbol text-headline-symbol text-text-primary">ETHUSDT</span>
+<div class="bg-error/10 border border-error/20 rounded px-1.5 py-0.5 flex items-center gap-1">
+<span class="font-badge-tiny text-badge-tiny text-error">SHORT</span>
+<span class="font-badge-tiny text-badge-tiny text-error opacity-80">5x</span>
+</div>
+</div>
+<button class="text-text-muted hover:text-text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="grid grid-cols-3 gap-y-3 gap-x-2 z-10">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">Unrealized PnL</span>
+<span class="font-body-numeric text-body-numeric text-error">-45.20</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-caps text-label-caps text-text-muted">ROE %</span>
+<span class="font-body-numeric text-body-numeric text-error">-4.50%</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-text-muted">Size</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">1.50</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">Margin</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">1,004.44</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-caps text-label-caps text-text-muted">Entry Price</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">3,450.2</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-text-muted">Mark Price</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">3,480.3</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-2 bg-surface-container-lowest border-t border-border-subtle backdrop-blur-md z-50">
+<!-- Active: Live -->
+<a class="flex flex-col items-center justify-center text-primary bg-surface-active rounded-xl px-3 py-1 active:opacity-80 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">sensors</span>
+<span class="font-nav-label text-nav-label-mobile mt-0.5">Live</span>
+</a>
+<!-- Inactive: Markets -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:opacity-80 transition-all px-3 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">candlestick_chart</span>
+<span class="font-nav-label text-nav-label-mobile mt-0.5">Markets</span>
+</a>
+<!-- Inactive: Signals -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:opacity-80 transition-all px-3 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">query_stats</span>
+<span class="font-nav-label text-nav-label-mobile mt-0.5">Signals</span>
+</a>
+<!-- Inactive: History -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:opacity-80 transition-all px-3 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">history</span>
+<span class="font-nav-label text-nav-label-mobile mt-0.5">History</span>
+</a>
+<!-- Inactive: Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:opacity-80 transition-all px-3 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="font-nav-label text-nav-label-mobile mt-0.5">Profile</span>
+</a>
+</nav>
+</body></html>
