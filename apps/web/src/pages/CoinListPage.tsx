@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
-import { fetchCoinLogos } from '../api/marketApi';
-import { fetchMainTrade } from '../api/mainTradeApi';
-import { fetchUsdKrwRate } from '../api/exchangeRate';
+import { fetchCoinLogos } from '../api/server/marketApi';
+import { fetchMainTrade } from '../api/server/mainTradeApi';
+import { fetchUsdKrwRate } from '../api/exchange/exchangeRate';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { useCoinDetailChart } from '../hooks/useCoinDetailChart';
 import { useMarketTickers } from '../hooks/useMarketTickers';

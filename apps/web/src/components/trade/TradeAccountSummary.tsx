@@ -3,7 +3,7 @@
 // 데이터는 useMainTrade 폴링 결과(MainTradeOverview)를 그대로 받는다 — 새 호출 없음.
 // 통화/잔고숨김은 자산 탭과 동일하게 useSettings(CurrencyContext) 공유.
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { MainPosition } from '../../api/mainTradeApi';
+import type { MainPosition } from '../../api/server/mainTradeApi';
 import { useSettings, currencyLabel } from '../../contexts/CurrencyContext';
 import { useUsdKrw } from '../../hooks/useUsdKrw';
 import { useDelayedReady } from '../../hooks/useDelayedReady';

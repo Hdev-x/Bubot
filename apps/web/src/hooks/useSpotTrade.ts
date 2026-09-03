@@ -1,5 +1,5 @@
 import { usePolledData } from './usePolledData';
-import { fetchSpotTrade, type SpotTradeOverview } from '../api/spotTradeApi';
+import { fetchSpotTrade, type SpotTradeOverview } from '../api/server/spotTradeApi';
 
 const EMPTY: SpotTradeOverview = { hasKey: false, holdings: [], orders: [], usdtAvailable: 0 };
 

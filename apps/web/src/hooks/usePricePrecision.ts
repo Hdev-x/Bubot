@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchPricePrecision } from '../api/marketApi';
+import { fetchPricePrecision } from '../api/server/marketApi';
 
 export function usePricePrecision(defaultDecimals = 4) {
   const [precisionMap, setPrecisionMap] = useState<Map<string, number>>(new Map());

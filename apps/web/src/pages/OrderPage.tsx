@@ -17,13 +17,13 @@ import TradeAccountSummary from '../components/trade/TradeAccountSummary';
 import SpotAccountSummary from '../components/trade/SpotAccountSummary';
 import SpotHoldingCard from '../components/trade/SpotHoldingCard';
 import SpotCostSheet from '../components/trade/SpotCostSheet';
-import type { SpotHolding } from '../api/spotTradeApi';
-import { isBitgetSymbolSupported } from '../api/bitgetSymbols';
-import { resolveTradeChartTarget } from '../api/chartPolicy';
+import type { SpotHolding } from '../api/server/spotTradeApi';
+import { isBitgetSymbolSupported } from '../api/exchange/bitget/bitgetSymbols';
+import { resolveTradeChartTarget } from '../config/chartPolicy';
 import { usePricePrecision } from '../hooks/usePricePrecision';
 import { useRealtimePrices } from '../hooks/useRealtimePrices';
 import { useFundingRate } from '../hooks/useFundingRate';
-import type { DepthPrecision } from '../api/bitgetMergeDepth';
+import type { DepthPrecision } from '../api/exchange/bitget/bitgetMergeDepth';
 import type { TradeLog } from '../types/bot';
 
 // 호가 단위(묶음) 라벨 — 심볼 최소 틱(소수점)을 1번으로, ×10씩. scale0=최소틱 … scale3=틱×1000.

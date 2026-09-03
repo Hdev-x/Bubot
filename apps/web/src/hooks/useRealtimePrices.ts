@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { subscribeBitgetFuturesTickers, subscribeBitgetSpotTickers } from '../api/coinRealtime';
-import type { RealtimeTicker } from '../api/coinRealtime';
+import { subscribeBitgetFuturesTickers, subscribeBitgetSpotTickers } from '../api/server/coinRealtime';
+import type { RealtimeTicker } from '../api/server/coinRealtime';
 
 // isFutures=true → 선물 티커(/topic/coin-futures), false → 현물 티커(/topic/coin).
 // 현물/선물은 베이시스로 가격이 달라서 탭에 맞는 채널을 구독해야 현재가·평가가 정확하다.

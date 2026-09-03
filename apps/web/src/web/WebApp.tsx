@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { AuthUser } from '../api/authApi';
+import type { AuthUser } from '../api/server/authApi';
 import { WebMarketPanel } from './components/WebMarketPanel';
 import { useCoinLogos } from './components/marketShared';
 import { WebWatchlist } from './components/WebWatchlist';
@@ -7,10 +7,10 @@ import StrategyComingSoon from '../components/StrategyComingSoon';
 import botzMark from '../assets/botz-mark.svg';
 import { EXCHANGES } from '../constants/exchanges';
 import { getOfficialLogo } from '../utils/coinFormatters';
-import { type BitgetTicker } from '../api/bitgetTicker';
-import { fetchHeaderTicker } from '../api/headerTicker';
-import { krwDecimals } from '../api/krwTickers';
-import { fetchCoinMarketCap } from '../api/marketApi';
+import { type BitgetTicker } from '../api/exchange/bitget/bitgetTicker';
+import { fetchHeaderTicker } from '../api/exchange/headerTicker';
+import { krwDecimals } from '../api/exchange/krw/krwTickers';
+import { fetchCoinMarketCap } from '../api/server/marketApi';
 import { useMainTrade } from '../hooks/useMainTrade';
 import { useUsdKrw } from '../hooks/useUsdKrw';
 import { useOrderbook } from '../hooks/useOrderbook';
@@ -29,7 +29,7 @@ const DARK_THEME = PRESET_THEMES.find((t) => t.id === 'dark') ?? PRESET_THEMES[0
 import MarketChart from '../components/MarketChart';
 import type { MarketChartRef } from '../components/MarketChart';
 import type { TrackerState } from '../types/bot';
-import type { DrawingManager } from '../drawing';
+import type { DrawingManager } from '../drawing/index';
 import { WebDrawingFloatBar, WebDrawingSettings } from './components/WebDrawingToolbar';
 import { WebRsiSettings } from './components/WebRsiSettings';
 import { DEFAULT_RSI_SETTINGS } from '../utils/rsiCandles';
@@ -49,9 +49,9 @@ import PivotSection from '../components/indicators/PivotSection';
 import ElliottSection from '../components/indicators/ElliottSection';
 import TradeOrderbook from '../components/trade/TradeOrderbook';
 import { useSpotTrade } from '../hooks/useSpotTrade';
-import type { DepthPrecision } from '../api/bitgetMergeDepth';
-import type { MainPosition } from '../api/mainTradeApi';
-import type { SpotHolding } from '../api/spotTradeApi';
+import type { DepthPrecision } from '../api/exchange/bitget/bitgetMergeDepth';
+import type { MainPosition } from '../api/server/mainTradeApi';
+import type { SpotHolding } from '../api/server/spotTradeApi';
 import type { Candle } from '../types/market';
 
 // ── 차트 — 타임프레임 맵(버튼 라벨 → granularity/channel) ──

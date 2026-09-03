@@ -1,9 +1,9 @@
 // 업비트/빗썸 KRW 현물 티커 — 공개 REST 직접 호출(백엔드 미경유).
 // 비트겟 merge-depth처럼 브라우저에서 거래소 공개 API를 바로 친다.
 // 백엔드 트레이딩 API는 사용자가 키를 줄 때 연결(M-EX6 이후).
-import type { CoinTicker, Candle } from '../types/market';
-import type { OrderbookSnapshot } from './bitgetMergeDepth';
-import { getToken } from './authApi';
+import type { CoinTicker, Candle } from '../../../types/market';
+import type { OrderbookSnapshot } from '../bitget/bitgetMergeDepth';
+import { getToken } from '../../client';
 
 // 마켓 리스트 티커는 백엔드 캐시 집약 엔드포인트에서 받는다(브라우저 직접 폴링 제거 → 멀티유저 429 방지).
 type KrwRow = { base: string; name: string; last: number; change: number; changeRate: number; volume: number };

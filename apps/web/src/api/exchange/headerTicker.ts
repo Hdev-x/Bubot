@@ -1,6 +1,6 @@
 // 헤더 우측 24h 통계(고가/저가/거래량/거래대금)용 — 거래소별 공개 티커 API를 BitgetTicker 형태로 통일.
 // 기존엔 전 거래소를 Bitget 선물 티커로 받아 Binance/KRW가 부정확했던 것을 거래소별로 라우팅.
-import { fetchBitgetFuturesTicker, type BitgetTicker } from './bitgetTicker';
+import { fetchBitgetFuturesTicker, type BitgetTicker } from './bitget/bitgetTicker';
 
 type Exchange = 'BITGET' | 'BINANCE' | 'UPBIT' | 'BITHUMB';
 const num = (v: unknown) => Number(v) || 0;

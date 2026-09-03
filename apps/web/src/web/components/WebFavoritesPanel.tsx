@@ -5,7 +5,7 @@ import {
   subscribeBitgetSpotTickers, subscribeBitgetFuturesTickers,
   subscribeBinanceSpotTickers, subscribeBinanceFuturesTickers,
   type RealtimeTicker,
-} from '../../api/coinRealtime';
+} from '../../api/server/coinRealtime';
 import { usePricePrecision } from '../../hooks/usePricePrecision';
 import { useDelayedReady } from '../../hooks/useDelayedReady';
 import type { CoinTicker } from '../../types/market';

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AxiosHeaders } from 'axios';
-import type { Candle, ChartRange, CoinTicker, StockChartResponse, StockSummary, TickerResponse } from '../types/market';
-import { getToken } from './authApi';
+import type { Candle, ChartRange, CoinTicker, StockChartResponse, StockSummary, TickerResponse } from '../../types/market';
+import { getToken } from '../client';
 
 const api = axios.create({
   timeout: 12000,
@@ -441,7 +441,7 @@ export async function fetchCoinCandles(symbol: string, granularity = '1min', lim
 }
 
 // ───────────────── Binance 호가(depth) — 공개 REST 직접 호출 ─────────────────
-export async function fetchBinanceDepth(symbol: string, isFutures: boolean): Promise<import('./bitgetMergeDepth').OrderbookSnapshot | null> {
+export async function fetchBinanceDepth(symbol: string, isFutures: boolean): Promise<import('../exchange/bitget/bitgetMergeDepth').OrderbookSnapshot | null> {
   // 백엔드 프록시 경유 — 브라우저가 Binance(fapi/api.binance.com)에 직접 붙으면 지역차단(예: 한국)에 걸려
   // 호가가 동결됨. EC2 백엔드는 Binance 접속이 정상이라 서버를 통해 받는다.
   // limit=500 — 묶음(자릿수 ×10/×100) 시에도 6행을 채울 수 있도록 충분히 받는다(표시는 6행만).

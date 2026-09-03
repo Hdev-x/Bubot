@@ -2,7 +2,7 @@
 // OFF 시 통합 워커가 신규 진입만 차단한다(기존 포지션·청산관리는 유지).
 // 포지션 정리(청산)는 별도 Kill Switch 패널에서 수행한다.
 import { useState, useEffect, useCallback } from 'react';
-import { fetchMe } from '@web/api/authApi';
+import { fetchMe } from '@web/api/server/authApi';
 import { getTradingEnabled, setTradingEnabled } from '../../api/adminApi';
 
 export default function TradingTogglePanel() {

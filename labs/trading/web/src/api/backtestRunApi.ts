@@ -1,4 +1,4 @@
-import { authHeader } from '@web/api/authApi';
+import { authHeader } from '@web/api/client';
 import type { StrategyConfig as SchemaConfig } from '../../../../../shared/strategy-schema';
 import type { BacktestReport } from '../utils/backtestReport';
 

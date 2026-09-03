@@ -18,11 +18,11 @@ deliveries:
   - id: wp-03-d00-dead-code
     title: "dead code 8개 파일과 labs 잔여 CSS 구역 삭제"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: []
     branch: refactor/web-d00-dead-code
-    pull_requests: []
+    pull_requests: [24]
     evidence:
       - kind: command
         locator: "8개 파일 삭제(참조 0 확인), styles.css 8개 구역 2,076줄 삭제 — 구역 밖 정의 없는 범용 선택자 0, 삭제 후 파일이 '원본 − 구역'과 바이트 동일; lint 0·tests 22·build 2종·번들 문자열 0. '멀티봇 대시보드' 구역은 자산 화면 클래스 88개 사용 중이라 보존"
@@ -31,12 +31,20 @@ deliveries:
   - id: wp-03-d01-api
     title: "api/ → client.ts + server/ + exchange/"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-03-d00-dead-code]
     branch: refactor/web-d01-api
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "17 rename(server 6 · exchange 10 · config/chartPolicy), client.ts 신설(authApi에서 토큰·인증 헤더·authedGetJson/Mutate 분리), importer 46+labs 13 파일은 import 경로 줄만 변경"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc 통과"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-03-d02-hooks
     title: "hooks/ → market/ · account/ · ui/, 차트 훅은 chart/hooks"
     kind: git

@@ -1,7 +1,7 @@
 // API 키 관리 컴포넌트 — AssetsPage 내에서 사용
 import { useState, useEffect, useCallback } from 'react';
-import { fetchApiKeys, saveApiKey, activateApiKey, deleteApiKey, type ApiKeyItem } from '../../api/apiKeysApi';
-import { fetchMe } from '../../api/authApi';
+import { fetchApiKeys, saveApiKey, activateApiKey, deleteApiKey, type ApiKeyItem } from '../../api/server/apiKeysApi';
+import { fetchMe } from '../../api/server/authApi';
 import { SUB_ACCOUNT_NAMES } from '../../config/accountTargets';
 import { EXCHANGES, EXCHANGE_OPTIONS, type ExchangeId } from '../../constants/exchanges';
 

@@ -1,8 +1,8 @@
 // 현물 매수평균가 직접 입력 바텀시트 — 거래소에서 원가를 못 받아온 자산의 평단을 사용자가 입력.
 // 하단에서 올라오는 시트(.ob-depth-overlay/sheet 애니메이션 재사용). 저장/삭제 시 onSaved로 목록 갱신.
 import { useState } from 'react';
-import type { SpotHolding } from '../../api/spotTradeApi';
-import { saveSpotManualCost, deleteSpotManualCost } from '../../api/spotTradeApi';
+import type { SpotHolding } from '../../api/server/spotTradeApi';
+import { saveSpotManualCost, deleteSpotManualCost } from '../../api/server/spotTradeApi';
 
 function fmtPrice(n: number): string {
   if (!Number.isFinite(n) || n <= 0) return '—';

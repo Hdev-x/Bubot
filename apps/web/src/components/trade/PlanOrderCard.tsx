@@ -1,5 +1,5 @@
 // 플랜(TP/SL 트리거) 미체결 주문 카드 — Bitget 미체결 디자인 정합.
-import type { MainPlanOrder } from '../../api/mainTradeApi';
+import type { MainPlanOrder } from '../../api/server/mainTradeApi';
 
 function fmtPrice(n: number): string {
   if (!Number.isFinite(n)) return '—';

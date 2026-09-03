@@ -6,9 +6,10 @@ import CoinListPage from './pages/CoinListPage';
 import OrderPage from './pages/OrderPage';
 import StrategyComingSoon from './components/StrategyComingSoon';
 import LoginPage from './pages/LoginPage';
-import { fetchMe, getToken, logout as authLogout, type AuthUser } from './api/authApi';
-import { prefetchBitgetSymbols } from './api/bitgetSymbols';
-import { prefetchBinanceSymbols } from './api/binanceSymbols';
+import { getToken } from './api/client';
+import { fetchMe, logout as authLogout, type AuthUser } from './api/server/authApi';
+import { prefetchBitgetSymbols } from './api/exchange/bitget/bitgetSymbols';
+import { prefetchBinanceSymbols } from './api/exchange/binance/binanceSymbols';
 import { useDocumentVisible } from './hooks/usePageVisible';
 import { useRealtimeTickers } from './hooks/useRealtimePrices';
 

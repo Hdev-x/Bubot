@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client';
 import WebApp from './WebApp';
 import WebLogin from './WebLogin';
 import WebSignup from './WebSignup';
-import { fetchMe, logout } from '../api/authApi';
-import type { AuthUser } from '../api/authApi';
+import { fetchMe, logout } from '../api/server/authApi';
+import type { AuthUser } from '../api/server/authApi';
 import './web.css';
 
 // 앱은 로그인 없이도 표시(마켓/차트 공개). 로그인/회원가입은 헤더 버튼 → 오버레이로 띄운다.

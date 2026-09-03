@@ -1,4 +1,4 @@
-import { authedGetJson, authedMutate } from './authApi';
+import { authedGetJson, authedMutate } from '../client';
 
 /** 현물 보유자산 1건 */
 export interface SpotHolding {

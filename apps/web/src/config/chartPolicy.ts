@@ -1,4 +1,4 @@
-import { isBinanceFuturesSupported } from './binanceSymbols';
+import { isBinanceFuturesSupported } from '../api/exchange/binance/binanceSymbols';
 
 export type ChartTarget = { exchange: 'BITGET' | 'BINANCE'; productType: string | undefined };
 

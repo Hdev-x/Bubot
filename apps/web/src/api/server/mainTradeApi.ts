@@ -1,4 +1,4 @@
-import { authedGetJson } from './authApi';
+import { authedGetJson } from '../client';
 
 /** MAIN 키(수동) 포지션 1건 */
 export interface MainPosition {

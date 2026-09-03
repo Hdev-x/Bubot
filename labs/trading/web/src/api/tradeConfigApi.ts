@@ -1,5 +1,5 @@
 // 매매설정 API — /api/user/trade-configs (로그인 JWT)
-import { authHeader } from '@web/api/authApi';
+import { authHeader } from '@web/api/client';
 
 export type StrategyType = 'OB' | 'FVG' | 'BB' | 'HARMONIC' | 'ABCD';
 export type ConfigStatus = 'IDLE' | 'RUNNING' | 'STOPPED_LOSS' | 'ERROR' | 'KILLED';

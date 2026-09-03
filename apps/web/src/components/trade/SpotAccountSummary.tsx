@@ -2,7 +2,7 @@
 // 선물 패널(TradeAccountSummary)과 동일 구조·CSS, 데이터만 현물(보유자산 + USDT 잔고).
 // 현물은 포지션/레버리지/미실현이 없어 "총자산(실시간 평가) + 가용/동결 + 보유자산 목록"으로 구성.
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { SpotHolding } from '../../api/spotTradeApi';
+import type { SpotHolding } from '../../api/server/spotTradeApi';
 import { useSettings, currencyLabel } from '../../contexts/CurrencyContext';
 import { useUsdKrw } from '../../hooks/useUsdKrw';
 import { useRealtimePrices } from '../../hooks/useRealtimePrices';

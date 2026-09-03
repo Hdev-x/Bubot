@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type CSSProperties } from 'react';
-import { login, type AuthUser } from '../api/authApi';
+import { login, type AuthUser } from '../api/server/authApi';
 import PullToRefresh from '../components/PullToRefresh';
 import botzMark from '../assets/botz-mark.svg';
 

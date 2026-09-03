@@ -1,5 +1,5 @@
 // 운영자(admin) 전용 API — 글로벌 kill switch
-import { authHeader } from '@web/api/authApi';
+import { authHeader } from '@web/api/client';
 import type { MainPosition, PendingOrder, TrackerState } from '@web/types/bot';
 
 export async function getKillSwitch(): Promise<boolean> {

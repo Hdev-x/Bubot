@@ -391,4 +391,4 @@ export function subscribeCoinCandle(
     }
   };
 }
-import { getToken } from './authApi';
+import { getToken } from '../client';

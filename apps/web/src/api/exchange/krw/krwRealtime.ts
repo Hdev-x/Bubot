@@ -1,7 +1,7 @@
 // 업비트/빗썸 공개 WebSocket — 브라우저에서 직접 연결(REST와 동일하게). 백엔드 릴레이 불필요.
 // 업비트/빗썸(신) 둘 다 동일 포맷: 요청 [{ticket},{type,codes:["KRW-BTC"]},{format}], 응답 ticker/orderbook.
-import type { OrderbookSnapshot } from './bitgetMergeDepth';
-import type { CandleMessage, RealtimeTicker, Subscription } from './coinRealtime';
+import type { OrderbookSnapshot } from '../bitget/bitgetMergeDepth';
+import type { CandleMessage, RealtimeTicker, Subscription } from '../../server/coinRealtime';
 
 type KrwExchange = 'UPBIT' | 'BITHUMB';
 
