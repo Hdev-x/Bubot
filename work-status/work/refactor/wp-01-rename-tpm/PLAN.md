@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-01-rename-tpm
 title: TPM 이름을 Bubot으로 rename
 workstream: refactor
-state: active
+state: completed
 updated: 2026-09-03
 depends_on: []
 supersedes: []
@@ -16,11 +16,11 @@ deliveries:
   - id: wp-01-d01-api
     title: "API 패키지 com.tj.app → com.bubot, TpmApplication → BubotApplication"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: []
     branch: refactor/rename-api-package
-    pull_requests: []
+    pull_requests: [10]
     evidence:
       - kind: command
         locator: "git diff -M: 77 rename + SKILL.md 1 수정, 변경 줄은 package·import·클래스명·namespace뿐; git grep com.tj.app|TpmApplication -- apps .claude = 0; ./gradlew compileJava bootWar 통과, war Start-Class com.bubot.BubotApplication"
@@ -29,11 +29,11 @@ deliveries:
   - id: wp-01-d02-web
     title: "Web tpmApi·tpm_token·tpm- ticket rename"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-01-d01-api]
     branch: refactor/rename-web-tpm
-    pull_requests: []
+    pull_requests: [11]
     evidence:
       - kind: command
         locator: "tpmApi.ts → marketApi.ts R100, importer 13개 경로만 변경, tpm_token → bubot_token, ticket tpm- → bubot-; npm test 22 passed, build·build:web 통과; git grep 식별자 잔여 0 (web.css·WebApp.tsx 주석 7줄과 apps/api static/web 생성 bundle 제외)"
@@ -42,13 +42,21 @@ deliveries:
 milestones:
   - id: tpm-name-free
     title: "TPM 이름 0"
-    state: pending
+    state: passed
     depends_on: [wp-01-d02-web]
     acceptance:
       - "GATE-AC-001: `git grep -iE 'com\\.tj\\.app|com/tj/app|TpmApplication|tpmApi|tpm_token|tpm-' -- apps labs shared ops .claude`가 0줄이다."
       - "GATE-AC-002: 로컬에서 API·Web을 띄워 로그인과 시세 화면을 확인했다."
     unlocks: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "git grep -iE 'com\\.tj\\.app|com/tj/app|TpmApplication|tpmApi|tpm_token|tpm-' -- apps labs shared ops .claude (static/web 생성 bundle 제외) = 0"
+        revision: de2132e6
+        observed_at: 2026-09-03
+      - kind: browser
+        locator: "로컬 기동: API 시작 클래스 com.bubot.BubotApplication, 시세 200·auth 401; Desktop 차트·호가 렌더링; Mobile 로그인 화면 → 사용자 로그인 후 정상 확인(사용자 보고). 로컬 application.properties MyBatis key 2개를 com.bubot으로 변경"
+        revision: de2132e6
+        observed_at: 2026-09-03
 extensions: {}
 ---
 

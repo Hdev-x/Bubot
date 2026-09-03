@@ -6,7 +6,7 @@
 > 항목 문형 `roadmap-item@1`: `- [x]|[ ] <ID> <한 문장> | <참조>`. 참조는 `plan:<workstream>/<work-package>` 또는 `doc:<경로>` 하나.
 > `[x]`는 PLAN `state: completed`이거나 `doc:` 문서가 완료를 선언할 때만 쓴다.
 
-- 마지막 갱신: 2026-09-03 (T-01 완료)
+- 마지막 갱신: 2026-09-03 (T-02 완료)
 
 ## North Star
 
@@ -18,7 +18,7 @@
 
 ## 정리 Track
 
-- [ ] T-02 TPM 이름을 Bubot으로 rename한다 (`com.tj.app`, `TpmApplication`, `tpmApi.ts`, `tpm_token`) | `plan:refactor/wp-01-rename-tpm`
+- [x] T-02 TPM 이름을 Bubot으로 rename한다 (`com.tj.app`, `TpmApplication`, `tpmApi.ts`, `tpm_token`) | `plan:refactor/wp-01-rename-tpm`
 - [ ] T-03 Beta 제외 기능을 `labs`로 분리하고 필요한 코드만 남긴다 | `doc:work-status/DECISIONS.md`
 - [ ] T-04 로고 자산을 교체한다 | `doc:work-status/OPEN-QUESTIONS.md`
 
