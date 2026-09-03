@@ -48,11 +48,11 @@ deliveries:
   - id: wp-03-d02-hooks
     title: "hooks/ → market/ · account/ · ui/, 차트 훅은 chart/hooks"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-03-d01-api]
     branch: refactor/web-d02-hooks
-    pull_requests: []
+    pull_requests: [26]
     evidence:
       - kind: parity-check
         locator: "20 rename(market 6 · account 4 · ui 5 · chart/hooks 5), importer 32 + labs 3 파일은 import 경로 줄만 변경, 비-import 변경 0"
@@ -65,12 +65,20 @@ deliveries:
   - id: wp-03-d03-chart
     title: "chart/ 신설 — MarketChart·overlays·indicators·settings·drawing·analysis + 동반 CSS 추출"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-03-d02-hooks]
     branch: refactor/web-d03-chart
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "27 rename(MarketChart · overlays 4 · chart-hooks 2 · indicators 8 · IndicatorSheet · ChartSettingsSheet · drawing 6 · analysis 4), importer 20 + labs 1은 import 줄만; ChartSettingsSheet.css 신설(styles.css·web.css의 동일 복사본 127줄 통합, 선택자 겹침 0·상위 특이도 override만 존재)"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종(두 번들 모두 설정 시트 CSS 포함) · 번들 문자열 0 · labs tsc"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-03-d04-app-mobile
     title: "app/mobile — 진입점·pages·components·sheets, styles.css 구역 분할"
     kind: git
@@ -154,6 +162,9 @@ extensions: {}
 ### wp-03-d03-chart
 - `chart/` 신설 후 `MarketChart`·overlays 4·`chart-hooks` 2·`indicators/`·`ChartSettingsSheet`·`drawing/`·`utils`의 re-export 4 이동.
 - `styles.css`·`web.css`에서 차트·지표 시트·차트 설정 시트 구역을 잘라 `MarketChart.css`·`indicators.css`·`ChartSettingsSheet.css`로 만들고 해당 컴포넌트가 import. `web.css`의 복사 구역은 삭제.
+- 실행 결과(2026-09-03): `ChartSettingsSheet.css`만 추출(두 복사본이 공백 외 동일). 지표 시트 CSS는 Mobile 137줄·Desktop 166줄로 33% 다르고(Desktop 전용 `.ob-settings-btn` 등),
+  OHLC 오버레이도 Desktop이 변형본이라 통합하면 화면이 바뀔 수 있어 보류. Toss 토글은 동일 복사본이지만 범용 UI라 d06 `shared/ui`에서 처리.
+  보류분은 "두 복사본 diff → 공통부 추출 + 앱별 override 파일"로 별도 항목(OQ 또는 d06)에서 다룬다.
 
 ### wp-03-d04-app-mobile
 - `app/mobile/`로 `main.tsx`·`App.tsx`·`pages/`·Mobile 전용 components·`sheets/`·`coin-list/`·`trade/` 이동.

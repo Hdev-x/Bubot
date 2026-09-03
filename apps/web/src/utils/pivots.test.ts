@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { Time } from 'lightweight-charts';
 import type { Candle } from '../types/market';
-import { getPivots } from './pivots';
+import { getPivots } from '../chart/analysis/pivots';
 
 // 테스트용 time 변환: candle.time을 그대로 Time으로 사용
 const identityTime = (t: string | number): Time => t as unknown as Time;

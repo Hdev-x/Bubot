@@ -3,4 +3,4 @@
  * 차트·백테스트·실전 워커가 같은 코드를 쓰기 위한 재수출 통로.
  * 기본 logScale=true (기존 차트 동작과 동일). 선형 차트일 땐 호출부에서 logScale:false 전달.
  */
-export * from '../../../../shared/smc';
+export * from '../../../../../shared/smc';

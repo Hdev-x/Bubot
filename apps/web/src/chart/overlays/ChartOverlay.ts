@@ -3,12 +3,12 @@ import type {
   ISeriesApi, IChartApi, Time, SeriesAttachedParameter,
 } from 'lightweight-charts';
 import type { CanvasRenderingTarget2D, BitmapCoordinatesRenderingScope } from 'fancy-canvas';
-import type { Candle } from '../types/market';
-import type { FVG, OB, OBOptions } from '../utils/chartIndicators';
-import { detectFVGs, detectOBs, DEFAULT_OB_OPTIONS, eqBox, spentAt } from '../utils/chartIndicators';
+import type { Candle } from '../../types/market';
+import type { FVG, OB, OBOptions } from '../analysis/chartIndicators';
+import { detectFVGs, detectOBs, DEFAULT_OB_OPTIONS, eqBox, spentAt } from '../analysis/chartIndicators';
 
 export type { OBOptions };
-export type { OBTouchType } from '../utils/chartIndicators';
+export type { OBTouchType } from '../analysis/chartIndicators';
 
 export type TFKey = '1M' | '1W' | '3D' | '1D';
 

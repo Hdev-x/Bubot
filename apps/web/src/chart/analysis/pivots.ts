@@ -3,8 +3,8 @@
  * 차트·백테스트·실전 워커가 같은 코드를 쓰기 위한 재수출 통로.
  */
 import type { Time } from 'lightweight-charts';
-import type { Pivot as SharedPivot } from '../../../../shared/pivots';
+import type { Pivot as SharedPivot } from '../../../../../shared/pivots';
 
-export type { PivotType } from '../../../../shared/pivots';
+export type { PivotType } from '../../../../../shared/pivots';
 export type Pivot = SharedPivot<Time>;
-export { getPivots } from '../../../../shared/pivots';
+export { getPivots } from '../../../../../shared/pivots';

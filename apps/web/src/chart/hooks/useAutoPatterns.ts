@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import type { ISeriesApi, SeriesMarker, Time } from 'lightweight-charts';
 import { createSeriesMarkers } from 'lightweight-charts';
-import { getPivots } from '../../utils/pivots';
+import { getPivots } from '../analysis/pivots';
 import { buildSwingMarkers } from '../../utils/swingMarkers';
-import { detectElliottWave, detectAbcWave, predictAbcWave } from '../../utils/elliottWavePattern';
-import { predictHarmonicPatterns } from '../../utils/harmonicPattern';
+import { detectElliottWave, detectAbcWave, predictAbcWave } from '../analysis/elliottWavePattern';
+import { predictHarmonicPatterns } from '../analysis/harmonicPattern';
 import type { Candle } from '../../types/market';
-import type { PivotSetting } from '../IndicatorSheet';
-import type { ChartTheme } from '../ChartSettingsSheet';
-import type { AutoShape } from '../AutoPatternOverlay';
-import type { ElliottWaveResult, AbcWaveResult, AbcEmergingResult } from '../../utils/elliottWavePattern';
-import type { EmergingHarmonicResult } from '../../utils/harmonicPattern';
-import type { AutoPatternOverlay } from '../AutoPatternOverlay';
+import type { PivotSetting } from '../indicators/IndicatorSheet';
+import type { ChartTheme } from '../settings/ChartSettingsSheet';
+import type { AutoShape } from '../overlays/AutoPatternOverlay';
+import type { ElliottWaveResult, AbcWaveResult, AbcEmergingResult } from '../analysis/elliottWavePattern';
+import type { EmergingHarmonicResult } from '../analysis/harmonicPattern';
+import type { AutoPatternOverlay } from '../overlays/AutoPatternOverlay';
 import type { TrackerState } from '../../types/bot';
 
 interface UseAutoPatternsProps {

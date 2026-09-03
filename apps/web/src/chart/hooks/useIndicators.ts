@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import type { IChartApi, ISeriesApi, Time, LineData } from 'lightweight-charts';
 import { LineSeries } from 'lightweight-charts';
 import type { Candle } from '../../types/market';
-import type { MASetting, BBSetting } from '../IndicatorSheet';
-import { hexToRgba } from '../IndicatorSheet';
+import type { MASetting, BBSetting } from '../indicators/IndicatorSheet';
+import { hexToRgba } from '../indicators/IndicatorSheet';
 import { computeMA } from '../../utils/movingAverages';
-import type { IndicatorSettings, IndicatorLayer, OBOptions } from '../ChartOverlay';
-import type { ChartOverlay } from '../ChartOverlay';
-import type { BBOverlay, BBData } from '../BBOverlay';
+import type { IndicatorSettings, IndicatorLayer, OBOptions } from '../overlays/ChartOverlay';
+import type { ChartOverlay } from '../overlays/ChartOverlay';
+import type { BBOverlay, BBData } from '../overlays/BBOverlay';
 
 // MarketChart.tsx 내부에 선언되어 있던 헬퍼 함수
 function toLineWidth(value: number) {

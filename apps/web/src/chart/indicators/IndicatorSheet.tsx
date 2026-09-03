@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { IndicatorSettings } from './ChartOverlay';
-import { hexToRgba, DEFAULT_PIVOT_SETTING, DEFAULT_MA_SETTINGS, DEFAULT_BB_SETTING } from './indicators/settings';
-import type { MASetting, BBSetting, PivotSetting } from './indicators/settings';
-import BbSection from './indicators/BbSection';
-import MaSection from './indicators/MaSection';
-import SmcSection from './indicators/SmcSection';
-import PivotSection from './indicators/PivotSection';
-import HarmonicSection from './indicators/HarmonicSection';
-import ElliottSection from './indicators/ElliottSection';
-import AbcSection from './indicators/AbcSection';
+import type { IndicatorSettings } from '../overlays/ChartOverlay';
+import { hexToRgba, DEFAULT_PIVOT_SETTING, DEFAULT_MA_SETTINGS, DEFAULT_BB_SETTING } from './settings';
+import type { MASetting, BBSetting, PivotSetting } from './settings';
+import BbSection from './BbSection';
+import MaSection from './MaSection';
+import SmcSection from './SmcSection';
+import PivotSection from './PivotSection';
+import HarmonicSection from './HarmonicSection';
+import ElliottSection from './ElliottSection';
+import AbcSection from './AbcSection';
 
 // 공용 설정 타입/기본값/헬퍼는 indicators/settings로 이동. 기존 import 경로 호환을 위해 재export한다.
 export { hexToRgba, DEFAULT_PIVOT_SETTING, DEFAULT_MA_SETTINGS, DEFAULT_BB_SETTING };
-export type { MASetting, BBSetting, PivotSetting } from './indicators/settings';
+export type { MASetting, BBSetting, PivotSetting } from './settings';
 
 type Props = {
   isOpen: boolean;

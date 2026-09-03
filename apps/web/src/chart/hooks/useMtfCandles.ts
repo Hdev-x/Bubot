@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { IndicatorSettings, TFKey } from '../../components/ChartOverlay';
+import type { IndicatorSettings, TFKey } from '../overlays/ChartOverlay';
 import type { Candle } from '../../types/market';
 
 type LoadCandles = (granularity: string, limit: number, endTime?: string) => Promise<Candle[]>;

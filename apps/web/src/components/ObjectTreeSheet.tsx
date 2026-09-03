@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { DrawingManager } from '../drawing/index';
+import type { DrawingManager } from '../chart/drawing';
 
 type Props = {
   isOpen: boolean;

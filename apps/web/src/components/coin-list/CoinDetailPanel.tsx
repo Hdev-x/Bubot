@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import MarketChart from '../MarketChart';
+import MarketChart from '../../chart/MarketChart';
 import { formatPriceWithDecimals, formatRate, formatDisplaySymbol, getOfficialLogo, coinColor } from '../../utils/coinFormatters';
 import { CoinLogo } from './CoinLogo';
 import type { ProductFilter } from '../../utils/coinFormatters';
