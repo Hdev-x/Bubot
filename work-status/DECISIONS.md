@@ -30,6 +30,8 @@ YYYY-MM-DD | D-YYYYMMDD-NN | kind | 결정 | 이유 | 영향 범위
 
 - 2026-09-03 | D-20260903-06 | operational | Beta 로고·앱 표시명은 현행(Botz 로고 자산)을 유지한다 | 사이트에는 로고 이미지만 노출되며 포트폴리오 단계 이름은 Bubot으로 충분하다 | OQ-20260903-05 닫음. 잔여 "Bullum" 문구 통일은 OQ-20260903-10
 
+- 2026-09-03 | D-20260903-07 | operational | Web lint는 기계적 오류(미사용·빈 블록·prefer-const)만 즉시 고치고, `any`·React Compiler 계열 규칙·`no-useless-assignment`는 `warn` baseline으로 두어 lint를 CI에 넣는다 | 오류 345개를 한 번에 고치는 것은 며칠짜리 리팩터링이고 동작 변경 위험이 있다. CI가 새 오류를 막는 것이 우선 | OQ-03 닫음, baseline 축소는 OQ-11
+
 ## 대체된 결정
 
 - 2026-09-01 | Bullum 제품명·`archive/legacy-community` 보관 → D-20260903-01·D-20260902-01로 대체됨

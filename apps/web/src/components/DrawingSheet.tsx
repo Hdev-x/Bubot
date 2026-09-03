@@ -136,7 +136,7 @@ export default function DrawingSheet({ isOpen, onClose, activeTool, onSelectTool
       if (favs) setFavorites(JSON.parse(favs));
       const showFavs = localStorage.getItem('tv_show_favorites_on_chart');
       if (showFavs) setShowFavoritesOnChart(showFavs === 'true');
-    } catch (e) { }
+    } catch { /* 저장 실패는 무시 */ }
   }, []);
 
   const toggleFavorite = (e: React.MouseEvent, type: string) => {

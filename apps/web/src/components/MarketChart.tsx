@@ -3,8 +3,8 @@ import { useAutoPatterns } from "./chart-hooks/useAutoPatterns";
 import { useIndicators } from './chart-hooks/useIndicators';
 
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react';
-import { CandlestickSeries, LineSeries, HistogramSeries, ColorType, createChart, CrosshairMode, createSeriesMarkers, LineStyle } from 'lightweight-charts';
-import type { IChartApi, ISeriesApi, Time, UTCTimestamp, SeriesMarker, LineData, LineWidth } from 'lightweight-charts';
+import { CandlestickSeries, LineSeries, HistogramSeries, ColorType, createChart, CrosshairMode } from 'lightweight-charts';
+import type { IChartApi, ISeriesApi, Time, UTCTimestamp, LineData } from 'lightweight-charts';
 import { DrawingManager, getToolRegistry, SnapDot, getFibLogScaleDefault } from '../drawing';
 import type { IDrawing, SerializedDrawing } from '../drawing';
 import type { Candle } from '../types/market';
@@ -17,7 +17,6 @@ import { ChartOverlay } from './ChartOverlay';
 import { BBOverlay } from './BBOverlay';
 import type { BBData } from './BBOverlay';
 import { AutoPatternOverlay } from './AutoPatternOverlay';
-import type { AutoShape } from './AutoPatternOverlay';
 import { PriceTagOverlay } from './PriceTagOverlay';
 import type { PriceTagState } from './PriceTagOverlay';
 import type { MASetting, BBSetting } from './IndicatorSheet';
@@ -75,8 +74,6 @@ type Props = {
 
 // ── 신뢰도 랭킹 선(임시 오버레이) — baseline_rank_{symbol}.json이 있을 때만 노출 ──
 const RANK_TIERS = ['1M', '1W', '3D', '1d'] as const;
-const RANK_COLORS: Record<string, string> = { '1M': '#b07cf0', '1W': '#4fc3f7', '3D': '#e6a23c', '1d': '#66d9a3' };
-const RANK_WIDTH: Record<string, 1 | 2 | 3 | 4> = { '1M': 1, '1W': 1, '3D': 1, '1d': 1 };
 type RankLine = { price?: number; priceLo?: number; priceHi?: number; count?: number; score: number; from?: number };
 
 // 거래량 막대 색(반투명 상승/하락)
@@ -118,12 +115,6 @@ function toChartTime(time: string | number): Time {
   return time as Time;
 }
 
-function toLineWidth(value: number): LineWidth {
-  if (value <= 1) return 1;
-  if (value === 2) return 2;
-  if (value === 3) return 3;
-  return 4;
-}
 
 const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
   candles,
@@ -551,7 +542,7 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
     rsiLastCountRef.current = 0; // 기간이 바뀌면 봉 개수가 달라짐 → 전체 setData 강제
     rsiLastTimeRef.current = null;
     drawRsi(candlesRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [rsiSettings, applyRsiLines, drawRsi]);
 
   // 모니터링 카드 focus 대상(시간 창). 인덱스가 아니라 "시간"을 저장하고 적용할 때마다
@@ -906,7 +897,7 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
             return entry ? entry.factory(d.id, d.anchors, d.style, d.options) : null;
           });
         }
-      } catch {}
+      } catch { /* ignore */ }
     }
 
     const saveDrawings = () => {
@@ -1200,7 +1191,7 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
       });
     }
 
-    let bbData: {
+    const bbData: {
       upper: LineData<Time>[];
       middle: LineData<Time>[];
       lower: LineData<Time>[];
@@ -1528,7 +1519,6 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
     return () => { alive = false; };
   }, [symbol]);
 
-  const rankAppliedRef = useRef('');
   useEffect(() => {
     // 신뢰선 — SMC 오버레이 캔버스(ChartOverlay)에 위임. 좌표계·시작점 스냅·우측 라벨 전부 SMC와 동일.
     const ov = overlayRef.current;

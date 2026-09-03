@@ -52,93 +52,6 @@ function formatAssetPrice(price: number) {
   return formatPrice(price, 1);
 }
 
-function ActionButtons({ futures = false }: { futures?: boolean }) {
-  if (futures) {
-    return (
-      <div className="asset-actions-container three">
-        <div className="action-btn-item">
-          <button type="button" className="action-icon-box">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <line x1="9" y1="17" x2="9" y2="8" />
-              <line x1="15" y1="17" x2="15" y2="12" />
-            </svg>
-          </button>
-          <span className="action-label">Trade</span>
-        </div>
-        <div className="action-btn-item">
-          <button type="button" className="action-icon-box">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="17 1 21 5 17 9" />
-              <line x1="3" y1="5" x2="21" y2="5" />
-              <polyline points="7 23 3 19 7 15" />
-              <line x1="21" y1="19" x2="3" y2="19" />
-            </svg>
-          </button>
-          <span className="action-label">Transfer</span>
-        </div>
-        <div className="action-btn-item">
-          <button type="button" className="action-icon-box">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-              <polyline points="16 7 22 7 22 13" />
-              <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
-              <circle cx="13.5" cy="15.5" r="1.5" fill="currentColor" />
-            </svg>
-          </button>
-          <span className="action-label">PnL</span>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="asset-actions-container">
-      <div className="action-btn-item">
-        <button type="button" className="action-icon-box">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="16" y1="8" x2="8" y2="16" />
-            <polyline points="12 16 8 16 8 12" />
-          </svg>
-        </button>
-        <span className="action-label">Deposit</span>
-      </div>
-      <div className="action-btn-item">
-        <button type="button" className="action-icon-box">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="8" y1="16" x2="16" y2="8" />
-            <polyline points="12 8 16 8 16 12" />
-          </svg>
-        </button>
-        <span className="action-label">Withdraw</span>
-      </div>
-      <div className="action-btn-item">
-        <button type="button" className="action-icon-box">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="17 1 21 5 17 9" />
-            <line x1="3" y1="5" x2="21" y2="5" />
-            <polyline points="7 23 3 19 7 15" />
-            <line x1="21" y1="19" x2="3" y2="19" />
-          </svg>
-        </button>
-        <span className="action-label">Transfer</span>
-      </div>
-      <div className="action-btn-item">
-        <button type="button" className="action-icon-box">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-            <polyline points="16 7 22 7 22 13" />
-            <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
-            <circle cx="13.5" cy="15.5" r="1.5" fill="currentColor" />
-          </svg>
-        </button>
-        <span className="action-label">PnL</span>
-      </div>
-    </div>
-  );
-}
 
 
 
@@ -159,17 +72,15 @@ function OverviewPanel({
   usdKrw,
   realtimePrices,
   displayCurrency,
-  setDisplayCurrency,
   fallbackEquity,
   spotValue,
   spotPriced
 }: OverviewPanelProps) {
-  const { isHideBalance, toggleHideBalance } = useCurrency();
+  const { isHideBalance } = useCurrency();
   const balance = data?.balance ?? 0;
   const mainBalance = data?.mainBalance ?? 0;
   const walletBalance = mainBalance + balance;
   const pos = data?.position ?? null;
-  const currentPrice = pos ? (realtimePrices[pos.symbol] ?? data?.lastPrice[pos.symbol] ?? pos.entryPrice) : null;
   
   // 미실현 손익 — 메인계정 실제 포지션(mainPositions) 단일 소스로 실시간 재계산.
   // (configs 기반 합산은 실제 포지션을 못 담아 누락되던 버그가 있어 폐기)

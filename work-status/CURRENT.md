@@ -18,9 +18,8 @@
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. Web lint 오류 정리(`scripts/` 미사용 변수·`any`) 후 CI에 `npm run lint` 추가 (OQ-03)
-2. API `contextLoads`를 H2·테스트 secret으로 자체 완결시키고 CI에 `./gradlew test` 추가 (OQ-02)
-3. GitHub Ruleset: `main` PR 필수·force push 금지·required check (OQ-01)
+1. API `contextLoads`를 H2·테스트 secret으로 자체 완결시키고 CI에 `./gradlew test` 추가 (OQ-02)
+2. GitHub Ruleset: `main` PR 필수·force push 금지·required check (OQ-01)
 
 ## Deferred
 

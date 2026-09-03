@@ -3,7 +3,6 @@ import type {
   ISeriesApi, IChartApi, Time
 } from 'lightweight-charts';
 import type { CanvasRenderingTarget2D, BitmapCoordinatesRenderingScope } from 'fancy-canvas';
-import type { Candle } from '../types/market';
 
 export type BBData = {
   time: Time;

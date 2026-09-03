@@ -6,7 +6,6 @@ import SymbolSearchSheet from '../components/SymbolSearchSheet';
 import AnalysisHubSheet from '../components/AnalysisHubSheet';
 import ObjectTreeSheet from '../components/ObjectTreeSheet';
 import ChartSettingsSheet, { PRESET_THEMES, getThemeCssVars } from '../components/ChartSettingsSheet';
-import type { ChartTheme } from '../components/ChartSettingsSheet';
 import DrawingSheet from '../components/DrawingSheet';
 import IndicatorSheet, { DEFAULT_MA_SETTINGS, DEFAULT_BB_SETTING, DEFAULT_PIVOT_SETTING } from '../components/IndicatorSheet';
 import type { MASetting, BBSetting, PivotSetting } from '../components/IndicatorSheet';
@@ -161,7 +160,7 @@ function getBucketTime(timestamp: number, granularity: string): number {
   }
 }
 
-export default function CoinChartPage({ active = true, symbol, onSelectSymbol, productType, exchange = 'BITGET', tickDecimals = 2, onExchangeChange, onProductTypeChange, onOpenTrade, focusTracker }: Props) {
+export default function CoinChartPage({ active = true, symbol, onSelectSymbol, productType, exchange = 'BITGET', tickDecimals = 2, onExchangeChange, onProductTypeChange, focusTracker }: Props) {
   const isBinance = exchange === 'BINANCE';
 
   const handleSelectFixed = (sym: string, ex: 'BITGET' | 'BINANCE', futures: boolean) => {

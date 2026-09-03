@@ -22,7 +22,6 @@ function krwRowToTicker(r: KrwRow): CoinTicker {
 }
 
 const UPBIT_BASE = 'https://api.upbit.com/v1';
-const BITHUMB_TICKER_ALL = 'https://api.bithumb.com/public/ticker/ALL_KRW';
 
 // 업비트 공개 API는 group별 초당 레이트리밋이 있어, 여러 호출이 몰리면(차트+호가+마켓+헤더) 간헐 429가 난다.
 // 429면 백오프 후 재시도해 마켓 목록이 비어버리는(빈 화면) 것을 방지.
@@ -45,29 +44,6 @@ export function krwDecimals(price: number): number {
 }
 
 // ───────────────── 업비트 ─────────────────
-type UpbitMarket = { market: string; korean_name: string; english_name: string };
-let upbitKrwMarketsCache: { code: string; base: string; name: string }[] | null = null;
-
-async function getUpbitKrwMarkets() {
-  if (upbitKrwMarketsCache) return upbitKrwMarketsCache;
-  const res = await upbitFetch(`${UPBIT_BASE}/market/all?isDetails=false`);
-  if (!res.ok) throw new Error('upbit market/all 실패');
-  const rows = (await res.json()) as UpbitMarket[];
-  upbitKrwMarketsCache = rows
-    .filter((r) => r.market.startsWith('KRW-'))
-    .map((r) => ({ code: r.market, base: r.market.slice(4), name: r.korean_name }));
-  return upbitKrwMarketsCache;
-}
-
-// 업비트 korean_name을 base→한글명 맵으로 (빗썸 등 한글명 없는 원화 거래소 보강용)
-async function getKrwKoreanNameMap(): Promise<Map<string, string>> {
-  try {
-    const markets = await getUpbitKrwMarkets();
-    return new Map(markets.map((m) => [m.base, m.name]));
-  } catch {
-    return new Map();
-  }
-}
 
 export async function fetchUpbitSpotTickers(): Promise<CoinTicker[]> {
   // 백엔드 캐시 집약(서버가 업비트 1콜로 받아 뿌림). 실패 시 throw → 호출부가 이전 목록 유지.
