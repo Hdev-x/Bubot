@@ -4,6 +4,7 @@
 
 ```bash
 cd apps/api
+./gradlew test             # test 프로필(H2 in-memory·더미 키) — DB·.env 없이 실행 가능, CI 포함
 ./gradlew compileJava
 ./gradlew bootWar -x test
 ./gradlew bootRun
@@ -13,7 +14,7 @@ cd apps/api
 trading 모드 로컬 기동: `JAVA_TOOL_OPTIONS="-Dspring.profiles.active=dev,trading" ./ops/back-end.sh`
 (`back-end.sh`가 `SPRING_PROFILES_ACTIVE=dev`를 고정하므로 env 대신 JVM 속성으로 덮어쓴다).
 
-`./gradlew test`의 `contextLoads`는 로컬 DB·env(`APP_JWT_SECRET` 등)에 의존해 현재 환경에서 실패한다. CI Gate는 `compileJava`다.
+`./gradlew test`는 `src/test/resources/application-test.properties`(H2, 더미 키, 외부 WebSocket 차단)로 컨텍스트를 띄운다. 로컬 properties가 없어도 돈다. CI Gate는 `test`다.
 
 ## Web (`apps/web`)
 

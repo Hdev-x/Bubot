@@ -34,7 +34,7 @@ jobs:
       - run: npm run build:web
 
   api:
-    name: API compile
+    name: API test
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -47,4 +47,4 @@ jobs:
           distribution: temurin
           java-version: 21
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew compileJava --no-daemon
+      - run: ./gradlew test --no-daemon
