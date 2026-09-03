@@ -1,0 +1,651 @@
+{
+  "generatedAt": "2026-06-14T15:34:43.601Z",
+  "basis": "wick",
+  "candleLimit": 1200,
+  "scanLengths": [
+    55,
+    34,
+    21,
+    13,
+    8,
+    5
+  ],
+  "source": "binance-futures",
+  "symbols": {
+    "BTCUSDT": {
+      "1h": {
+        "candles": 1199,
+        "lastClose": 63953.7,
+        "completed": [
+          {
+            "scanLen": 21,
+            "name": "Bullish Gartley",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 182,
+                "price": 78027,
+                "time": 1777788000
+              },
+              "A": {
+                "type": "high",
+                "i": 259,
+                "price": 82828.7,
+                "time": 1778065200
+              },
+              "B": {
+                "type": "low",
+                "i": 299,
+                "price": 79137.4,
+                "time": 1778209200
+              },
+              "C": {
+                "type": "high",
+                "i": 367,
+                "price": 82460.5,
+                "time": 1778454000
+              },
+              "D": {
+                "type": "low",
+                "i": 432,
+                "price": 78713.8,
+                "time": 1778688000
+              }
+            },
+            "error": 0.067254973142438,
+            "abcdMatch": true,
+            "abcdType": "1:1",
+            "closestAbcd": "1:1",
+            "abcdRatio": 1.0200018235384132,
+            "tp1": 80260.99253190824,
+            "tp2": 81232.00972711665,
+            "sl": 78560.02374743889,
+            "przPrice": 79030.58553690856
+          },
+          {
+            "scanLen": 5,
+            "name": "Bullish Deep Crab",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 1045,
+                "price": 62377,
+                "time": 1780894800
+              },
+              "A": {
+                "type": "high",
+                "i": 1055,
+                "price": 64179.5,
+                "time": 1780930800
+              },
+              "B": {
+                "type": "low",
+                "i": 1064,
+                "price": 62381.2,
+                "time": 1780963200
+              },
+              "C": {
+                "type": "high",
+                "i": 1069,
+                "price": 63499.9,
+                "time": 1780981200
+              },
+              "D": {
+                "type": "low",
+                "i": 1080,
+                "price": 60755,
+                "time": 1781020800
+              }
+            },
+            "error": 0.30687885806175563,
+            "abcdMatch": true,
+            "abcdType": ">=1.0",
+            "closestAbcd": "1.618",
+            "abcdRatio": 1.5548595241958587,
+            "tp1": 62041.04286532644,
+            "tp2": 62849.129260514135,
+            "sl": 60625.123738888695,
+            "przPrice": 61288.456349248096
+          }
+        ],
+        "emergingTouched": [],
+        "emergingUntouched": []
+      },
+      "4h": {
+        "candles": 1199,
+        "lastClose": 64511.7,
+        "completed": [
+          {
+            "scanLen": 21,
+            "name": "Bearish Deep Gartley",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 78,
+                "price": 94555,
+                "time": 1765296000
+              },
+              "A": {
+                "type": "low",
+                "i": 133,
+                "price": 84408.6,
+                "time": 1766088000
+              },
+              "B": {
+                "type": "high",
+                "i": 155,
+                "price": 90599,
+                "time": 1766404800
+              },
+              "C": {
+                "type": "low",
+                "i": 167,
+                "price": 86355,
+                "time": 1766577600
+              },
+              "D": {
+                "type": "high",
+                "i": 241,
+                "price": 94760.3,
+                "time": 1767643200
+              }
+            },
+            "error": 0.1331068967956578,
+            "abcdMatch": true,
+            "abcdType": "1:1",
+            "closestAbcd": "1.272",
+            "abcdRatio": 1.3124027399930849,
+            "tp1": 90663.99465890712,
+            "tp2": 88222.27929259004,
+            "sl": 95960.65710563504,
+            "przPrice": 93339.30214827535
+          },
+          {
+            "scanLen": 21,
+            "name": "Bearish Crab",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 712,
+                "price": 71999.9,
+                "time": 1774425600
+              },
+              "A": {
+                "type": "low",
+                "i": 739,
+                "price": 64918.2,
+                "time": 1774814400
+              },
+              "B": {
+                "type": "high",
+                "i": 753,
+                "price": 69288,
+                "time": 1775016000
+              },
+              "C": {
+                "type": "low",
+                "i": 761,
+                "price": 65676.1,
+                "time": 1775131200
+              },
+              "D": {
+                "type": "high",
+                "i": 908,
+                "price": 79455,
+                "time": 1777248000
+              }
+            },
+            "error": 0.33360537213910013,
+            "abcdMatch": true,
+            "abcdType": ">=1.0",
+            "closestAbcd": "1.618",
+            "abcdRatio": 2.923624151726023,
+            "tp1": 73552.74964637123,
+            "tp2": 70127.56974822996,
+            "sl": 79854.11795166836,
+            "przPrice": 76757.44765131397
+          },
+          {
+            "scanLen": 13,
+            "name": "Bearish Deep Crab",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 155,
+                "price": 90599,
+                "time": 1766404800
+              },
+              "A": {
+                "type": "low",
+                "i": 167,
+                "price": 86355,
+                "time": 1766577600
+              },
+              "B": {
+                "type": "high",
+                "i": 195,
+                "price": 90373.4,
+                "time": 1766980800
+              },
+              "C": {
+                "type": "low",
+                "i": 197,
+                "price": 86760,
+                "time": 1767009600
+              },
+              "D": {
+                "type": "high",
+                "i": 241,
+                "price": 94760.3,
+                "time": 1767643200
+              }
+            },
+            "error": 0.31802907775325795,
+            "abcdMatch": true,
+            "abcdType": ">=1.0",
+            "closestAbcd": "1.618",
+            "abcdRatio": 1.9392814140171495,
+            "tp1": 91457.00022396835,
+            "tp2": 89474.02261675602,
+            "sl": 95051.57548491677,
+            "przPrice": 93325.43007007186
+          },
+          {
+            "scanLen": 5,
+            "name": "Bearish Deep Gartley",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 43,
+                "price": 94185,
+                "time": 1764792000
+              },
+              "A": {
+                "type": "low",
+                "i": 65,
+                "price": 87688,
+                "time": 1765108800
+              },
+              "B": {
+                "type": "high",
+                "i": 70,
+                "price": 92262.6,
+                "time": 1765180800
+              },
+              "C": {
+                "type": "low",
+                "i": 75,
+                "price": 89368.9,
+                "time": 1765252800
+              },
+              "D": {
+                "type": "high",
+                "i": 78,
+                "price": 94555,
+                "time": 1765296000
+              }
+            },
+            "error": 0.16885406981260453,
+            "abcdMatch": true,
+            "abcdType": "1:1",
+            "closestAbcd": "1:1",
+            "abcdRatio": 1.1092372625179143,
+            "tp1": 91870.51761863875,
+            "tp2": 90250.26803939382,
+            "sl": 95064.23269586737,
+            "przPrice": 93420.67529840724
+          },
+          {
+            "scanLen": 5,
+            "name": "Bullish Gartley",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 945,
+                "price": 78027,
+                "time": 1777780800
+              },
+              "A": {
+                "type": "high",
+                "i": 964,
+                "price": 82828.7,
+                "time": 1778054400
+              },
+              "B": {
+                "type": "low",
+                "i": 974,
+                "price": 79137.4,
+                "time": 1778198400
+              },
+              "C": {
+                "type": "high",
+                "i": 991,
+                "price": 82460.5,
+                "time": 1778443200
+              },
+              "D": {
+                "type": "low",
+                "i": 1008,
+                "price": 78713.8,
+                "time": 1778688000
+              }
+            },
+            "error": 0.067254973142438,
+            "abcdMatch": true,
+            "abcdType": "1:1",
+            "closestAbcd": "1:1",
+            "abcdRatio": 1.0200018235384132,
+            "tp1": 80260.99253190824,
+            "tp2": 81232.00972711665,
+            "sl": 78560.02374743889,
+            "przPrice": 79030.58553690856
+          }
+        ],
+        "emergingTouched": [
+          {
+            "scanLen": 55,
+            "name": "Bullish Shark (Emerging)",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 428,
+                "price": 59800,
+                "time": 1770336000
+              },
+              "A": {
+                "type": "high",
+                "i": 662,
+                "price": 75998.9,
+                "time": 1773705600
+              },
+              "B": {
+                "type": "low",
+                "i": 739,
+                "price": 64918.2,
+                "time": 1774814400
+              },
+              "C": {
+                "type": "high",
+                "i": 964,
+                "price": 82828.7,
+                "time": 1778054400
+              }
+            },
+            "przPrice": 62062.58567404203,
+            "przMin": 57320.349272528925,
+            "przMax": 62062.58567404203,
+            "slPrice": 57320.349272528925,
+            "bcAbRatio": 1.546070744769378,
+            "bcAbTier": "0.786~1.0",
+            "bcProjectionRatio": 1.1846309074880326,
+            "bcProjectionRange": "1.618~2.618",
+            "bcProjectionMatch": false,
+            "abcdRatio": 1.8315231894168467,
+            "abcdTier": "1.618",
+            "abcdMatch": true,
+            "abXaRatio": 0.6574141391684295,
+            "xcXaRatio": 1.3589946285976238,
+            "isPrzTouched": true,
+            "przTouchedTime": 1780675200,
+            "przTouchedPrice": 59080,
+            "error": 0
+          }
+        ],
+        "emergingUntouched": []
+      },
+      "1d": {
+        "candles": 1199,
+        "lastClose": 64418.2,
+        "completed": [
+          {
+            "scanLen": 13,
+            "name": "Bearish Shark",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 42,
+                "price": 31059,
+                "time": 1681430400
+              },
+              "A": {
+                "type": "low",
+                "i": 70,
+                "price": 25751,
+                "time": 1683849600
+              },
+              "B": {
+                "type": "high",
+                "i": 87,
+                "price": 28442,
+                "time": 1685318400
+              },
+              "C": {
+                "type": "low",
+                "i": 104,
+                "price": 24777,
+                "time": 1686787200
+              },
+              "D": {
+                "type": "high",
+                "i": 132,
+                "price": 31850,
+                "time": 1689206400
+              }
+            },
+            "error": 0.22529108710345092,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 2.526540144490837,
+            "tp1": 28091.76836726373,
+            "tp2": 25496.563119367405,
+            "sl": 31984.937465681818,
+            "przPrice": 30269.109989467106
+          },
+          {
+            "scanLen": 8,
+            "name": "Bearish Deep Gartley",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 895,
+                "price": 124545.6,
+                "time": 1755129600
+              },
+              "A": {
+                "type": "low",
+                "i": 913,
+                "price": 107211.5,
+                "time": 1756684800
+              },
+              "B": {
+                "type": "high",
+                "i": 930,
+                "price": 117875.2,
+                "time": 1758153600
+              },
+              "C": {
+                "type": "low",
+                "i": 938,
+                "price": 108566,
+                "time": 1758844800
+              },
+              "D": {
+                "type": "high",
+                "i": 948,
+                "price": 126208.5,
+                "time": 1759708800
+              }
+            },
+            "error": 0.20250022947425228,
+            "abcdMatch": true,
+            "abcdType": "1:1",
+            "closestAbcd": "1.618",
+            "abcdRatio": 1.5879812643965725,
+            "tp1": 118583.6905219632,
+            "tp2": 114105.0893102696,
+            "sl": 126995.9003518974,
+            "przPrice": 122435.81296765832
+          },
+          {
+            "scanLen": 5,
+            "name": "Bearish Butterfly",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 416,
+                "price": 67222,
+                "time": 1713744000
+              },
+              "A": {
+                "type": "low",
+                "i": 425,
+                "price": 56537.7,
+                "time": 1714521600
+              },
+              "B": {
+                "type": "high",
+                "i": 430,
+                "price": 65500,
+                "time": 1714953600
+              },
+              "C": {
+                "type": "low",
+                "i": 434,
+                "price": 60117.4,
+                "time": 1715299200
+              },
+              "D": {
+                "type": "high",
+                "i": 445,
+                "price": 72132.8,
+                "time": 1716249600
+              }
+            },
+            "error": 0.13534362059739968,
+            "abcdMatch": true,
+            "abcdType": ">=1.0",
+            "closestAbcd": "1.272",
+            "abcdRatio": 1.2383205677832283,
+            "tp1": 65723.28055733292,
+            "tp2": 62051.415753697926,
+            "sl": 72215.9572912895,
+            "przPrice": 70462.58392173491
+          }
+        ],
+        "emergingTouched": [
+          {
+            "scanLen": 21,
+            "name": "Bullish Shark (Emerging)",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 1071,
+                "price": 59800,
+                "time": 1770336000
+              },
+              "A": {
+                "type": "high",
+                "i": 1110,
+                "price": 75998.9,
+                "time": 1773705600
+              },
+              "B": {
+                "type": "low",
+                "i": 1122,
+                "price": 64918.2,
+                "time": 1774742400
+              },
+              "C": {
+                "type": "high",
+                "i": 1160,
+                "price": 82828.7,
+                "time": 1778025600
+              }
+            },
+            "przPrice": 62062.58567404203,
+            "przMin": 57320.349272528925,
+            "przMax": 62062.58567404203,
+            "slPrice": 57320.349272528925,
+            "bcAbRatio": 1.546070744769378,
+            "bcAbTier": "0.786~1.0",
+            "bcProjectionRatio": 1.1846309074880326,
+            "bcProjectionRange": "1.618~2.618",
+            "bcProjectionMatch": false,
+            "abcdRatio": 1.8315231894168467,
+            "abcdTier": "1.618",
+            "abcdMatch": true,
+            "abXaRatio": 0.6574141391684295,
+            "xcXaRatio": 1.3589946285976238,
+            "isPrzTouched": true,
+            "przTouchedTime": 1780617600,
+            "przTouchedPrice": 59080,
+            "error": 0
+          }
+        ],
+        "emergingUntouched": [
+          {
+            "scanLen": 55,
+            "name": "Bullish Shark (Emerging)",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 521,
+                "price": 48888,
+                "time": 1722816000
+              },
+              "A": {
+                "type": "high",
+                "i": 689,
+                "price": 110000,
+                "time": 1737331200
+              },
+              "B": {
+                "type": "low",
+                "i": 766,
+                "price": 74457,
+                "time": 1743984000
+              },
+              "C": {
+                "type": "high",
+                "i": 948,
+                "price": 126208.5,
+                "time": 1759708800
+              }
+            },
+            "przPrice": 54469.99216904184,
+            "przMin": 43217.24192327007,
+            "przMax": 54469.99216904184,
+            "slPrice": 43217.24192327007,
+            "bcAbRatio": 1.3522150174090353,
+            "bcAbTier": "0.786~1.0",
+            "bcProjectionRatio": 1.5923134728903532,
+            "bcProjectionRange": "1.618~2.618",
+            "bcProjectionMatch": false,
+            "abcdRatio": 2.15315019046507,
+            "abcdTier": "1.618",
+            "abcdMatch": true,
+            "abXaRatio": 0.4812372638190943,
+            "xcXaRatio": 1.1694989912539189,
+            "isPrzTouched": false,
+            "error": 0
+          }
+        ]
+      }
+    }
+  },
+  "failed": []
+}

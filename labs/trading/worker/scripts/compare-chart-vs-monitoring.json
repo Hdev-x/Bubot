@@ -1,0 +1,2105 @@
+{
+  "generatedAt": "2026-06-14T15:36:29.123Z",
+  "basis": "wick",
+  "candleLimit": 1200,
+  "symbols": {
+    "AAVEUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 8,
+        "monByPhase": {
+          "completed": 8
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "ADAUSDT": {
+      "1h": {
+        "chartCompleted": 7,
+        "monByPhase": {
+          "completed": 7,
+          "scanning": 2
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780480800_1780718400_1780952400_1781125200_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781305200_1781362800_1781380800_1781402400_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "ALLOUSDT": {
+      "1h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "ASTERUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "AVAXUSDT": {
+      "1h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "scanning": 2,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780718400_1780819200_1780858800_1780869600_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1781125200_1781204400_1781269200_1781384400_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781096400_1781125200_1781164800_1781197200_false",
+            "chartName": "Bearish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1770336000_1773705600_1774742400_1778371200_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "BANKUSDT": {
+      "1h": {
+        "chartCompleted": 9,
+        "monByPhase": {
+          "completed": 9
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "BCHUSDT": {
+      "1h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780862400_1781121600_1781208000_1781294400_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "BLESSUSDT": {
+      "1h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "BTCUSDT": {
+      "1h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1770336000_1773705600_1774814400_1778054400_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1770336000_1773705600_1774742400_1778025600_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1722816000_1737331200_1743984000_1759708800_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "DASHUSDT": {
+      "1h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "signal": 1,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1775102400_1775952000_1776657600_1778054400_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1776657600_1778054400_1779048000_1779321600_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "signal": 2,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1758499200_1762214400_1766102400_1768521600_true",
+            "chartName": "Bullish Gartley (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1775088000_1775952000_1776643200_1778025600_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1776643200_1778025600_1778976000_1779321600_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "DOGEUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "scanning": 1,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1781305200_1781362800_1781370000_1781384400_true",
+            "chartName": "Bullish Bat (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780110000_1780722000_1780869600_1781125200_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780099200_1780718400_1780862400_1781121600_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "DOTUSDT": {
+      "1h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1771934400_1772049600_1773532800_1773691200_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "scanning": 1,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1771891200_1771977600_1773532800_1773619200_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1770336000_1771977600_1776124800_1778630400_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "ESPORTSUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "ETHUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "scanning": 1,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1781244000_1781276400_1781366400_1781384400_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780869600_1781020800_1781096400_1781125200_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1750550400_1755993600_1763683200_1765324800_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "FARTCOINUSDT": {
+      "1h": {
+        "chartCompleted": 7,
+        "monByPhase": {
+          "completed": 7,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1781010000_1781089200_1781096400_1781128800_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "FETUSDT": {
+      "1h": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1,
+          "signal": 2
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1779058800_1779796800_1779969600_1780282800_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1780869600_1781132400_1781211600_1781323200_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "signal": 2
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1779048000_1779796800_1779969600_1780272000_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1780862400_1781121600_1781208000_1781323200_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1760054400_1762473600_1766016000_1767657600_true",
+            "chartName": "Bullish Deep Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      }
+    },
+    "FIDAUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "signal": 1,
+          "scanning": 2
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780930800_1780977600_1781006400_1781128800_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1781280000_1781330400_1781337600_1781362800_false",
+            "chartName": "Bearish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781337600_1781362800_1781373600_1781384400_false",
+            "chartName": "Bearish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "FILUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "signal": 1,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780869600_1781128800_1781200800_1781269200_false",
+            "chartName": "Bearish Deep Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1781305200_1781362800_1781413200_1781427600_true",
+            "chartName": "Bullish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "signal": 2
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1777478400_1778270400_1779048000_1779897600_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1780862400_1781121600_1781193600_1781265600_false",
+            "chartName": "Bearish Deep Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "signal": 2,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1686355200_1709942400_1722816000_1733270400_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1777420800_1778198400_1778976000_1779840000_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1774742400_1778198400_1778976000_1779840000_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "HOLOUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 8,
+        "monByPhase": {
+          "completed": 8
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "HOMEUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 2,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780408800_1780560000_1780822800_1780977600_false",
+            "chartName": "Bearish 5-0 (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1779645600_1780408800_1780560000_1780822800_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1780977600_1781035200_1781078400_1781161200_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "scanning": 1,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780401600_1780560000_1780819200_1780977600_false",
+            "chartName": "Bearish 5-0 (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1779638400_1780401600_1780560000_1780819200_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "HYPEUSDT": {
+      "1h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2,
+          "signal": 2,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1779969600_1780354800_1780437600_1780524000_true",
+            "chartName": "Bullish Alt Bat (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781283600_1781326800_1781362800_1781373600_false",
+            "chartName": "Bearish Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1781283600_1781326800_1781362800_1781373600_false",
+            "chartName": "Bearish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1779969600_1780344000_1780430400_1780516800_true",
+            "chartName": "Bullish Alt Bat (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1761782400_1768953600_1770076800_1771804800_false",
+            "chartName": "Bearish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "INJUSDT": {
+      "1h": {
+        "chartCompleted": 9,
+        "monByPhase": {
+          "completed": 9,
+          "signal": 2,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1781132400_1781146800_1781197200_1781229600_true",
+            "chartName": "Bullish Cypher (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781326800_1781334000_1781366400_1781391600_true",
+            "chartName": "Bullish Deep Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1781132400_1781146800_1781197200_1781229600_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "JTOUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1781326800_1781341200_1781370000_1781427600_true",
+            "chartName": "Bullish Butterfly (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 7,
+        "monByPhase": {
+          "completed": 7
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1767657600_1770336000_1774396800_1775174400_false",
+            "chartName": "Bearish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "LABUSDT": {
+      "1h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2,
+          "signal": 1,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780437600_1780567200_1780750800_1780779600_true",
+            "chartName": "Bullish Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780437600_1780567200_1780750800_1780779600_true",
+            "chartName": "Bullish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "LINKUSDT": {
+      "1h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1770336000_1773619200_1774742400_1778371200_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      }
+    },
+    "LITUSDT": {
+      "1h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "signal": 1,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1779519600_1779750000_1779976800_1780524000_true",
+            "chartName": "Bullish 5-0 (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780524000_1780639200_1780693200_1780858800_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "signal": 1,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1779508800_1779739200_1779969600_1780516800_true",
+            "chartName": "Bullish 5-0 (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780516800_1780632000_1780689600_1780848000_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "LTCUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "NEARUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "scanning": 3
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780934400_1781125200_1781258400_1781294400_false",
+            "chartName": "Bearish Gartley (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781038800_1781125200_1781157600_1781197200_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781294400_1781366400_1781384400_1781398800_true",
+            "chartName": "Bullish Bat (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1,
+          "scanning": 2
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1768334400_1770336000_1773691200_1774814400_false",
+            "chartName": "Bearish Crab (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1780934400_1781121600_1781251200_1781294400_false",
+            "chartName": "Bearish Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1768262400_1770336000_1773619200_1774742400_false",
+            "chartName": "Bearish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "ONDOUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "scanning": 2
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1779102000_1779454800_1780146000_1780498800_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781128800_1781276400_1781305200_1781352000_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1779091200_1779451200_1780142400_1780488000_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 2
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1757635200_1760054400_1767657600_1770336000_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1779062400_1779408000_1780099200_1780444800_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "OPGUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780837200_1781089200_1781182800_1781233200_false",
+            "chartName": "Bearish Crab (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780833600_1781078400_1781179200_1781222400_false",
+            "chartName": "Bearish Crab (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1779408000_1780300800_1780372800_1781078400_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "OPNUSDT": {
+      "1h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "PEPEUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "signal": 1,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780869600_1781020800_1781096400_1781128800_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1781244000_1781276400_1781326800_1781384400_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "PIPPINUSDT": {
+      "1h": {
+        "chartCompleted": 7,
+        "monByPhase": {
+          "completed": 7
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "PORTALUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "scanning": 2,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780826400_1780837200_1780905600_1780916400_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780038000_1780279200_1780743600_1780761600_true",
+            "chartName": "Bullish Gartley (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1780038000_1780279200_1780743600_1780761600_true",
+            "chartName": "Bullish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 8,
+        "monByPhase": {
+          "completed": 8,
+          "scanning": 2
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780027200_1780272000_1780732800_1780761600_true",
+            "chartName": "Bullish Gartley (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1780027200_1780272000_1780732800_1780761600_true",
+            "chartName": "Bullish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "PUMPUSDT": {
+      "1h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1781035200_1781132400_1781200800_1781226000_false",
+            "chartName": "Bearish Deep Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1760054400_1769558400_1775088000_1778371200_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "SIRENUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "SKYAIUSDT": {
+      "1h": {
+        "chartCompleted": 7,
+        "monByPhase": {
+          "completed": 7
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {},
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "SOLUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780192800_1780722000_1780952400_1781125200_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 9,
+        "monByPhase": {
+          "completed": 9,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780185600_1780718400_1780948800_1781121600_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "SUIUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "scanning": 3,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1780869600_1780963200_1781096400_1781125200_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1777485600_1778439600_1779058800_1779386400_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781125200_1781197200_1781280000_1781352000_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1781125200_1781276400_1781280000_1781352000_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1777478400_1778428800_1779048000_1779379200_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1777420800_1778371200_1778976000_1779321600_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "TAOUSDT": {
+      "1h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1779804000_1780718400_1780869600_1781125200_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "signal": 2
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1776340800_1778428800_1779120000_1779451200_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1779796800_1780718400_1780862400_1781121600_false",
+            "chartName": "Bearish Bat (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1,
+          "scanning": 2
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1770336000_1774396800_1776297600_1778371200_true",
+            "chartName": "Bullish Bat (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1761955200_1766534400_1768348800_1770336000_false",
+            "chartName": "Bearish Cypher (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "TONUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780718400_1780797600_1780858800_1780941600_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "signal": 1,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1776571200_1778126400_1779624000_1780329600_true",
+            "chartName": "Bullish Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1776571200_1778126400_1779624000_1780329600_true",
+            "chartName": "Bullish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6,
+          "signal": 2,
+          "scanning": 2
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1754179200_1760054400_1767657600_1770336000_false",
+            "chartName": "Bearish Gartley (Emerging)",
+            "monPhase": "signal"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1776556800_1778112000_1779580800_1780272000_true",
+            "chartName": "Bullish Gartley (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1754179200_1760054400_1767657600_1770336000_false",
+            "chartName": "Bearish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1776556800_1778112000_1779580800_1780272000_true",
+            "chartName": "Bullish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "TRXUSDT": {
+      "1h": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "VVVUSDT": {
+      "1h": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "WIFUSDT": {
+      "1h": {
+        "chartCompleted": 3,
+        "monByPhase": {
+          "completed": 3,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1781244000_1781276400_1781305200_1781348400_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "WLDUSDT": {
+      "1h": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2,
+          "scanning": 2
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1780941600_1781125200_1781164800_1781308800_false",
+            "chartName": "Bearish Gartley (Emerging)",
+            "monPhase": "scanning"
+          },
+          {
+            "status": "MATCH",
+            "sig": "1780941600_1781125200_1781164800_1781308800_false",
+            "chartName": "Bearish Deep Gartley (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 2,
+        "monByPhase": {
+          "completed": 2
+        },
+        "touched": [],
+        "untouched": []
+      }
+    },
+    "XLMUSDT": {
+      "1h": {
+        "chartCompleted": 7,
+        "monByPhase": {
+          "completed": 7,
+          "signal": 1,
+          "scanning": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1781125200_1781146800_1781190000_1781233200_true",
+            "chartName": "Bullish Shark (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1781323200_1781348400_1781373600_1781402400_true",
+            "chartName": "Bullish Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "4h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1755129600_1760054400_1767657600_1770336000_false",
+            "chartName": "Bearish Shark (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "XPLUSDT": {
+      "1h": {
+        "chartCompleted": 4,
+        "monByPhase": {
+          "completed": 4
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 1,
+        "monByPhase": {
+          "completed": 1,
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1774814400_1775160000_1777766400_1778284800_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      },
+      "1d": {
+        "chartCompleted": 0,
+        "monByPhase": {
+          "scanning": 1
+        },
+        "touched": [],
+        "untouched": [
+          {
+            "status": "MATCH",
+            "sig": "1774742400_1775088000_1777766400_1778284800_true",
+            "chartName": "Bullish Deep Crab (Emerging)",
+            "monPhase": "scanning"
+          }
+        ]
+      }
+    },
+    "ZECUSDT": {
+      "1h": {
+        "chartCompleted": 5,
+        "monByPhase": {
+          "completed": 5,
+          "signal": 1
+        },
+        "touched": [
+          {
+            "status": "MATCH",
+            "sig": "1781344800_1781355600_1781366400_1781424000_true",
+            "chartName": "Bullish 5-0 (Emerging)",
+            "monPhase": "signal"
+          }
+        ],
+        "untouched": []
+      },
+      "4h": {
+        "chartCompleted": 7,
+        "monByPhase": {
+          "completed": 7
+        },
+        "touched": [],
+        "untouched": []
+      },
+      "1d": {
+        "chartCompleted": 6,
+        "monByPhase": {
+          "completed": 6
+        },
+        "touched": [],
+        "untouched": []
+      }
+    }
+  },
+  "summary": {
+    "touched": 48,
+    "touchedMatched": 48,
+    "touchedLabelDiff": 0,
+    "touchedMissing": 0,
+    "untouched": 66,
+    "untouchedMatched": 66,
+    "untouchedMissing": 0
+  }
+}

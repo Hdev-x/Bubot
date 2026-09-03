@@ -1,0 +1,19 @@
+{
+  "name": "bullum-trader",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test-connection": "node --experimental-strip-types src/test-connection.ts",
+    "bot": "node --experimental-strip-types src/bot.ts"
+  },
+  "dependencies": {
+    "axios": "^1.17.0",
+    "dotenv": "^16.4.5",
+    "pg": "^8.21.0",
+    "web-push": "^3.6.7",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1"
+  }
+}
