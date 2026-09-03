@@ -9,8 +9,6 @@
 
 ## Git·CI
 
-- 질문: OQ-20260903-01 GitHub Ruleset(`main` PR 필수·force push 금지·required check)을 지금 적용할지 | `docs/GIT-WORKFLOW.md` 8절
-
 ## 배포·제품
 
 - 질문: OQ-20260903-04 Beta 배포 대상 — EC2는 꺼져 있고 후보는 (a) Intel iMac 홈 서버 + Docker Compose + Cloudflare Tunnel(도메인 구입 필요) 또는 Duck DNS(`autotradev.duckdns.org`) + 포트포워딩, (b) AWS Lightsail 서울 2GB(월 약 $7). 도메인 구입 여부와 `DB_URL`이 가리키는 PostgreSQL 위치가 정해지면 `wp-03` PLAN | `work-status/ROADMAP.md`

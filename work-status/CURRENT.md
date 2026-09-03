@@ -11,14 +11,16 @@
 ## 현재 목표
 
 - 기준선 Track 완료(2026-09-03, PR #3~#7): `shared`·`apps/api`·`apps/web`·`labs/trading/worker`·`ops`가 원본 `develop`과 blob hash 동일하게 들어왔고, Web tests 22·build 2종·API bootWar·`ops/verify` 6종이 원본과 같은 결과다.
-- 프로젝트가 지금 달성하려는 결과: 배포 전 품질 정리 — 루트 README, Web lint 정리와 CI lint, API test 자체 완결과 CI test, GitHub Ruleset.
-- 완료 기준: CI가 lint·test까지 실제로 검사하고 `main`이 Ruleset으로 보호된다.
+- 배포 전 품질 정리 완료(2026-09-03): README, CI lint(error 0·warning baseline 320), API test(H2 test 프로필), Ruleset `main-protection`.
+- 프로젝트가 지금 달성하려는 결과: 다음 단계 선택 대기 — (a) 배포 `wp-03`(도메인·DB 위치 결정 필요, Deferred) 또는 (b) 코드 품질 리팩터링 WP(lint warning baseline 축소·큰 파일 분해, 사용자와 항목별 진행).
+- 완료 기준: 사용자가 (a)/(b) 중 하나를 고르고 해당 PLAN이 승인된다.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. GitHub Ruleset: `main` PR 필수·force push 금지·required check (OQ-01)
+1. 다음 Work Package 선택: 배포(`wp-03`, 도메인·DB 결정 후) 또는 코드 품질 리팩터링(OQ-11 baseline 축소부터, 사용자와 항목별)
+2. 원본 AutoTrade 저장소 정리: 병합된 branch 삭제(승인 대기), CURRENT에 "제품 작업은 Bubot으로 이관" 기록
 
 ## Deferred
 
