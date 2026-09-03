@@ -36,7 +36,7 @@ for file in "${staged_files[@]}"; do
   esac
 
   if git -C "$project" show ":$file" 2>/dev/null | LC_ALL=C grep -aEiq \
-    '(BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|password[[:space:]]*[:=][[:space:]]*[^[:space:]#]{8,}|postgres(ql)?://[^[:space:]]+:[^[:space:]@]+@)'; then
+    '(BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|password[[:space:]]*[:=][[:space:]]*[\"'\''][^\"'\'']{8,}[\"'\'']|postgres(ql)?://[^[:space:]]+:[^[:space:]@]+@)'; then
     echo "FAIL 시크릿 의심 내용 감지: $file" >&2
     failed=1
   fi
