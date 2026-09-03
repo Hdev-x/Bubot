@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bubot.member.MemberMapper">
+
+    <insert id="create">
+        INSERT INTO members (email, nickname, password_hash, role, status)
+        VALUES (#{username}, #{name}, #{password}, 'USER', 'ACTIVE')
+    </insert>
+
+    <select id="read" resultType="MemberDTO">
+        SELECT 
+            email AS username,
+            nickname AS name,
+            password_hash AS password,
+            0 AS cash,
+            email AS email
+        FROM members
+        WHERE email = #{username}
+    </select>
+
+    <update id="update">
+        UPDATE members
+        SET
+            nickname = #{name}
+        WHERE email = #{username}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM members
+        WHERE email = #{username}
+    </delete>
+
+    <resultMap type="MemberDTO" id="memberResult">
+        <id column="USERNAME" property="username" />
+        <result column="NAME" property="name" />
+        <result column="PASSWORD" property="password" />
+        <result column="CASH" property="cash" />
+        <result column="EMAIL" property="email"/>
+        <collection property="roles" ofType="RoleDTO">
+            <id column="ROLE_NO" property="roleNo" />
+            <result column="ROLE_NAME" property="roleName" />
+        </collection>
+    </resultMap>
+
+    <select id="login" resultMap="memberResult">
+        SELECT 
+            m.email AS "USERNAME",
+            m.nickname AS "NAME",
+            m.password_hash AS "PASSWORD",
+            0 AS "CASH",
+            m.email AS "EMAIL",
+            CASE WHEN m.role = 'ADMIN' THEN 1 ELSE 2 END AS "ROLE_NO",
+            m.role AS "ROLE_NAME"
+        FROM members m
+        WHERE m.email = #{username}
+    </select>
+
+</mapper>

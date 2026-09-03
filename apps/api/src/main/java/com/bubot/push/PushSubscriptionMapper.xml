@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bubot.push.PushSubscriptionMapper">
+
+    <insert id="insertSubscription" parameterType="PushSubscriptionDTO">
+        INSERT INTO push_subscription (member_id, endpoint, p256dh, auth)
+        VALUES (#{memberId}, #{endpoint}, #{p256dh}, #{auth})
+        ON CONFLICT (endpoint) DO UPDATE 
+        SET member_id = EXCLUDED.member_id,
+            p256dh = EXCLUDED.p256dh,
+            auth = EXCLUDED.auth
+    </insert>
+
+    <delete id="deleteSubscriptionByEndpoint" parameterType="String">
+        DELETE FROM push_subscription WHERE endpoint = #{endpoint}
+    </delete>
+
+    <select id="selectSubscriptionsByMemberId" parameterType="String" resultType="PushSubscriptionDTO">
+        SELECT id, member_id as memberId, endpoint, p256dh, auth, created_at as createdAt
+        FROM push_subscription
+        WHERE member_id = #{memberId}
+    </select>
+
+    <select id="selectAllSubscriptions" resultType="PushSubscriptionDTO">
+        SELECT id, member_id as memberId, endpoint, p256dh, auth, created_at as createdAt
+        FROM push_subscription
+    </select>
+
+</mapper>

@@ -13,10 +13,10 @@ description: 로컬 개발 서버(백엔드 8081 / 프론트 모바일 5175 + �
 
 1. **이미 떠 있는 프로세스 정리** (포트 충돌 방지). 다음을 Bash로 실행:
    ```bash
-   pkill -f "gradlew bootRun" 2>/dev/null; pkill -f "com.tj.app.TpmApplication" 2>/dev/null; pkill -f "GradleDaemon" 2>/dev/null; pkill -f "vite" 2>/dev/null; pkill -f "unified-worker" 2>/dev/null; sleep 3; lsof -nP -iTCP:8081 -sTCP:LISTEN 2>/dev/null && echo "⚠️ 8081 여전히 점유 중 — 위 PID 수동 kill 필요" || echo "기존 프로세스 정리 완료 (8081 비어있음)"
+   pkill -f "gradlew bootRun" 2>/dev/null; pkill -f "com.bubot.BubotApplication" 2>/dev/null; pkill -f "GradleDaemon" 2>/dev/null; pkill -f "vite" 2>/dev/null; pkill -f "unified-worker" 2>/dev/null; sleep 3; lsof -nP -iTCP:8081 -sTCP:LISTEN 2>/dev/null && echo "⚠️ 8081 여전히 점유 중 — 위 PID 수동 kill 필요" || echo "기존 프로세스 정리 완료 (8081 비어있음)"
    ```
-   ⚠️ `gradlew bootRun` 만 죽이면 **이미 실행 중인 자바 앱(TpmApplication)이 8081을 계속 점유**해서
-   새 백엔드가 기동 실패(`webServerStartStop`)한다. 반드시 `TpmApplication` 까지 죽이고 8081이 비었는지 확인할 것.
+   ⚠️ `gradlew bootRun` 만 죽이면 **이미 실행 중인 자바 앱(BubotApplication)이 8081을 계속 점유**해서
+   새 백엔드가 기동 실패(`webServerStartStop`)한다. 반드시 `BubotApplication` 까지 죽이고 8081이 비었는지 확인할 것.
 
 2. **백엔드** — `run_in_background: true` 로 실행:
    ```bash

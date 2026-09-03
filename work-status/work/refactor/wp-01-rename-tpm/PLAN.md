@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-01-rename-tpm
 title: TPM 이름을 Bubot으로 rename
 workstream: refactor
-state: planned
+state: active
 updated: 2026-09-03
 depends_on: []
 supersedes: []
@@ -16,12 +16,16 @@ deliveries:
   - id: wp-01-d01-api
     title: "API 패키지 com.tj.app → com.bubot, TpmApplication → BubotApplication"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: []
     branch: refactor/rename-api-package
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "git diff -M: 77 rename + SKILL.md 1 수정, 변경 줄은 package·import·클래스명·namespace뿐; git grep com.tj.app|TpmApplication -- apps .claude = 0; ./gradlew compileJava bootWar 통과, war Start-Class com.bubot.BubotApplication"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-01-d02-web
     title: "Web tpmApi·tpm_token·tpm- ticket rename"
     kind: git
