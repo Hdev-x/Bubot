@@ -11,18 +11,20 @@
 ## 현재 목표
 
 - 기준선 Track 완료(2026-09-03, PR #3~#7): `shared`·`apps/api`·`apps/web`·`labs/trading/worker`·`ops`가 원본 `develop`과 blob hash 동일하게 들어왔고, Web tests 22·build 2종·API bootWar·`ops/verify` 6종이 원본과 같은 결과다.
-- 프로젝트가 지금 달성하려는 결과: Beta 배포 준비 — 배포 대상 결정(OQ-20260903-04) 후 `bootJar` 전환·배포 스크립트 교체, 로고 교체(OQ-05).
-- 완료 기준: 배포 대상·로고가 결정되고 `wp-03` PLAN(배포 Track)이 승인된다.
+- 프로젝트가 지금 달성하려는 결과: 배포 전 품질 정리 — 루트 README, Web lint 정리와 CI lint, API test 자체 완결과 CI test, GitHub Ruleset.
+- 완료 기준: CI가 lint·test까지 실제로 검사하고 `main`이 Ruleset으로 보호된다.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. OQ-20260903-04(배포 대상)·OQ-05(로고) 결정 — 사용자
-2. `wp-03` 배포 Track PLAN 작성: `bootJar` 전환, `ServletInitializer`·`war` 플러그인 제거, `ops/deploy.sh` 교체, `v0.1.0-beta` 태그
-3. 추적 중인 `apps/api/.../static/web` 생성 bundle 처리(OQ-08) — 배포 방식과 함께 결정
+1. Web lint 오류 정리(`scripts/` 미사용 변수·`any`) 후 CI에 `npm run lint` 추가 (OQ-03)
+2. API `contextLoads`를 H2·테스트 secret으로 자체 완결시키고 CI에 `./gradlew test` 추가 (OQ-02)
+3. GitHub Ruleset: `main` PR 필수·force push 금지·required check (OQ-01)
 
 ## Deferred
+
+- Beta 배포(`wp-03`): 도메인 구입 여부와 DB 위치가 정해질 때까지 보류. 후보 구성은 OQ-20260903-04. jar 전환·`ops/deploy.sh` 교체·`static/web` 생성 bundle 처리(OQ-08)는 이때 함께
 
 - Private Worklog 연결(`.ai-workflow.local`) — OQ-20260903-07 결정 후
 - `labs/trading/worker/.env`·`ecosystem.config.cjs` 복사 — 워커를 다시 쓸 때(모의투자 Track)

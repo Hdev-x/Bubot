@@ -1,6 +1,6 @@
 # 미확정 질문
 
-- 마지막 갱신: 2026-09-03
+- 마지막 갱신: 2026-09-03 (OQ-05 닫음, OQ-04 후보 갱신, OQ-10 추가)
 
 > 아직 결정하지 않은 사항과 사용자 확인이 필요한 내용을 기록한다. AI가 임의로 확정하지 않는다.
 > 해결된 질문은 이 문서에서 제거하고, 닫는 commit·PR 본문에 `OQ-YYYYMMDD-NN → D-YYYYMMDD-NN`을 적는다.
@@ -15,10 +15,11 @@
 
 ## 배포·제품
 
-- 질문: OQ-20260903-04 Beta 배포 대상을 기존 EC2 Tomcat으로 유지할지 새 환경(jar + systemd·컨테이너)으로 갈지. 결정 후 `bootJar` 전환 | `work-status/ROADMAP.md`
-- 질문: OQ-20260903-05 Bubot 로고 자산과 앱 표시명(현재 Mobile은 Botz 로고)
+- 질문: OQ-20260903-04 Beta 배포 대상 — EC2는 꺼져 있고 후보는 (a) Intel iMac 홈 서버 + Docker Compose + Cloudflare Tunnel(도메인 구입 필요) 또는 Duck DNS(`autotradev.duckdns.org`) + 포트포워딩, (b) AWS Lightsail 서울 2GB(월 약 $7). 도메인 구입 여부와 `DB_URL`이 가리키는 PostgreSQL 위치가 정해지면 `wp-03` PLAN | `work-status/ROADMAP.md`
 
 ## 막지는 않음
+
+- 질문: OQ-20260903-10 코드·문구에 남은 "Bullum"(`apps/web/package.json` name, `document.title`, 푸터)을 Bubot으로 통일할지 | D-20260903-06
 
 - 질문: OQ-20260903-09 `apps/web/.env`의 `VITE_BOT_API_TOKEN`이 브라우저 번들에 노출되는 값인데 Beta에서 계속 프론트에 둘지, 서버 프록시(`/api/bot`)로만 쓰고 제거할지 | `apps/web/src/api/botApi.ts`
 
