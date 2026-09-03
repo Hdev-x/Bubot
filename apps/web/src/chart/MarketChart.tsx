@@ -1,28 +1,28 @@
-import { useAutoPatterns } from "./chart-hooks/useAutoPatterns";
+import { useAutoPatterns } from "./hooks/useAutoPatterns";
 
-import { useIndicators } from './chart-hooks/useIndicators';
+import { useIndicators } from './hooks/useIndicators';
 
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react';
 import { CandlestickSeries, LineSeries, HistogramSeries, ColorType, createChart, CrosshairMode } from 'lightweight-charts';
 import type { IChartApi, ISeriesApi, Time, UTCTimestamp, LineData } from 'lightweight-charts';
-import { DrawingManager, getToolRegistry, SnapDot, getFibLogScaleDefault } from '../drawing/index';
-import type { IDrawing, SerializedDrawing } from '../drawing/index';
+import { DrawingManager, getToolRegistry, SnapDot, getFibLogScaleDefault } from './drawing';
+import type { IDrawing, SerializedDrawing } from './drawing';
 import type { Candle } from '../types/market';
 import { computeRsiCandles, DEFAULT_RSI_SETTINGS } from '../utils/rsiCandles';
 import type { RsiSettings } from '../utils/rsiCandles';
 import { computeMA } from '../utils/movingAverages';
-import type { ChartTheme } from './ChartSettingsSheet';
-import { getDerivedThemeColors } from './ChartSettingsSheet';
-import { ChartOverlay } from './ChartOverlay';
-import { BBOverlay } from './BBOverlay';
-import type { BBData } from './BBOverlay';
-import { AutoPatternOverlay } from './AutoPatternOverlay';
-import { PriceTagOverlay } from './PriceTagOverlay';
-import type { PriceTagState } from './PriceTagOverlay';
-import type { MASetting, BBSetting } from './IndicatorSheet';
-import { hexToRgba } from './IndicatorSheet';
-import type { IndicatorSettings, IndicatorLayer, OBOptions } from './ChartOverlay';
-import type { PivotSetting } from './IndicatorSheet';
+import type { ChartTheme } from './settings/ChartSettingsSheet';
+import { getDerivedThemeColors } from './settings/ChartSettingsSheet';
+import { ChartOverlay } from './overlays/ChartOverlay';
+import { BBOverlay } from './overlays/BBOverlay';
+import type { BBData } from './overlays/BBOverlay';
+import { AutoPatternOverlay } from './overlays/AutoPatternOverlay';
+import { PriceTagOverlay } from './overlays/PriceTagOverlay';
+import type { PriceTagState } from './overlays/PriceTagOverlay';
+import type { MASetting, BBSetting } from './indicators/IndicatorSheet';
+import { hexToRgba } from './indicators/IndicatorSheet';
+import type { IndicatorSettings, IndicatorLayer, OBOptions } from './overlays/ChartOverlay';
+import type { PivotSetting } from './indicators/IndicatorSheet';
 import type { TrackerState } from '../types/bot';
 
 type Props = {

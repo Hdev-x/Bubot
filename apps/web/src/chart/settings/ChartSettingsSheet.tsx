@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import './ChartSettingsSheet.css';
 
 export type ChartTheme = {
   id: string;

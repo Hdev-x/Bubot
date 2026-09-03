@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { IndicatorSettings, TFIndicators, TFKey } from '../ChartOverlay';
+import type { IndicatorSettings, TFIndicators, TFKey } from '../overlays/ChartOverlay';
 
 const BASIC_SECTIONS: { key: keyof TFIndicators; label: string }[] = [
   { key: 'showOB', label: 'OB' },

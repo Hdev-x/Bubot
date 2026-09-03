@@ -1,6 +1,6 @@
 import type { Candle } from '@web/types/market';
-import { predictHarmonicPatterns, harmonicEntryPrice } from '@web/utils/harmonicPattern';
-import type { EmergingHarmonicResult } from '@web/utils/harmonicPattern';
+import { predictHarmonicPatterns, harmonicEntryPrice } from '@web/chart/analysis/harmonicPattern';
+import type { EmergingHarmonicResult } from '@web/chart/analysis/harmonicPattern';
 import { detectOBs as detectOBsShared, detectFVGs as detectFVGsShared, classifyCandle as classifyCandleShared, eqBox as eqBoxShared } from '../../../../../shared/smc';
 
 export const HARMONIC_PRICE_LOSS_CAP_PCT = 10.0; // SL 캡 기본값 (harmonicSlCapPct 미지정 시 폴백)
