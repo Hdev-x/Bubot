@@ -1,0 +1,23 @@
+package com.tj.app.bot;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+@Configuration
+@EnableWebSocket
+public class BotWebSocketProxyConfig implements WebSocketConfigurer {
+
+    private final BotWebSocketProxyHandler botWebSocketProxyHandler;
+
+    public BotWebSocketProxyConfig(BotWebSocketProxyHandler botWebSocketProxyHandler) {
+        this.botWebSocketProxyHandler = botWebSocketProxyHandler;
+    }
+
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(botWebSocketProxyHandler, "/api/bot-ws/**")
+                .setAllowedOriginPatterns("*");
+    }
+}
