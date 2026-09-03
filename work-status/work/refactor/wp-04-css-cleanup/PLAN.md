@@ -23,7 +23,11 @@ deliveries:
     depends_on: []
     branch: docs/css-d00-survey
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: document
+        locator: "docs/architecture/WEB-CSS-REVIEW.md — 요약, owner 폴더별 구역 지도, 중복 선택자 172(본문 동일 105·상이 67), 미사용 후보 mobile 129+동적의심 2 / desktop 51+3, labs 전용 46/66, :root 토큰 차이표, 착수 순서"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-04-d01-unused
     title: "미사용 규칙 삭제, labs 전용 규칙 처리 (Mobile·Desktop)"
     kind: git
