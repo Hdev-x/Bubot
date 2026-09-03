@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-03-web-structure
 title: apps/web 폴더 구조 재편 (계층 우선 + 앱별 분리 + CSS 동반)
 workstream: refactor
-state: planned
+state: active
 updated: 2026-09-03
 depends_on: [wp-02-beta-boundary]
 supersedes: []
@@ -18,12 +18,16 @@ deliveries:
   - id: wp-03-d00-dead-code
     title: "dead code 8개 파일과 labs 잔여 CSS 구역 삭제"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: []
     branch: refactor/web-d00-dead-code
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "8개 파일 삭제(참조 0 확인), styles.css 8개 구역 2,076줄 삭제 — 구역 밖 정의 없는 범용 선택자 0, 삭제 후 파일이 '원본 − 구역'과 바이트 동일; lint 0·tests 22·build 2종·번들 문자열 0. '멀티봇 대시보드' 구역은 자산 화면 클래스 88개 사용 중이라 보존"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-03-d01-api
     title: "api/ → client.ts + server/ + exchange/"
     kind: git
@@ -120,6 +124,8 @@ extensions: {}
 ### wp-03-d00-dead-code
 - 삭제: `components/OrderTicket.tsx`, `components/trade/SpotTicket.tsx`, `components/FloatingToolbar.tsx`, `components/DrawingSettingsSheet.tsx`, `api/walletApi.ts`, `utils/toast.ts`, `pages/PlaceholderPage.tsx`, `config/features.ts`
 - `styles.css`에서 Strategy Page·Backtest Panel·LivePage·Live*·PaperStatusPanel 구역 삭제(구역 주석 기준). 삭제 전 해당 클래스가 남은 Beta 코드에서 쓰이는지 grep으로 확인.
+- 실행 결과(2026-09-03): 8개 구역 2,076줄 삭제. "통합 대시보드 멀티봇" 구역(1,262줄)은 이름과 달리 `asset-*` 등 자산 화면 클래스 88개가 사용 중이라 보존.
+  "서브계정 뱃지" 구역도 `sub-account-badge`가 사용 중이라 보존.
 
 ### wp-03-d01-api
 - `api/client.ts`: `authApi.ts`의 `getToken`·`authHeader`(및 axios 인스턴스가 있으면 그것)를 옮기고 `authApi`는 로그인·회원·me만 남긴다. 다른 api 파일의 `from './authApi'` 참조를 `./client`로 바꾼다.
