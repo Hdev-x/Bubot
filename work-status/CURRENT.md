@@ -1,6 +1,6 @@
 # 현재 상태
 
-- 마지막 갱신: 2026-09-03
+- 마지막 갱신: 2026-09-03 (기준선 완료)
 
 > 이 문서는 다음 세션을 위한 상태판이다. 이력을 쌓지 않고 덮어쓴다.
 > Branch·Commit·작업 트리는 Git에서, 완료 작업의 상세·증거는 PLAN과 Git History에서 확인한다.
@@ -10,28 +10,25 @@
 
 ## 현재 목표
 
-- 프로젝트가 지금 달성하려는 결과: 원본 저장소(`Hdev-x/Bullum` `develop`)에서 정리된 코드를 폴더 단위로 가져와 `main`이 빌드·기동되는 기준선을 만든다.
-- 완료 기준: `apps/web`·`apps/api`·`shared`·`labs`·`ops`가 들어오고 `docs/COMMANDS.md`의 Gate가 원본과 같은 결과를 낸다.
+- 기준선 Track 완료(2026-09-03, PR #3~#7): `shared`·`apps/api`·`apps/web`·`labs/trading/worker`·`ops`가 원본 `develop`과 blob hash 동일하게 들어왔고, Web tests 22·build 2종·API bootWar·`ops/verify` 6종이 원본과 같은 결과다.
+- 프로젝트가 지금 달성하려는 결과: 정리 리팩터링 Work Package를 시작한다 — TPM 이름 rename, Beta 제외 기능 `labs` 분리, 로고 교체.
+- 완료 기준: `work-status/work/refactor/wp-01-*/PLAN.md`에 Outcome·Acceptance·Delivery·Gate가 정의되고 사용자가 범위를 승인한다.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. `chore/import-shared` — `shared/` 6개 가져오기 (의존 없음)
-2. `chore/import-api` — `apps/api/` 가져오기, `./gradlew compileJava bootWar -x test` 통과
-3. `chore/import-web` — `apps/web/` 가져오기, `npm test`·`build`·`build:web` 통과
-4. `chore/import-worker` — `labs/trading/worker/` 가져오기
-5. `chore/import-ops` — `ops/` 가져오기, `ops/verify` 6종이 원본 baseline과 동일(4 OK, 2 기존 drift)
-6. CI guard 제거 (폴더가 다 들어온 뒤)
+1. 리팩터링 Work Package PLAN 초안 작성(`refactor/wp-01-rename-tpm`부터) 후 사용자 범위 승인
+2. 로컬 기동 확인 — `apps/api`·`apps/web`에 `.env`·`application*.properties`를 두고 `/서버` 절차로 API·Web 기동
 
 ## Deferred
 
-- Private Worklog 연결(`.ai-workflow.local`) — 원본 저장소 worklog를 이어 쓸지 새로 만들지 결정 후
-- 로컬 `ops/back-end.sh`·`worker.sh`(gitignore) 복사 — `ops/` 가져올 때
+- Private Worklog 연결(`.ai-workflow.local`) — OQ-20260903-07 결정 후
+- 로컬 전용 `ops/back-end.sh`·`worker.sh`·`.env`·properties 복사 — 로컬 기동 확인 시
 
 ## 활성 Work Package
 
-- 없음. 가져오기는 각 단계가 독립 PR이라 PLAN 없이 TODO로 관리한다. 다음 큰 작업(리팩터링)부터 `work-status/work/refactor/wp-01-*/PLAN.md`를 만든다.
+- 없음. 다음 큰 작업(리팩터링)부터 `work-status/work/refactor/wp-01-*/PLAN.md`를 만든다.
 
 ## 완료된 Work Package (링크만)
 
@@ -39,7 +36,8 @@
 
 ## Blocker·주의
 
-- 없음
+- `ops/verify`의 `verify-signals`(153 vs 143)·`verify-worker-harmonic-status`(253 vs 253 내용 불일치)는 원본에서 이어진 기존 baseline drift다. Gate 판정은 "원본과 같은 실패"를 통과로 본다. baseline `--update`는 별도 승인.
+- `ops/check-secrets.sh` 파일명·비밀번호 규칙을 소스 코드 오탐 때문에 두 번 좁혔다(PR #4·#5). 가져오기 중 추가 오탐은 없었다.
 
 ## 읽기 안내
 
