@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+blocked=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main)
+      echo "BLOCKED: main 직접 push는 허용되지 않습니다." >&2
+      echo "작업 브랜치를 push하고 Pull Request로 반영하세요." >&2
+      blocked=1
+      ;;
+  esac
+done
+
+if ((blocked)); then
+  echo "초기 저장소 설정 외에 --no-verify로 우회하지 마세요." >&2
+  exit 1
+fi

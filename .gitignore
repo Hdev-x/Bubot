@@ -1,0 +1,113 @@
+### Custom ###
+cf-worker/
+.DS_Store
+# 참고자료·로그 (코드 아님, 추적 제외)
+docs/reference/
+*.log
+node_modules/
+**/node_modules/
+# 프론트 빌드 산출물 — deploy.sh가 매번 새로 생성하므로 추적 안 함
+apps/api/src/main/resources/static/mobile/
+.env
+**/.env
+.ai-workflow.local
+__pycache__/
+**/__pycache__/
+*.pyc
+.venv/
+**/.venv/
+application-dev.properties
+application.properties
+
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+# 로컬 실행 스크립트 (실제 비밀값 포함 — 커밋 금지)
+back-end.sh
+
+# 워커 실행 스크립트(비밀값 포함)
+worker.sh
+
+# 데이터 수집 산출물 (스크립트로 재생성 — 대용량, 추적 제외)
+ops/verify/fixtures/full/*
+# 예외: 해설집 파이프라인이 쓰는 캔들(1M·1w·3d·1d·4h, 합 ~3.2MB)만 추적한다.
+#       소스 재생성엔 1M~1d, 브리핑 렌더(4H 이벤트 줌, gen_brief_lw)엔 4h가 필요하다.
+#       intraday 1h·30m·15m(~70MB)는 계속 제외한다 (DECISIONS 2026-07-21 (2)).
+!ops/verify/fixtures/full/BTCUSDT/
+ops/verify/fixtures/full/BTCUSDT/*
+!ops/verify/fixtures/full/BTCUSDT/BTCUSDT-1M.json
+!ops/verify/fixtures/full/BTCUSDT/BTCUSDT-1w.json
+!ops/verify/fixtures/full/BTCUSDT/BTCUSDT-3d.json
+!ops/verify/fixtures/full/BTCUSDT/BTCUSDT-1d.json
+!ops/verify/fixtures/full/BTCUSDT/BTCUSDT-4h.json
+# ML 분석 가상환경 (재생성 가능)
+# 주식 데이터 수집 로컬 환경 (.env·.venv 포함 — 커밋 금지)
+
+# AI 작업 메모·일회성 스크립트 (추적 제외)
+brain/
+history/
+scratch/
+memory/
+.system_generated/
+.tmp/
+dev-dist/
+.vite/
+*.tsbuildinfo
+!.claude/
+.claude/*
+!.claude/CLAUDE.md
+!.claude/skills/
+.claude/skills/find-skills
+.claude/skills/skill-creator
+
+# 임시 실험 산출물 (로컬 전용)
+# 수동 다중 세션 terminal signal·coordinator ack (로컬 IPC, 결과 정본 아님)
+
+# 해설집 새 작업공간의 재생성 가능 산출물·로컬 백업
+
+# 종목별 작업공간(runs/{SYMBOL}/)은 입력만 추적하고 산출물은 재생성한다.
+# 입력: series-manifest.json, analysis-contract.template.json, volumes/*/decision-input.json,
+#      volumes/*/apply-ai-prose.mjs
+# AI 해설 재적용 스크립트는 산출물이 아니라 입력이다. 초안을 다시 뽑으면 해설이 지워지고
+# 되살리는 수단이 이 스크립트뿐인데, 추적하지 않으면 작업 트리에만 존재해 복구 불가가 된다.
+# 계약 §5.3 재현성 요건 (2026-07-20).
+# 실험용 심볼릭 링크(volumes/_test-*)는 로컬 전용이다. 절대경로라 다른 환경에서 깨진다.
+
+# 배포 스크립트 중 비밀값 포함 파일 (추적 금지)
+ops/back-end.sh
+ops/worker.sh

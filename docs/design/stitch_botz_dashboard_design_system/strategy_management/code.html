@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Strategy - AutoTrade</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "text-secondary": "#cfd3da",
+                        "secondary": "#ffb3b5",
+                        "surface-container-high": "#242c26",
+                        "outline-variant": "#3c4a40",
+                        "on-tertiary": "#571f00",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#3be194",
+                        "background": "#0d1510",
+                        "primary-container": "#0ecb81",
+                        "surface-container-lowest": "#08100b",
+                        "on-tertiary-fixed-variant": "#7a3003",
+                        "primary": "#45e89b",
+                        "surface-bright": "#333b35",
+                        "on-secondary-container": "#ffb7b9",
+                        "on-primary-container": "#004f2f",
+                        "bg-base": "#000000",
+                        "surface-dim": "#0d1510",
+                        "surface-primary": "rgba(255, 255, 255, 0.02)",
+                        "secondary-fixed": "#ffdada",
+                        "inverse-primary": "#006d42",
+                        "on-secondary-fixed-variant": "#920026",
+                        "error": "#ffb4ab",
+                        "surface": "#0d1510",
+                        "surface-active": "rgba(255, 255, 255, 0.14)",
+                        "outline": "#859489",
+                        "border-subtle": "rgba(255, 255, 255, 0.05)",
+                        "surface-control": "rgba(255, 255, 255, 0.05)",
+                        "surface-secondary": "rgba(255, 255, 255, 0.04)",
+                        "border-normal": "rgba(255, 255, 255, 0.08)",
+                        "primary-fixed": "#60feae",
+                        "on-background": "#dce5dc",
+                        "secondary-container": "#ac012f",
+                        "on-primary": "#003920",
+                        "primary-fixed-dim": "#3be194",
+                        "on-tertiary-container": "#762e01",
+                        "on-secondary-fixed": "#40000b",
+                        "tertiary-fixed-dim": "#ffb694",
+                        "secondary-fixed-dim": "#ffb3b5",
+                        "on-surface": "#dce5dc",
+                        "text-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#005231",
+                        "error-container": "#93000a",
+                        "accent-blue": "#3182f6",
+                        "surface-container-highest": "#2f3731",
+                        "surface-variant": "#2f3731",
+                        "inverse-on-surface": "#2a322c",
+                        "on-secondary": "#680018",
+                        "on-primary-fixed": "#002111",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-tertiary-fixed": "#351000",
+                        "on-surface-variant": "#bbcabd",
+                        "tertiary": "#ffbfa2",
+                        "surface-container-low": "#161d18",
+                        "tertiary-container": "#ff9764",
+                        "surface-container": "#1a211c",
+                        "on-error": "#690005",
+                        "status-warning": "#f5a623",
+                        "inverse-surface": "#dce5dc",
+                        "text-muted": "#8b95a1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gap-compact": "8px",
+                        "touch-target": "40px",
+                        "card-padding": "12px",
+                        "page-margin": "14px",
+                        "gap-section": "20px"
+                    },
+                    "fontFamily": {
+                        "nav-label": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "display-asset": ["Inter"],
+                        "headline-symbol": ["Inter"],
+                        "body-main": ["Inter"],
+                        "body-numeric": ["Inter"],
+                        "badge-tiny": ["Inter"]
+                    },
+                    "fontSize": {
+                        "nav-label": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "display-asset": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-symbol": ["16px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "body-main": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-numeric": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                        "badge-tiny": ["10px", {"lineHeight": "12px", "fontWeight": "800"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000; /* Pure black background as requested */
+            color: #ffffff;
+        }
+        .bg-level-1 {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .bg-level-2 {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #45e89b; /* primary color */
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #45e89b;
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: white;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-main antialiased pb-safe">
+<!-- TopAppBar -->
+<header class="bg-background dark:bg-background fixed top-0 w-full bg-surface-container-lowest border-b border-border-subtle flex justify-between items-center h-14 px-page-margin w-full z-50">
+<button class="text-primary dark:text-primary active:scale-95 duration-100 hover:bg-surface-active transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+</button>
+<div class="font-headline-symbol text-headline-symbol text-primary uppercase tracking-wider">
+            AutoTrade
+        </div>
+<button class="text-primary dark:text-primary active:scale-95 duration-100 hover:bg-surface-active transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="pt-[76px] pb-[80px] px-page-margin max-w-3xl mx-auto space-y-gap-section">
+<!-- Segmented Control -->
+<div class="flex p-1 bg-level-2 rounded-lg sticky top-[68px] z-40 backdrop-blur-sm">
+<button class="flex-1 py-1.5 px-4 rounded-md bg-surface-active text-text-primary font-body-main text-sm transition-all shadow-sm">
+                Active
+            </button>
+<button class="flex-1 py-1.5 px-4 rounded-md text-text-muted hover:text-text-primary font-body-main text-sm transition-all">
+                Backtest
+            </button>
+</div>
+<!-- Strategy List -->
+<div class="space-y-gap-compact">
+<!-- Strategy Card 1 -->
+<div class="bg-level-1 rounded-lg p-card-padding flex flex-col gap-3">
+<!-- Header -->
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded bg-surface-control flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">ssid_chart</span>
+</div>
+<div>
+<h3 class="font-headline-symbol text-headline-symbol text-text-primary">Harmonic Scanner</h3>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-label-caps text-label-caps text-primary">RUNNING</span>
+</div>
+</div>
+</div>
+<!-- Toggle Switch -->
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-transform duration-300 ease-in-out border-surface-control" id="toggle1" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-control cursor-pointer transition-colors duration-300 ease-in-out" for="toggle1"></label>
+</div>
+</div>
+<!-- Symbols -->
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-control font-label-caps text-label-caps text-text-secondary border border-border-subtle">BTC/USDT</span>
+<span class="px-2 py-0.5 rounded bg-surface-control font-label-caps text-label-caps text-text-secondary border border-border-subtle">ETH/USDT</span>
+<span class="px-2 py-0.5 rounded bg-surface-control font-label-caps text-label-caps text-text-secondary border border-border-subtle">SOL/USDT</span>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-3 gap-2 py-2 border-t border-b border-border-subtle">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">WIN RATE</span>
+<span class="font-body-numeric text-body-numeric text-primary">68.4%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">TOTAL PNL</span>
+<span class="font-body-numeric text-body-numeric text-primary">+$1,245.50</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">TRADES</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">142</span>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex justify-end gap-2 pt-1">
+<button class="px-3 py-1.5 rounded-md bg-surface-control text-text-secondary hover:text-text-primary hover:bg-surface-active transition-colors font-body-main text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+                        Edit
+                    </button>
+</div>
+</div>
+<!-- Strategy Card 2 -->
+<div class="bg-level-1 rounded-lg p-card-padding flex flex-col gap-3">
+<!-- Header -->
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded bg-surface-control flex items-center justify-center text-text-secondary">
+<span class="material-symbols-outlined text-[20px]">polyline</span>
+</div>
+<div>
+<h3 class="font-headline-symbol text-headline-symbol text-text-primary">AB=CD Pattern</h3>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="relative inline-flex rounded-full h-2 w-2 bg-text-muted"></span>
+<span class="font-label-caps text-label-caps text-text-muted">PAUSED</span>
+</div>
+</div>
+</div>
+<!-- Toggle Switch -->
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-transform duration-300 ease-in-out border-surface-control" id="toggle2" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-control cursor-pointer transition-colors duration-300 ease-in-out" for="toggle2"></label>
+</div>
+</div>
+<!-- Symbols -->
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-control font-label-caps text-label-caps text-text-secondary border border-border-subtle">XRP/USDT</span>
+<span class="px-2 py-0.5 rounded bg-surface-control font-label-caps text-label-caps text-text-secondary border border-border-subtle">ADA/USDT</span>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-3 gap-2 py-2 border-t border-b border-border-subtle">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">WIN RATE</span>
+<span class="font-body-numeric text-body-numeric text-text-secondary">52.1%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">TOTAL PNL</span>
+<span class="font-body-numeric text-body-numeric text-error">-$142.20</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">TRADES</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">87</span>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex justify-end gap-2 pt-1">
+<button class="px-3 py-1.5 rounded-md bg-surface-control text-text-secondary hover:text-text-primary hover:bg-surface-active transition-colors font-body-main text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+                        Edit
+                    </button>
+</div>
+</div>
+<!-- Strategy Card 3 -->
+<div class="bg-level-1 rounded-lg p-card-padding flex flex-col gap-3">
+<!-- Header -->
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded bg-surface-control flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">candlestick_chart</span>
+</div>
+<div>
+<h3 class="font-headline-symbol text-headline-symbol text-text-primary">SMC Liquidity</h3>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-label-caps text-label-caps text-primary">RUNNING</span>
+</div>
+</div>
+</div>
+<!-- Toggle Switch -->
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-transform duration-300 ease-in-out border-surface-control" id="toggle3" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-control cursor-pointer transition-colors duration-300 ease-in-out" for="toggle3"></label>
+</div>
+</div>
+<!-- Symbols -->
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-control font-label-caps text-label-caps text-text-secondary border border-border-subtle">ETH/USDT</span>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-3 gap-2 py-2 border-t border-b border-border-subtle">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">WIN RATE</span>
+<span class="font-body-numeric text-body-numeric text-primary">71.2%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">TOTAL PNL</span>
+<span class="font-body-numeric text-body-numeric text-primary">+$3,450.00</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">TRADES</span>
+<span class="font-body-numeric text-body-numeric text-text-primary">45</span>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex justify-end gap-2 pt-1">
+<button class="px-3 py-1.5 rounded-md bg-surface-control text-text-secondary hover:text-text-primary hover:bg-surface-active transition-colors font-body-main text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+                        Edit
+                    </button>
+</div>
+</div>
+<!-- Add Strategy Button -->
+<button class="w-full py-4 border-2 border-dashed border-border-subtle rounded-lg flex flex-col items-center justify-center gap-2 text-text-muted hover:text-text-primary hover:border-surface-active hover:bg-surface-secondary transition-all group">
+<span class="material-symbols-outlined text-[24px] group-hover:text-primary transition-colors">add_circle</span>
+<span class="font-body-main text-sm">Add New Strategy</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-surface-container-lowest text-primary dark:text-primary font-nav-label text-nav-label-mobile font-headline-symbol text-headline-symbol text-primary fixed bottom-0 w-full z-50 bg-surface-container-lowest border-t border-border-subtle backdrop-blur-md flat no shadows hover:text-on-surface active:opacity-80 transition-all fixed bottom-0 left-0 w-full flex justify-around items-center h-16 pb-safe px-2 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface w-16" href="#">
+<span class="material-symbols-outlined mb-1">sensors</span>
+<span class="text-[10px]">Live</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-surface-active rounded-xl px-3 py-1 w-16" href="#">
+<span class="material-symbols-outlined mb-1">candlestick_chart</span>
+<span class="text-[10px]">Markets</span> <!-- Mapping Strategy implicitly to Markets/Signals in this nav structure based on JSON -->
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface w-16" href="#">
+<span class="material-symbols-outlined mb-1">query_stats</span>
+<span class="text-[10px]">Signals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface w-16" href="#">
+<span class="material-symbols-outlined mb-1">history</span>
+<span class="text-[10px]">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface w-16" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="text-[10px]">Profile</span>
+</a>
+</nav>
+<!-- Desktop Sidebar (Hidden on mobile as per logic) -->
+<nav class="hidden md:flex fixed left-0 top-14 h-[calc(100vh-56px)] w-64 bg-surface-container-lowest border-r border-border-subtle flex-col py-4 z-40">
+<div class="px-4 pb-4 mb-4 border-b border-border-subtle">
+<p class="font-label-caps text-label-caps text-text-muted mb-2">NAVIGATION</p>
+</div>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-active transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">sensors</span>
+<span class="font-nav-label text-nav-label">Live</span>
+</a>
+<a class="flex items-center px-6 py-3 text-primary bg-surface-active border-r-4 border-primary transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">candlestick_chart</span>
+<span class="font-nav-label text-nav-label">Markets</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-active transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">query_stats</span>
+<span class="font-nav-label text-nav-label">Signals</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-active transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">history</span>
+<span class="font-nav-label text-nav-label">History</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-active transition-colors mt-auto border-t border-border-subtle pt-4" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-nav-label text-nav-label">Profile</span>
+</a>
+</nav>
+<!-- Adjust main content margin for desktop sidebar -->
+<style>
+        @media (min-width: 768px) {
+            main {
+                margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+                max-width: calc(100% - 16rem);
+            }
+        }
+    </style>
+<script>
+        // Simple JS for toggle interaction visualization
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const card = this.closest('.bg-level-1');
+                const statusBadge = card.querySelector('.font-label-caps');
+                const pulseDot = card.querySelector('.animate-ping');
+                const staticDot = card.querySelector('span.rounded-full:not(.animate-ping)');
+
+                if (this.checked) {
+                    statusBadge.textContent = 'RUNNING';
+                    statusBadge.classList.replace('text-text-muted', 'text-primary');
+                    if(staticDot) {
+                        staticDot.classList.replace('bg-text-muted', 'bg-primary');
+                        // Recreate ping effect if it was removed
+                        if(!pulseDot) {
+                            const newPulse = document.createElement('span');
+                            newPulse.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75';
+                            staticDot.parentElement.prepend(newPulse);
+                            staticDot.parentElement.classList.add('flex');
+                        }
+                    }
+                } else {
+                    statusBadge.textContent = 'PAUSED';
+                    statusBadge.classList.replace('text-primary', 'text-text-muted');
+                    if(pulseDot) {
+                        pulseDot.remove();
+                    }
+                    if(staticDot) {
+                        staticDot.classList.replace('bg-primary', 'bg-text-muted');
+                        staticDot.parentElement.classList.remove('flex');
+                    }
+                }
+            });
+        });
+    </script>
+</body></html>
