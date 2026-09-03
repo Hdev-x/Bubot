@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { subscribeToPush, unsubscribeFromPush } from '../utils/push';
 
 interface Props {
   username?: string;
@@ -55,29 +54,6 @@ export default function ProfileMenu({ username, onLogout, onAccount }: Props) {
             }}
           >
             내 정보 <span className="pm-arrow">›</span>
-          </button>
-          
-          <button
-            type="button"
-            className="pm-item"
-            onClick={async () => {
-              setOpen(false);
-              await subscribeToPush();
-            }}
-          >
-            앱 푸시 알림 켜기
-          </button>
-
-          <button
-            type="button"
-            className="pm-item"
-            style={{ color: '#ff6b6b' }}
-            onClick={async () => {
-              setOpen(false);
-              await unsubscribeFromPush();
-            }}
-          >
-            앱 푸시 알림 끄기
           </button>
 
           <button

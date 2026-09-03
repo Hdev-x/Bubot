@@ -4,7 +4,7 @@ import AssetsPage from './pages/AssetsPage';
 import CoinChartPage from './pages/CoinChartPage';
 import CoinListPage from './pages/CoinListPage';
 import OrderPage from './pages/OrderPage';
-import StrategyPage from './pages/StrategyPage';
+import StrategyComingSoon from './components/StrategyComingSoon';
 import LoginPage from './pages/LoginPage';
 import { fetchMe, getToken, logout as authLogout, type AuthUser } from './api/authApi';
 import { isBitgetSymbolSupported, prefetchBitgetSymbols } from './api/bitgetSymbols';
@@ -12,7 +12,6 @@ import { prefetchBinanceSymbols } from './api/binanceSymbols';
 import { showToast } from './utils/toast';
 import { useDocumentVisible } from './hooks/usePageVisible';
 import { useRealtimeTickers } from './hooks/useRealtimePrices';
-import type { TrackerState } from './types/bot';
 
 function getRoute(hash: string): AppRoute {
   const path = hash.replace(/^#/, '');
@@ -62,7 +61,6 @@ export default function App() {
   const [selectedProductType, setSelectedProductType] = useState<string | undefined>('USDT-FUTURES');
   const [selectedExchange, setSelectedExchange] = useState<'BITGET' | 'BINANCE'>('BINANCE');
   const [selectedTickDecimals, setSelectedTickDecimals] = useState<number>(2);
-  const [chartFocusTracker, setChartFocusTracker] = useState<TrackerState | null>(null);
 
   // 실시간 탭 타이틀 업데이트
   const isFutures = selectedProductType?.includes('FUTURES') ?? true;
@@ -193,14 +191,6 @@ export default function App() {
     navigate('/orders');
   }
 
-  function handleOpenTrackerChart(tracker: TrackerState) {
-    setSelectedSymbol(tracker.symbol);
-    setSelectedProductType('USDT-FUTURES');
-    setSelectedExchange('BINANCE');
-    setChartFocusTracker(tracker);
-    navigate('/chart');
-  }
-
   // 토큰 확인 중에는 빈 화면(깜빡임 방지)
   if (!authChecked) {
     return <div className="app-frame" style={{ background: '#0b0e11' }} />;
@@ -218,16 +208,16 @@ export default function App() {
   return (
     <div className="app-frame">
       <div style={{ display: route === '/' ? 'block' : 'none', height: '100%' }}>
-        {visitedRoutes.has('/') && <CoinListPage active={route === '/' && visible} selectedSymbol={selectedSymbol} onSelectSymbol={setSelectedSymbol} onOpenChart={() => navigate('/chart')} onOpenTrade={openTrade} onProductTypeChange={setSelectedProductType} onExchangeChange={setSelectedExchange} onTickDecimalsChange={setSelectedTickDecimals} onLogout={handleLogout} username={user.username} />}
+        {visitedRoutes.has('/') && <CoinListPage active={route === '/' && visible} selectedSymbol={selectedSymbol} onSelectSymbol={setSelectedSymbol} onOpenChart={() => navigate('/chart')} onProductTypeChange={setSelectedProductType} onExchangeChange={setSelectedExchange} onTickDecimalsChange={setSelectedTickDecimals} onLogout={handleLogout} username={user.username} />}
       </div>
       <div style={{ display: route === '/chart' ? 'block' : 'none', height: '100%' }}>
-        {visitedRoutes.has('/chart') && <CoinChartPage active={route === '/chart' && visible} symbol={selectedSymbol} onSelectSymbol={setSelectedSymbol} productType={selectedProductType} exchange={selectedExchange} tickDecimals={selectedTickDecimals} onExchangeChange={setSelectedExchange} onProductTypeChange={setSelectedProductType} onOpenTrade={openTrade} focusTracker={chartFocusTracker?.symbol === selectedSymbol ? chartFocusTracker : null} />}
+        {visitedRoutes.has('/chart') && <CoinChartPage active={route === '/chart' && visible} symbol={selectedSymbol} onSelectSymbol={setSelectedSymbol} productType={selectedProductType} exchange={selectedExchange} tickDecimals={selectedTickDecimals} onExchangeChange={setSelectedExchange} onProductTypeChange={setSelectedProductType} focusTracker={null} />}
       </div>
       <div style={{ display: route === '/orders' ? 'block' : 'none', height: '100%' }}>
         {visitedRoutes.has('/orders') && <OrderPage symbol={selectedSymbol} active={route === '/orders' && visible} onSelectSymbol={setSelectedSymbol} onProductTypeChange={setSelectedProductType} onExchangeChange={setSelectedExchange} onOpenChart={() => navigate('/chart')} tradeMarketReq={tradeMarketReq} onTabBar={setTabBar} />}
       </div>
       <div style={{ display: route === '/strategy' ? 'block' : 'none', height: '100%' }}>
-        {visitedRoutes.has('/strategy') && <StrategyPage active={route === '/strategy' && visible} isAdmin={user.role === 'ADMIN'} onSelectSymbol={setSelectedSymbol} onProductTypeChange={setSelectedProductType} onOpenChart={() => navigate('/chart')} onOpenTrackerChart={handleOpenTrackerChart} onTabBar={setTabBar} />}
+        {visitedRoutes.has('/strategy') && <StrategyComingSoon />}
       </div>
       <div style={{ display: route === '/assets' ? 'block' : 'none', height: '100%' }}>
         {visitedRoutes.has('/assets') && <AssetsPage active={route === '/assets' && visible} onTabBar={setTabBar} />}
