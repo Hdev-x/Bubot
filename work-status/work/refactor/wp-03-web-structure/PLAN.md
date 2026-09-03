@@ -65,11 +65,11 @@ deliveries:
   - id: wp-03-d03-chart
     title: "chart/ 신설 — MarketChart·overlays·indicators·settings·drawing·analysis + 동반 CSS 추출"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-03-d02-hooks]
     branch: refactor/web-d03-chart
-    pull_requests: []
+    pull_requests: [27]
     evidence:
       - kind: parity-check
         locator: "27 rename(MarketChart · overlays 4 · chart-hooks 2 · indicators 8 · IndicatorSheet · ChartSettingsSheet · drawing 6 · analysis 4), importer 20 + labs 1은 import 줄만; ChartSettingsSheet.css 신설(styles.css·web.css의 동일 복사본 127줄 통합, 선택자 겹침 0·상위 특이도 override만 존재)"
@@ -80,16 +80,24 @@ deliveries:
         revision: working-tree
         observed_at: 2026-09-03
   - id: wp-03-d04-app-mobile
-    title: "app/mobile — 진입점·pages·components·sheets, styles.css 구역 분할"
+    title: "app/mobile — 진입점·pages·components·sheets, styles.css 통째 이동"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-03-d03-chart]
     branch: refactor/web-d04-app-mobile
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "44 rename(main·App·sw.js·pages 5·components 12→sheets 5+7·coin-list 9·trade 14·ApiKeyManager·styles.css→styles/mobile.css), importer 32 + labs 2는 import 줄만; index.html 스크립트 경로·vite PWA srcDir 갱신"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: command
+        locator: "lint 0 · tests 22 · build(sw.js 생성 확인)·build:web · 번들 문자열 0 · labs tsc; dev 서버 Mobile 새 진입점 로드·mobile.css 989 규칙 적용·콘솔 오류는 기존 ws-coin뿐"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-03-d05-app-desktop
-    title: "app/desktop — 진입점·panels, web.css 분할과 복사 구역 제거"
+    title: "app/desktop — 진입점·panels, web.css 통째 이동"
     kind: git
     state: planned
     repository: .
@@ -98,7 +106,7 @@ deliveries:
     pull_requests: []
     evidence: []
   - id: wp-03-d06-shared
-    title: "shared/ 정리(types·constants·contexts·utils·tokens.css), 의존 방향 규칙 문서화"
+    title: "shared/ 정리(types·constants·contexts·utils), 의존 방향 규칙 문서화"
     kind: git
     state: planned
     repository: .
@@ -126,7 +134,7 @@ extensions: {}
 포함:
 
 - 목표 트리(`docs/architecture/WEB-STRUCTURE-REVIEW.md` 4절)대로 파일 이동과 import 경로 수정
-- `styles.css`·`web.css`를 구역 주석 단위로 분할해 앱별 `styles/`와 공용 컴포넌트 옆으로 배치, `:root` 변수는 `shared/styles/tokens.css`
+- `styles.css`·`web.css`를 앱별 `styles/`로 통째 이동. 컴포넌트별 CSS 분리는 wp-04(CSS 정리)로, 첫 사례는 d03의 `ChartSettingsSheet.css`
 - `api/client.ts` 신설(authApi의 토큰 헤더·공통 fetch 분리) — 이 WP에서 유일한 코드 변경
 - dead code 8개 파일과 labs로 옮긴 화면의 CSS 구역 삭제
 
@@ -168,14 +176,15 @@ extensions: {}
 
 ### wp-03-d04-app-mobile
 - `app/mobile/`로 `main.tsx`·`App.tsx`·`pages/`·Mobile 전용 components·`sheets/`·`coin-list/`·`trade/` 이동.
-- `styles.css` 나머지를 구역별 파일로 분할해 `app/mobile/styles/`에, `main.tsx`가 순서대로 import. `:root` 변수는 `shared/styles/tokens.css`로.
+- `styles.css`는 통째로 `app/mobile/styles/mobile.css`로 옮긴다(2026-09-03 조정: 구역 주석이 내용과 어긋나 주석 경계 분할은 불가. 컴포넌트별 분리는 wp-04 CSS 정리에서
+  규칙 소유자 분석 후 하나씩 수행). `:root` 변수는 두 앱 값이 달라(같은 것은 `--up`·`--down`뿐) 앱별로 유지하고 `tokens.css`는 만들지 않는다.
 - `vite.config.js`의 entry·`index.html` 경로 갱신.
 
 ### wp-03-d05-app-desktop
-- `app/desktop/`로 `web/*` 이동, `web/components` → `panels/`. `web.css` 분할, 복사 구역 제거. `vite.config.web.js`·`web.html` 경로 갱신.
+- `app/desktop/`로 `web/*` 이동, `web/components` → `panels/`. `web.css`는 통째로 `styles/desktop.css`. 복사 구역 정리는 wp-04. `vite.config.web.js`·`web.html` 경로 갱신.
 
 ### wp-03-d06-shared
-- `types`·`constants`·`contexts`·`utils`를 `shared/`로, `tokens.css` 확정. `docs/architecture/STRUCTURE.md`·`WEB-STRUCTURE-REVIEW.md` 갱신, 의존 방향 규칙을 `docs/PROJECT.md`에 기록. `chart/analysis` re-export 제거 여부 판단.
+- `types`·`constants`·`contexts`·`utils`를 `shared/`로. `docs/architecture/STRUCTURE.md`·`WEB-STRUCTURE-REVIEW.md` 갱신, 의존 방향 규칙을 `docs/PROJECT.md`에 기록. `chart/analysis` re-export 제거 여부 판단.
 
 ## 관련 정본
 

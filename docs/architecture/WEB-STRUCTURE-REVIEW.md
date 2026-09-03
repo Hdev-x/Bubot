@@ -58,7 +58,7 @@ components/trade → api 12, hooks 9
 
 논의 결과: `api/`·`hooks/`는 바깥 계층 폴더로 두고 안을 나눈다(계층 우선). `components/` 전역 폴더는 없애고 차트 스택은 `chart/`,
 앱 전용 UI는 `app/*/components/`로 가른다. `api/`는 "누구를 부르는가"(서버 vs 거래소 직접) 기준, `hooks/`는 "무슨 데이터인가" 기준으로 나눈다.
-CSS는 쓰는 코드 옆에 두고 변수만 `shared/styles/tokens.css`로 공유한다. 클래스 이름은 이번에 바꾸지 않는다.
+CSS는 쓰는 코드 옆에 두는 것을 목표로 하되 이 WP에서는 앱별 파일을 통째로 옮기고, 컴포넌트별 분리는 wp-04에서 한다. `:root` 변수는 두 앱 값이 달라 앱별로 유지한다(2026-09-03 확인). 클래스 이름은 바꾸지 않는다.
 
 ```text
 apps/web/src/
@@ -70,11 +70,11 @@ apps/web/src/
 │   │   │   ├── sheets/       DrawingSheet · TimeframeSheet · SymbolSearchSheet · ObjectTreeSheet · AnalysisHubSheet
 │   │   │   ├── coin-list/    (9개)
 │   │   │   └── trade/        (14개)
-│   │   └── styles/           mobile.css · market.css · chart-page.css · order.css · assets.css · login.css
+│   │   └── styles/           mobile.css (← styles.css 통째. 컴포넌트별 분리는 wp-04)
 │   └── desktop/
 │       ├── main.tsx  WebApp.tsx  WebLogin.tsx  WebSignup.tsx
 │       ├── panels/           WebMarketPanel · WebWatchlist · WebFavoritesPanel · WebDrawingToolbar · WebRsiSettings · marketShared · snapFloat
-│       └── styles/           desktop.css · chart-panel.css · orderbook.css · account.css · watchlist.css · login.css
+│       └── styles/           desktop.css (← web.css 통째. 분리는 wp-04)
 ├── chart/
 │   ├── MarketChart.tsx  MarketChart.css
 │   ├── overlays/             ChartOverlay · BBOverlay · AutoPatternOverlay · PriceTagOverlay
@@ -97,7 +97,6 @@ apps/web/src/
 │   ├── account/              useMainTrade · useSpotTrade · useSpotValueUsdt · useWatchlist
 │   └── ui/                   usePersistentState · useScrollLock · usePageVisible · useDelayedReady · usePolledData
 ├── shared/
-│   ├── styles/tokens.css
 │   ├── ui/                   (양쪽이 같은 모양으로 쓰는 조각만, 초기엔 비어 있음)
 │   ├── contexts/             CurrencyContext
 │   ├── types/                market · bot
@@ -110,7 +109,7 @@ apps/web/src/
 
 삭제: `OrderTicket` · `SpotTicket` · `FloatingToolbar` · `DrawingSettingsSheet` · `walletApi` · `toast.ts` · `PlaceholderPage` · `config/features.ts`, `styles.css`의 Strategy·Backtest·Live·Paper 구역.
 
-규칙: import는 `app → chart/hooks → api → shared`로만. CSS는 쓰는 코드 옆, 변수는 `tokens.css`. 클래스 이름 변경은 별도 주제(CSS Modules 또는 접두어).
+규칙: import는 `app → chart/hooks → api → shared`로만. 앱 전역 CSS는 `app/*/styles/`, 공용 컴포넌트 CSS는 컴포넌트 옆. 클래스 이름 변경은 별도 주제(CSS Modules 또는 접두어).
 
 ## 5. 실행 순서
 

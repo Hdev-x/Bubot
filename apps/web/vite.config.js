@@ -13,7 +13,7 @@ export default defineConfig({
       registerType: 'prompt',
       injectRegister: null, // 등록은 UpdateToast(virtual:pwa-register)가 수행 — 이중 등록 방지
       strategies: 'injectManifest',
-      srcDir: 'src',
+      srcDir: 'src/app/mobile',
       filename: 'sw.js',
       devOptions: {
         // 개발 모드에선 서비스워커 비활성 — dev 중 SW가 옛 번들을 캐시해
