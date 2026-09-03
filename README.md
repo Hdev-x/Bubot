@@ -8,6 +8,8 @@ React 앱으로 제공하고, Spring Boot API가 거래소 시세를 중계하�
 
 ## 화면
 
+![Desktop — 차트·호가·커뮤니티·실시간 종목](docs/images/desktop.png)
+
 | 화면 | 경로 | 내용 |
 |---|---|---|
 | Desktop | `/web` | 차트(TradingView lightweight-charts)·호가·종목 목록·관심종목·내 투자 사이드바 |
