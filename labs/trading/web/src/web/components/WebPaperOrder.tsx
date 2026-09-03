@@ -4,7 +4,7 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { usePersistentState } from '@web/hooks/ui/usePersistentState';
 import { EXCHANGES, type ExchangeId } from '@web/constants/exchanges';
 import { getOfficialLogo } from '@web/utils/coinFormatters';
-import { snapFloat } from '@web/web/components/snapFloat';
+import { snapFloat } from '@web/app/desktop/panels/snapFloat';
 import type { PaperOrderRaw } from '../../api/paperApi';
 
 const LEVS = [5, 10, 20, 50, 75, 100]; // 레버리지 pill 클릭 시 순환

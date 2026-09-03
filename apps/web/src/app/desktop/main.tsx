@@ -3,9 +3,9 @@ import { createRoot } from 'react-dom/client';
 import WebApp from './WebApp';
 import WebLogin from './WebLogin';
 import WebSignup from './WebSignup';
-import { fetchMe, logout } from '../api/server/authApi';
-import type { AuthUser } from '../api/server/authApi';
-import './web.css';
+import { fetchMe, logout } from '../../api/server/authApi';
+import type { AuthUser } from '../../api/server/authApi';
+import './styles/desktop.css';
 
 // 앱은 로그인 없이도 표시(마켓/차트 공개). 로그인/회원가입은 헤더 버튼 → 오버레이로 띄운다.
 // 내투자·전략·관심·커뮤니티 글쓰기 등 계정 기능은 WebApp 안에서 로그인 게이트.

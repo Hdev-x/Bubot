@@ -82,11 +82,11 @@ deliveries:
   - id: wp-03-d04-app-mobile
     title: "app/mobile — 진입점·pages·components·sheets, styles.css 통째 이동"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-03-d03-chart]
     branch: refactor/web-d04-app-mobile
-    pull_requests: []
+    pull_requests: [28]
     evidence:
       - kind: parity-check
         locator: "44 rename(main·App·sw.js·pages 5·components 12→sheets 5+7·coin-list 9·trade 14·ApiKeyManager·styles.css→styles/mobile.css), importer 32 + labs 2는 import 줄만; index.html 스크립트 경로·vite PWA srcDir 갱신"
@@ -99,12 +99,20 @@ deliveries:
   - id: wp-03-d05-app-desktop
     title: "app/desktop — 진입점·panels, web.css 통째 이동"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-03-d04-app-mobile]
     branch: refactor/web-d05-app-desktop
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "12 rename(main·WebApp·WebLogin·WebSignup·panels 7·web.css→styles/desktop.css), importer 10 + labs 1은 import 줄만; web.html 스크립트 경로 갱신"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc; dev 서버 Desktop 새 진입점 로드·desktop.css 733 규칙·차트 렌더링·콘솔 오류는 기존 ws-coin뿐"
+        revision: working-tree
+        observed_at: 2026-09-03
   - id: wp-03-d06-shared
     title: "shared/ 정리(types·constants·contexts·utils), 의존 방향 규칙 문서화"
     kind: git
