@@ -26,14 +26,14 @@ export function usePersistentState<T>(
         const parsed = JSON.parse(saved) as T;
         return merge ? { ...(fallback as object), ...(parsed as object) } as T : parsed;
       }
-    } catch {}
+    } catch { /* ignore */ }
     return fallback;
   });
 
   useEffect(() => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } catch {}
+    } catch { /* ignore */ }
   }, [key, value]);
 
   return [value, setValue];

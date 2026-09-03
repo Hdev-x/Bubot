@@ -7,9 +7,8 @@ import OrderPage from './pages/OrderPage';
 import StrategyComingSoon from './components/StrategyComingSoon';
 import LoginPage from './pages/LoginPage';
 import { fetchMe, getToken, logout as authLogout, type AuthUser } from './api/authApi';
-import { isBitgetSymbolSupported, prefetchBitgetSymbols } from './api/bitgetSymbols';
+import { prefetchBitgetSymbols } from './api/bitgetSymbols';
 import { prefetchBinanceSymbols } from './api/binanceSymbols';
-import { showToast } from './utils/toast';
 import { useDocumentVisible } from './hooks/usePageVisible';
 import { useRealtimeTickers } from './hooks/useRealtimePrices';
 
@@ -88,7 +87,7 @@ export default function App() {
   }, [selectedSymbol, currentTicker, selectedTickDecimals]);
 
   // 차트·마켓에서 트레이드 진입 시 현물/선물 마켓 지정(seq로 매번 재적용). 거래소는 항상 비트겟.
-  const [tradeMarketReq, setTradeMarketReq] = useState<{ market: 'spot' | 'futures'; seq: number } | null>(null);
+  const [tradeMarketReq] = useState<{ market: 'spot' | 'futures'; seq: number } | null>(null);
 
   const [visitedRoutes, setVisitedRoutes] = useState<Set<AppRoute>>(new Set([getRoute(window.location.hash)]));
 
@@ -171,24 +170,6 @@ export default function App() {
     window.location.hash = nextRoute === '/' ? '' : nextRoute;
     setRoute(nextRoute);
     setVisitedRoutes(prev => new Set(prev).add(nextRoute));
-  }
-
-  // 트레이드 진입 — 종목의 마켓(선물/현물)을 트레이드 페이지로 이어준다. 거래소는 비트겟 고정.
-  // 비트겟에 그 심볼이 없으면 막고 안내(가용성 가드).
-  // 인자 없으면 현재 전역 선택(차트 툴바 등)을, 있으면 명시 심볼/마켓을 쓴다(마켓에서 호출 시
-  // setSelectedSymbol이 비동기라 가드가 옛 종목을 읽지 않도록 명시 전달).
-  async function openTrade(symbolArg?: string, marketArg?: 'spot' | 'futures') {
-    const sym = symbolArg ?? selectedSymbol;
-    const market: 'spot' | 'futures' = marketArg ?? (selectedProductType ? 'futures' : 'spot');
-    const supported = await isBitgetSymbolSupported(sym, market);
-    if (!supported) {
-      const label = market === 'futures' ? '선물' : '현물';
-      showToast(`${sym}는 Bitget ${label}에서 지원하지 않는 심볼입니다.`);
-      return; // 차단 시 전역 종목 건드리지 않음(숨겨진 OrderPage가 미지원 심볼 폴링하는 누출 방지)
-    }
-    setSelectedSymbol(sym); // 가드 통과 후에만 전역 종목 커밋
-    setTradeMarketReq(r => ({ market, seq: (r?.seq ?? 0) + 1 }));
-    navigate('/orders');
   }
 
   // 토큰 확인 중에는 빈 화면(깜빡임 방지)

@@ -502,17 +502,6 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
   // 패턴(X~D) 자동 프레이밍 대신 이 범위를 복원 — "움직인 위치가 고정되어 TF 넘어가도 유지".
   // 새 패턴 클릭·solo 종료 시 초기화(그 패턴은 기본 프레이밍부터 다시 시작).
   const soloUserViewRef = useRef<{ from: number; to: number } | null>(null);
-  const handleOpenTrackerChart = useCallback((tracker: any) => {
-    if (!tracker?.symbol) return;
-    setChartSel({ symbol: tracker.symbol, exchange: 'BITGET', isFutures: true });
-    const kind = String(tracker.monitorKind ?? '');
-    const tf = kind.endsWith('_30m') ? '30m' : kind.endsWith('_4h') ? '4H'
-      : kind.endsWith('_1d') ? '1D' : kind.endsWith('_1w') ? '1W' : null;
-    if (tf) setActiveTf(tf);
-    soloUserViewRef.current = null;
-    setFocusTracker(tracker as TrackerState);
-    setSoloActive(true);
-  }, []);
   // 종목이 포커스 패턴과 달라지면(수동 종목 변경) 해제. TF 변경엔 안 풀림.
   useEffect(() => {
     if (soloActive && focusTracker && focusTracker.symbol !== CHART_SYMBOL) {
@@ -869,9 +858,6 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
   const mainSkeleton = section === 'invest' && sidebarOpen && !mainReady && investTab === '선물';
   const spotSkeleton = spotActive && !spotReady;
 
-  // 마켓/현물 가격 표기 — krw 토글 반영 (USDT 견적 기준)
-  const fmtMarketPx = (usdt: number) =>
-    krw ? `${Math.round(usdt * usdKrw).toLocaleString()}원` : usdt.toLocaleString('en-US', { maximumFractionDigits: usdt < 1 ? 6 : 2 });
 
   // 아이콘 클릭 → 섹션 선택 + 패널 열기
   // 로그인 필요한 섹션 — 내투자/전략/관심. (실시간 마켓은 공개) 섹션은 열리되 오버레이로 막는다.

@@ -10,7 +10,7 @@ function setCookie(name: string, value: string, days = 365) {
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     const expires = '; expires=' + date.toUTCString();
     document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/; SameSite=Lax';
-  } catch {}
+  } catch { /* ignore */ }
 }
 
 function getCookie(name: string): string | null {
@@ -22,7 +22,7 @@ function getCookie(name: string): string | null {
       while (c.charAt(0) === ' ') c = c.substring(1);
       if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length));
     }
-  } catch {}
+  } catch { /* ignore */ }
   return null;
 }
 
@@ -35,12 +35,12 @@ export function useChartTheme(defaultTheme: ChartTheme): [ChartTheme, (theme: Ch
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) return JSON.parse(saved);
-    } catch {}
+    } catch { /* ignore */ }
 
     try {
       const savedCookie = getCookie(STORAGE_KEY);
       if (savedCookie) return JSON.parse(savedCookie);
-    } catch {}
+    } catch { /* ignore */ }
 
     return defaultTheme;
   });
@@ -49,10 +49,10 @@ export function useChartTheme(defaultTheme: ChartTheme): [ChartTheme, (theme: Ch
     setChartThemeState(theme);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(theme));
-    } catch {}
+    } catch { /* ignore */ }
     try {
       setCookie(STORAGE_KEY, JSON.stringify(theme));
-    } catch {}
+    } catch { /* ignore */ }
   }, []);
 
   return [chartTheme, setChartTheme];

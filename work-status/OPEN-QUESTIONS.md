@@ -11,13 +11,14 @@
 
 - 질문: OQ-20260903-01 GitHub Ruleset(`main` PR 필수·force push 금지·required check)을 지금 적용할지 | `docs/GIT-WORKFLOW.md` 8절
 - 질문: OQ-20260903-02 API `contextLoads` test를 H2 등으로 자체 완결시켜 CI에 `./gradlew test`를 추가할지 | `docs/COMMANDS.md`
-- 질문: OQ-20260903-03 Web lint 기존 오류(`scripts/` 미사용 변수·`any`)를 정리하고 CI에 lint를 추가할 시점
 
 ## 배포·제품
 
 - 질문: OQ-20260903-04 Beta 배포 대상 — EC2는 꺼져 있고 후보는 (a) Intel iMac 홈 서버 + Docker Compose + Cloudflare Tunnel(도메인 구입 필요) 또는 Duck DNS(`autotradev.duckdns.org`) + 포트포워딩, (b) AWS Lightsail 서울 2GB(월 약 $7). 도메인 구입 여부와 `DB_URL`이 가리키는 PostgreSQL 위치가 정해지면 `wp-03` PLAN | `work-status/ROADMAP.md`
 
 ## 막지는 않음
+
+- 질문: OQ-20260903-11 lint warning baseline 320개(`no-explicit-any` 145, `react-hooks/refs` 82, `set-state-in-effect` 44, `no-useless-assignment` 8 등)를 어느 WP에서 줄이고 언제 `error`로 올릴지 | `apps/web/eslint.config.js`
 
 - 질문: OQ-20260903-10 코드·문구에 남은 "Bullum"(`apps/web/package.json` name, `document.title`, 푸터)을 Bubot으로 통일할지 | D-20260903-06
 

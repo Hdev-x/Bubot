@@ -16,7 +16,7 @@ import {
   buildSegmentReports,
   summarizeReport,
 } from '../src/utils/backtestReport';
-import type { BacktestReport, ReportInput, ReportSummary } from '../src/utils/backtestReport';
+import type { BacktestReport, ReportSummary } from '../src/utils/backtestReport';
 import { normalizeConfig, toLegacyBacktest } from '../../shared/strategy-schema';
 import type { StrategyConfigInput } from '../../shared/strategy-schema';
 

@@ -19,7 +19,6 @@ function fmtAsset(n: number): string {
 
 export default function SpotAccountSummary({
   holdings,
-  usdtAvailable,
   hasKey,
   onOpenChart,
 }: {

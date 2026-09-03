@@ -23,7 +23,7 @@ npm ci
 npm test
 npm run build        # Mobile → dist/
 npm run build:web    # Desktop → dist-web/
-npm run lint         # 기존 오류 있음, CI 미포함
+npm run lint         # error 0 · warning 320 baseline(2026-09-03), CI 포함
 ```
 
 ## Worker·Shared 회귀 (루트)

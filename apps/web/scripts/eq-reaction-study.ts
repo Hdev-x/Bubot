@@ -3283,16 +3283,6 @@ function firstTouchRevisitKindLabel(k: FirstTouchRevisitKind): string {
   } as const)[k];
 }
 
-function postTouchRegionLabel(r: PostTouchRegion): string {
-  return ({
-    mirrorFarOutside: '미러원단 밖',
-    mirrorFarToCe: '미러원단~미러CE',
-    mirrorCeToNear: '미러CE~근단',
-    nearToCe: '근단~CE',
-    ceToFar: 'CE~원단',
-    farOutside: '원단 밖',
-  } as const)[r];
-}
 
 function postTouchNearestLevelLabel(level: PostTouchNearestLevel): string {
   return ({
@@ -3304,13 +3294,6 @@ function postTouchNearestLevelLabel(level: PostTouchNearestLevel): string {
   } as const)[level];
 }
 
-function candleBodyDirectionLabel(body: CandleBodyDirection): string {
-  return ({
-    bullish: '양봉',
-    bearish: '음봉',
-    doji: '도지',
-  } as const)[body];
-}
 
 function confluenceBucketLabel(bucket: ConfluenceBucket): string {
   return ({
@@ -5200,10 +5183,6 @@ function completedRevisitStats(records: FirstTouchAnatomyRec[], days: number): F
     .filter((s): s is FirstTouchRevisitStats => Boolean(s?.complete));
 }
 
-function avgNullable(nums: Array<number | null>): string {
-  const xs = nums.filter((n): n is number => n !== null);
-  return xs.length ? avg(xs).toFixed(1) : '-';
-}
 
 function medianNullable(nums: Array<number | null>): string {
   const xs = nums.filter((n): n is number => n !== null);

@@ -95,18 +95,8 @@ function focusHarmonicPatternKey(tracker: TrackerState | null | undefined, toCha
   });
 }
 
-function isHarmonicTracker(tracker: TrackerState | null | undefined): boolean {
-  if (!tracker) return false;
-  return !!tracker.xabc || String(tracker.monitorKind ?? '').startsWith('HARMONIC');
-}
 
-function isStoplossHarmonicTracker(tracker: TrackerState | null | undefined): boolean {
-  return isHarmonicTracker(tracker) && tracker?.phase === 'done' && tracker.exitReason === 'sl';
-}
 
-function finiteNumber(value: unknown): number | null {
-  return typeof value === 'number' && Number.isFinite(value) ? value : null;
-}
 
 // ── 렌더 표준 공유 헬퍼 (완성·신호 공용 — 한 군데서 그려 둘이 항상 일치) ──
 
@@ -345,7 +335,6 @@ export function useAutoPatterns({
   chartType,
   isLogScale = false,
   tickDecimals = 2,
-  chartTheme,
   seriesRef,
   waveSeriesRef,
   autoPatternOverlayRef,
@@ -635,7 +624,6 @@ export function useAutoPatterns({
 
           uniqueEmerging.forEach((emg) => {
             const { A, B, C } = emg.points;
-            const pts = [A, B, C];
             
             // 현재가 및 시간 계산
             const currentIdx = candles.length - 1;
@@ -652,7 +640,6 @@ export function useAutoPatterns({
             const boxBorderColor = baseColor.replace(/[\d.]+\)$/g, '0.2)');
             const boxColor = baseColor.replace(/[\d.]+\)$/g, '0.15)');
             const slColor = emg.isPrzTouched ? 'rgba(255, 0, 0, 0.8)' : 'rgba(239, 68, 68, 0.4)';
-            const slLabelColor = emg.isPrzTouched ? 'rgba(255, 0, 0, 0.9)' : 'rgba(239, 68, 68, 0.6)';
 
             // A-B, B-C 구조선
             for (let i = 0; i < 2; i++) {
@@ -676,7 +663,7 @@ export function useAutoPatterns({
             }
             
             // 터치했으면 터치 시간부터, 안 했으면 5캔들 전부터
-            let boxStartTime = emg.isPrzTouched ? dPredTime : past5Time;
+            const boxStartTime = emg.isPrzTouched ? dPredTime : past5Time;
 
             // D점 (목표가 przPrice, 터치 시간). 박스/선은 D부터 현재까지 (하모닉 터치와 동일, 클램프 없음)
             const dPredPrice = (emg.isPrzTouched && emg.przTouchedPrice !== undefined) ? emg.przTouchedPrice : emg.przPrice;
@@ -745,7 +732,6 @@ export function useAutoPatterns({
           });
         }
 
-        let uniqueEmergingPatterns: EmergingHarmonicResult[] = [];
 
 
         // ===== 하모닉 패턴 그리기 (마스터 하위, 카테고리 토글은 패턴별로 — M-H4) =====
@@ -780,7 +766,6 @@ export function useAutoPatterns({
               uniqueEmerging.push(pat);
             }
           }
-          uniqueEmergingPatterns = uniqueEmerging;
 
           // 클릭 강조(M-H5): highlightTracker와 매칭되는 패턴은 원색, 나머지는 흐리게(opacity).
           // 매칭 패턴이 하나도 없으면(좌표 미세차 등) 강조 안 함 → 전체 원색(faded 전체 방지).

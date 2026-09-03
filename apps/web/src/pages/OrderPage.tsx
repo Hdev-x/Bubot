@@ -24,7 +24,7 @@ import { usePricePrecision } from '../hooks/usePricePrecision';
 import { useRealtimePrices } from '../hooks/useRealtimePrices';
 import { useFundingRate } from '../hooks/useFundingRate';
 import type { DepthPrecision } from '../api/bitgetMergeDepth';
-import type { TrackerState, TradeLog } from '../types/bot';
+import type { TradeLog } from '../types/bot';
 
 // 호가 단위(묶음) 라벨 — 심볼 최소 틱(소수점)을 1번으로, ×10씩. scale0=최소틱 … scale3=틱×1000.
 // 예: BTC(소수1자리) → 0.1/1/10/100, ETH(소수2자리) → 0.01/0.1/1/10
@@ -283,7 +283,6 @@ export default function OrderPage({ symbol, active, onSelectSymbol, onProductTyp
     setIsHistoryOpen(false);
     setCostEditHolding(null);
   }, [active]);
-  const baseCoin = symbol.replace(/USDT$|USDC$/, ''); // 현물 티켓 표시용 (BTCUSDT→BTC)
   const symbolDecimals = getTickDecimals(symbol); // 심볼 기본 소수점(=최소 틱). BTC 1, ETH 2
   const scaleIndex = Number(depthScale.replace('scale', ''));
   // 단위 선택지: 심볼마다 [틱, 틱×10, 틱×100, 틱×1000].
@@ -296,14 +295,6 @@ export default function OrderPage({ symbol, active, onSelectSymbol, onProductTyp
   const depthLabel = depthOptions.find((o) => o.scale === depthScale)?.label ?? '';
   // 호가 행 소수점 = 현재 선택 단위 따라(틱×10^i). 가운데 현재가는 심볼 고정.
   const obDecimals = Math.max(0, symbolDecimals - scaleIndex);
-  const fmtPrice = useCallback(
-    (p: number) =>
-      p.toLocaleString('en-US', {
-        minimumFractionDigits: obDecimals,
-        maximumFractionDigits: obDecimals,
-      }),
-    [obDecimals]
-  );
   const fmtMid = useCallback(
     (p: number) =>
       p.toLocaleString('en-US', {

@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 import { runBacktest, DEFAULT_STRATEGY_PARAMS } from '../src/utils/backtestEngine';
 import type { BacktestResult, StrategyParams } from '../src/utils/backtestEngine';
-import { buildReport, buildSegmentReports, summarizeReport } from '../src/utils/backtestReport';
+import { buildReport, buildSegmentReports } from '../src/utils/backtestReport';
 import { normalizeConfig, toLegacyBacktest } from '../../shared/strategy-schema';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
