@@ -1,0 +1,8 @@
+{
+  "name": "bubot-trading-web",
+  "private": true,
+  "description": "Beta에서 제외한 자동매매·Paper·Backtest·Admin UI 보존본. 실행 진입점 없음, 타입체크만 수행.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}
