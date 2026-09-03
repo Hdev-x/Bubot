@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
-import { useScrollLock } from '../../hooks/useScrollLock';
+import { useScrollLock } from '../../hooks/ui/useScrollLock';
 import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../utils/sheetMotion';
 
 interface ExchangeBottomSheetProps {

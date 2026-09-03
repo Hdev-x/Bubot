@@ -1,7 +1,7 @@
 // 포지션 카드 (Bitget 정합) — Trade 탭과 Bot 탭이 공유하는 단일 컴포넌트.
 // 일부 필드(margin/mmr/realizedPl/liqPrice/tp/sl)는 출처에 따라 없을 수 있어 방어적으로 '—' 표시.
 import { useSettings, currencyLabel } from '../../contexts/CurrencyContext';
-import { useUsdKrw } from '../../hooks/useUsdKrw';
+import { useUsdKrw } from '../../hooks/market/useUsdKrw';
 
 export type PositionCardData = {
   symbol: string;

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { fetchBinanceCandles, fetchCoinCandles } from '../api/server/marketApi';
-import { fetchUpbitCandles, fetchBithumbCandles } from '../api/exchange/krw/krwTickers';
+import { fetchBinanceCandles, fetchCoinCandles } from '../../api/server/marketApi';
+import { fetchUpbitCandles, fetchBithumbCandles } from '../../api/exchange/krw/krwTickers';
 
 type Params = {
   symbol: string;

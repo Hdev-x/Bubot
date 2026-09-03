@@ -3,9 +3,9 @@ import {
   fetchMergeDepth,
   type OrderbookSnapshot,
   type DepthPrecision,
-} from '../api/exchange/bitget/bitgetMergeDepth';
-import { fetchBinanceDepth } from '../api/server/marketApi';
-import { subscribeKrwOrderbook } from '../api/exchange/krw/krwRealtime';
+} from '../../api/exchange/bitget/bitgetMergeDepth';
+import { fetchBinanceDepth } from '../../api/server/marketApi';
+import { subscribeKrwOrderbook } from '../../api/exchange/krw/krwRealtime';
 
 const POLL_MS = 500;
 

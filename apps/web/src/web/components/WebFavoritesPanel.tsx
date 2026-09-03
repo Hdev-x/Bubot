@@ -6,8 +6,8 @@ import {
   subscribeBinanceSpotTickers, subscribeBinanceFuturesTickers,
   type RealtimeTicker,
 } from '../../api/server/coinRealtime';
-import { usePricePrecision } from '../../hooks/usePricePrecision';
-import { useDelayedReady } from '../../hooks/useDelayedReady';
+import { usePricePrecision } from '../../hooks/market/usePricePrecision';
+import { useDelayedReady } from '../../hooks/ui/useDelayedReady';
 import type { CoinTicker } from '../../types/market';
 import type { ExchangeId } from '../../constants/exchanges';
 import { WebSymbolRow, loadExchangeTickers, parseFav, isDivider, dividerType, dividerLabel, withDividerLabel, useWebFavorites, useCoinLogos, type Market } from './marketShared';

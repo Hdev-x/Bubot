@@ -6,7 +6,7 @@ import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { fetchCoinFuturesTickers, fetchCoinTickers, fetchBinanceSpotTickers, fetchBinanceFuturesTickers } from '../../api/server/marketApi';
 import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../api/exchange/krw/krwTickers';
 import { subscribeBitgetSpotTickers, subscribeBitgetFuturesTickers, type RealtimeTicker } from '../../api/server/coinRealtime';
-import { usePricePrecision } from '../../hooks/usePricePrecision';
+import { usePricePrecision } from '../../hooks/market/usePricePrecision';
 import { formatPriceWithDecimals } from '../../utils/coinFormatters';
 import type { CoinTicker } from '../../types/market';
 import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../constants/exchanges';

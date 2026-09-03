@@ -1,5 +1,5 @@
 import { useSpotTrade } from './useSpotTrade';
-import { useRealtimePrices } from './useRealtimePrices';
+import { useRealtimePrices } from '../market/useRealtimePrices';
 
 // 현물 보유자산 총평가(USDT) — 마켓·자산 총자산 합산용.
 // 거래탭 현물 탭(SpotAccountSummary)과 동일 계산: 보유량 × 현물 실시간가, 현금(USDT/USDC)=1.

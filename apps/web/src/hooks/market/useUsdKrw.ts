@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchUsdKrwRate } from '../api/exchange/exchangeRate';
+import { fetchUsdKrwRate } from '../../api/exchange/exchangeRate';
 
 // USD/KRW 환율 — 모듈 레벨 캐시로 한 번만 조회(여러 컴포넌트가 써도 중복 호출 없음).
 let cached: number | null = null;

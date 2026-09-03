@@ -4,8 +4,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SpotHolding } from '../../api/server/spotTradeApi';
 import { useSettings, currencyLabel } from '../../contexts/CurrencyContext';
-import { useUsdKrw } from '../../hooks/useUsdKrw';
-import { useRealtimePrices } from '../../hooks/useRealtimePrices';
+import { useUsdKrw } from '../../hooks/market/useUsdKrw';
+import { useRealtimePrices } from '../../hooks/market/useRealtimePrices';
 import { CoinLogo } from '../coin-list/CoinLogo';
 import { getOfficialLogo, coinColor } from '../../utils/coinFormatters';
 

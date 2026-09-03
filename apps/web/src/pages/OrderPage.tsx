@@ -1,8 +1,8 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import PullToRefresh from '../components/PullToRefresh';
-import { useOrderbook } from '../hooks/useOrderbook';
-import { useMainTrade } from '../hooks/useMainTrade';
-import { useSpotTrade } from '../hooks/useSpotTrade';
+import { useOrderbook } from '../hooks/market/useOrderbook';
+import { useMainTrade } from '../hooks/account/useMainTrade';
+import { useSpotTrade } from '../hooks/account/useSpotTrade';
 import TradeOrderbook from '../components/trade/TradeOrderbook';
 import PositionCard from '../components/trade/PositionCard';
 import PlanOrderCard from '../components/trade/PlanOrderCard';
@@ -20,9 +20,9 @@ import SpotCostSheet from '../components/trade/SpotCostSheet';
 import type { SpotHolding } from '../api/server/spotTradeApi';
 import { isBitgetSymbolSupported } from '../api/exchange/bitget/bitgetSymbols';
 import { resolveTradeChartTarget } from '../config/chartPolicy';
-import { usePricePrecision } from '../hooks/usePricePrecision';
-import { useRealtimePrices } from '../hooks/useRealtimePrices';
-import { useFundingRate } from '../hooks/useFundingRate';
+import { usePricePrecision } from '../hooks/market/usePricePrecision';
+import { useRealtimePrices } from '../hooks/market/useRealtimePrices';
+import { useFundingRate } from '../hooks/market/useFundingRate';
 import type { DepthPrecision } from '../api/exchange/bitget/bitgetMergeDepth';
 import type { TradeLog } from '../types/bot';
 
