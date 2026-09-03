@@ -19,7 +19,7 @@
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
 1. `wp-02` PLAN 경계표 승인 후 `wp-02-d01-web-decouple` 시작
-2. d03 전 로컬 `application.properties`에 `spring.profiles.active=beta` 추가(사용자)
+2. Milestone `beta-boundary-locked`: 로그인 후 Mobile·Desktop 핵심 화면 확인
 
 ## Deferred
 

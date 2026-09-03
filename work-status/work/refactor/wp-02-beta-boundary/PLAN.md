@@ -11,7 +11,7 @@ outcome: "Beta 번들·API에는 시세·차트·호가·관심종목·로그인
 acceptance:
   - "AC-001: Web Beta 번들(dist·dist-web)에 /api/paper·/api/admin·/api/bot·backtest-runs·trade-configs 호출 문자열이 없다."
   - "AC-002: apps/web/src가 labs/를 import하지 않는다. labs/trading/web은 shared와 apps/web(@web/* 경로 alias)을 import할 수 있다 — 의존 방향은 labs → apps/web 단방향 (2026-09-03 d02에서 조정: 보존 코드가 authApi·types/bot·CurrencyContext 등 Beta 공용 모듈에 의존하므로 복제 대신 단방향 참조 허용)."
-  - "AC-003: Beta 프로필(spring.profiles.active=beta)로 기동한 API에서 제외 컨트롤러의 endpoint가 404이고, Beta 컨트롤러(auth·main-trade·spot-trade·positions·api-keys·spot-manual-cost·/coin/api/**)는 그대로 동작한다."
+  - "AC-003: trading 프로필 없이(기본 dev) 기동한 API에는 제외 컨트롤러가 등록되지 않고, Beta 컨트롤러(auth·main-trade·spot-trade·positions·api-keys·spot-manual-cost·/coin/api/**)는 그대로 동작한다. dev,trading으로 기동하면 전부 복원된다. (2026-09-03 조정: 별도 beta 프로필 대신 'trading 프로필 부재 = Beta')"
   - "AC-004: 기준선 Gate(Web tests·build 2종, API compile·bootWar, ops/verify 6종)가 원본과 같은 결과를 낸다."
   - "AC-005: 로컬 기동에서 Mobile·Desktop의 Market·Chart·Watchlist·Assets(Read-only)·Login이 동작하고 Strategy 탭은 준비 화면을 보여준다."
 deliveries:
@@ -50,14 +50,22 @@ deliveries:
         revision: working-tree
         observed_at: 2026-09-03
   - id: wp-02-d03-api-profile
-    title: "API 제외 컨트롤러·서비스를 trading 프로필로 묶고 beta 프로필 기본화"
+    title: "API 제외 컨트롤러·서비스를 trading 프로필로 묶기 (Beta = trading 부재)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: []
     branch: refactor/api-trading-profile
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "@Profile(\"trading\") 20개 bean(backtest 2·bot 3·push 3·paper 4·trade 7·member 1); compileJava·bootWar 통과"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: command
+        locator: "RequestMappingHandlerMapping TRACE 대조 — dev: 컨트롤러 7개·경로 27개·제외 접두어 0 / dev,trading: 컨트롤러 19개·경로 62개(제외 접두어 35), Beta 27개 ⊂ trading, 기동 오류 0. /api/internal/** curl 404(dev)"
+        revision: working-tree
+        observed_at: 2026-09-03
 milestones:
   - id: beta-boundary-locked
     title: "Beta 경계 고정"
@@ -108,9 +116,9 @@ extensions: {}
 2. `wp-02-d02-web-labs`: 후보 32개 파일을 `git mv`로 `labs/trading/web/src/` 아래 같은 상대 경로로 옮기고 내부 상대 import(`shared` 깊이)를
    고친다. `labs/trading/web`에 `package.json`·`tsconfig` 최소 구성을 두어 `tsc --noEmit`이 통과하게 한다.
    Gate: hash 대조(이동 파일 내용 동일, import 줄만 변경), Web tests·build, `git grep 'labs/' -- apps/web/src` 0.
-3. `wp-02-d03-api-profile`: 제외 클래스에 `@Profile("trading")`, `application.properties`(Git 밖)의 `spring.profiles.active`는 사용자가
-   `beta`로 설정. `SecurityConfig` 규칙 중 trading 전용 경로는 남겨도 무해하므로 유지.
-   Gate: `compileJava`·`bootWar`, beta 프로필 기동 후 제외 endpoint 404·유지 endpoint 200/401 curl 검사, trading 프로필 기동 시 전부 복원.
+3. `wp-02-d03-api-profile`: 제외 클래스에 `@Profile("trading")`. 기존 로컬 프로필 `dev`(DB 설정)를 그대로 두면 Beta 모드이고, 자동매매
+   API가 필요할 때만 `dev,trading`으로 기동한다. `SecurityConfig` 규칙 중 trading 전용 경로는 남겨도 무해하므로 유지.
+   Gate: `compileJava`·`bootWar`, 두 모드로 기동해 등록된 요청 매핑(TRACE 로그) 대조.
 4. Milestone: 로컬 기동으로 Mobile·Desktop 핵심 화면 확인.
 
 ## Delivery Notes
@@ -139,9 +147,11 @@ extensions: {}
 ### wp-02-d03-api-profile
 
 - 주요 Task: 위 3번. `@Profile`은 `@RestController`·`@Service`·`@Configuration`·`@Component` 클래스에 붙인다. MyBatis `@Mapper` 인터페이스는
-  프로필 대상이 아니므로 사용처가 사라지면 자연히 미사용이 된다.
-- 추가 Gate: `spring.profiles.active=beta`와 `trading` 두 번 기동해 endpoint 표를 curl로 대조.
-- Blocker·재개 조건: 로컬 `application.properties`에 `spring.profiles.active=beta` 추가는 사용자 작업(Git 밖).
+  프로필 대상이 아니므로 사용처가 사라지면 자연히 미사용이 된다. `PositionController`(Beta)가 `TradeConfigMapper`를 주입받지만 Mapper라 영향 없음.
+- 실행 결과(2026-09-03): 로그인 전 curl은 Security가 403으로 가려 404와 구분되지 않아, `RequestMappingHandlerMapping` TRACE 로그로 등록 매핑을
+  직접 대조했다. trading 모드 기동은 `ops/back-end.sh`가 `SPRING_PROFILES_ACTIVE=dev`를 고정하므로 JVM 속성
+  `JAVA_TOOL_OPTIONS="-Dspring.profiles.active=dev,trading"`으로 덮어썼다(`docs/COMMANDS.md`에 기록).
+- Blocker·재개 조건: 없음.
 
 ## Milestone Notes
 

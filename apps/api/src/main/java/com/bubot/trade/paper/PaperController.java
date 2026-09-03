@@ -1,5 +1,7 @@
 package com.bubot.trade.paper;
 
+import org.springframework.context.annotation.Profile;
+
 import com.bubot.common.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import java.util.Map;
  * 인증 필요(/api/** 는 SecurityConfig에서 authenticated). 실거래(MainTrade)와 완전 분리.
  */
 @Slf4j
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @RestController
 @RequestMapping("/api/paper")
 @RequiredArgsConstructor

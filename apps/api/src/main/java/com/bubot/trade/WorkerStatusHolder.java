@@ -1,11 +1,14 @@
 package com.bubot.trade;
 
+import org.springframework.context.annotation.Profile;
+
 import org.springframework.stereotype.Component;
 
 /**
  * 통합 워커가 주기적으로 push하는 상태 스냅샷을 메모리에 캐시한다.
  * (영속화 불필요 — 대시보드 표시용 최신값만 유지)
  */
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @Component
 public class WorkerStatusHolder {
 

@@ -9,6 +9,10 @@ cd apps/api
 ./gradlew bootRun
 ```
 
+자동매매·Paper·Backtest·Admin·Push API는 `trading` 프로필에서만 등록된다(`@Profile("trading")`). 기본(`dev`)이 Beta 모드다.
+trading 모드 로컬 기동: `JAVA_TOOL_OPTIONS="-Dspring.profiles.active=dev,trading" ./ops/back-end.sh`
+(`back-end.sh`가 `SPRING_PROFILES_ACTIVE=dev`를 고정하므로 env 대신 JVM 속성으로 덮어쓴다).
+
 `./gradlew test`의 `contextLoads`는 로컬 DB·env(`APP_JWT_SECRET` 등)에 의존해 현재 환경에서 실패한다. CI Gate는 `compileJava`다.
 
 ## Web (`apps/web`)

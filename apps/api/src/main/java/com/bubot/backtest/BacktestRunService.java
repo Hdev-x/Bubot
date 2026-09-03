@@ -1,10 +1,13 @@
 package com.bubot.backtest;
 
+import org.springframework.context.annotation.Profile;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @Service
 @RequiredArgsConstructor
 public class BacktestRunService {

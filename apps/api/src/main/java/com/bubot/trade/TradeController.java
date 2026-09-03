@@ -1,5 +1,7 @@
 package com.bubot.trade;
 
+import org.springframework.context.annotation.Profile;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import java.util.Map;
  * 사용자 체결기록 조회 — 전략 탭 표시용. 본인(member_id) 거래만.
  */
 @Slf4j
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @RestController
 @RequestMapping("/api/user/trades")
 @RequiredArgsConstructor

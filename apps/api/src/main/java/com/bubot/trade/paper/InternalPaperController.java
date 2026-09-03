@@ -1,5 +1,7 @@
 package com.bubot.trade.paper;
 
+import org.springframework.context.annotation.Profile;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import java.util.Map;
  * 워커의 페이퍼 실행 분기(paper-executor.ts)가 호출 — 진입/청산/부분청산/계좌 조회.
  */
 @Slf4j
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @RestController
 @RequestMapping("/api/internal/paper")
 @RequiredArgsConstructor

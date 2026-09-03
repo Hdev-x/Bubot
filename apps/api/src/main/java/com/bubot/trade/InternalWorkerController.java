@@ -1,5 +1,7 @@
 package com.bubot.trade;
 
+import org.springframework.context.annotation.Profile;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import java.util.Map;
  * X-Internal-Token으로만 접근. 대시보드는 /api/admin/worker/status(JWT)로 읽는다.
  */
 @Slf4j
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @RestController
 @RequestMapping("/api/internal/worker")
 @RequiredArgsConstructor
