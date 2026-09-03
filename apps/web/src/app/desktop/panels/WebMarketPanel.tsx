@@ -6,12 +6,12 @@ import {
   subscribeBitgetSpotTickers, subscribeBitgetFuturesTickers,
   subscribeBinanceSpotTickers, subscribeBinanceFuturesTickers,
   type RealtimeTicker,
-} from '../../api/server/coinRealtime';
-import { subscribeKrwTickers } from '../../api/exchange/krw/krwRealtime';
-import { usePricePrecision } from '../../hooks/market/usePricePrecision';
-import { useDelayedReady } from '../../hooks/ui/useDelayedReady';
-import type { CoinTicker } from '../../types/market';
-import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../constants/exchanges';
+} from '../../../api/server/coinRealtime';
+import { subscribeKrwTickers } from '../../../api/exchange/krw/krwRealtime';
+import { usePricePrecision } from '../../../hooks/market/usePricePrecision';
+import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
+import type { CoinTicker } from '../../../types/market';
+import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../constants/exchanges';
 import { SortIcon, WebSymbolRow, loadExchangeTickers, useWebFavorites, useCoinLogos, type Market } from './marketShared';
 
 type Filter = 'spot' | 'futures';

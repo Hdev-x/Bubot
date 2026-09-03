@@ -5,11 +5,11 @@ import {
   subscribeBitgetSpotTickers, subscribeBitgetFuturesTickers,
   subscribeBinanceSpotTickers, subscribeBinanceFuturesTickers,
   type RealtimeTicker,
-} from '../../api/server/coinRealtime';
-import { usePricePrecision } from '../../hooks/market/usePricePrecision';
-import { useDelayedReady } from '../../hooks/ui/useDelayedReady';
-import type { CoinTicker } from '../../types/market';
-import type { ExchangeId } from '../../constants/exchanges';
+} from '../../../api/server/coinRealtime';
+import { usePricePrecision } from '../../../hooks/market/usePricePrecision';
+import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
+import type { CoinTicker } from '../../../types/market';
+import type { ExchangeId } from '../../../constants/exchanges';
 import { WebSymbolRow, loadExchangeTickers, parseFav, isDivider, dividerType, dividerLabel, withDividerLabel, useWebFavorites, useCoinLogos, type Market } from './marketShared';
 
 // 드래그한 키를 타깃 키 위치로 이동(필터 무관하게 키 기준으로 favs 재배치)

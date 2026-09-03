@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { DrawingManager, IDrawing, FibLevel, Anchor } from '../../chart/drawing';
-import { DEFAULT_FIB_LEVELS, DEFAULT_CHANNEL_LEVELS, setFibLogScaleDefault } from '../../chart/drawing';
+import type { DrawingManager, IDrawing, FibLevel, Anchor } from '../../../chart/drawing';
+import { DEFAULT_FIB_LEVELS, DEFAULT_CHANNEL_LEVELS, setFibLogScaleDefault } from '../../../chart/drawing';
 
 // ── 색 유틸 ──────────────────────────────────────────────
 function mix(hex: string, target: number, ratio: number): string {
