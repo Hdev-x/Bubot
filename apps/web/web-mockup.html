@@ -1,0 +1,1762 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bullum Web Mockup</title>
+<style>
+  :root {
+    /* 올블랙 + 모바일 디자인 토큰 (mobile styles.css 기준) */
+    --bg:        #000000;       /* 페이지 배경 */
+    --sidebar:   #050505;       /* 헤더 */
+    --surface:   #0c0c0c;       /* 카드/패널 1단계 */
+    --surface2:  #131313;       /* 인레이 (스프레드, 호버, 포지션 카드 등) */
+    --chart-bg:  #060606;
+    --border:    transparent;
+    --border2:   transparent;
+    /* 모바일 텍스트 톤 */
+    --text:      #eaecef;       /* 본문 흰색 */
+    --text2:     #b7bdc6;       /* 보조 텍스트 */
+    --text3:     #8a8c90;       /* 라벨/희미한 텍스트 */
+    --muted:     #8b95a1;       /* 근사치 텍스트 (≈ ...) */
+    --blue:      #3182F6;
+    /* 모바일 등락 색 (바이낸스 컨벤션 — 그린=up, 레드=down) */
+    --up:        #0ecb81;
+    --down:      #f6465d;
+    --radius:    12px;
+    --gap:       12px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+  }
+  /* 앱 셸 — 세로축: [main-area (헤더+본문+사이드바)] [얇은 footer] */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  .main-area {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+  .app-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+  /* 하단 푸터 — 페이지 끝 표시용 얇은 줄 */
+  .app-footer {
+    height: 26px;
+    background: #050505;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    color: #8a8c90;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .app-footer span { font-variant-numeric: tabular-nums; }
+  /* ── 헤더 ── */
+  .header {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    background: var(--sidebar);
+    border-bottom: 1px solid var(--border);
+    gap: 20px;
+    height: 56px;
+    flex: 0 0 56px;
+    min-width: 0;
+  }
+  /* 헤더 내부 아이템은 사이드바 펼침으로 인한 너비 축소를 흡수 */
+  .header-search { min-width: 0; flex-shrink: 1; }
+  .header-right { flex-shrink: 0; }
+  .logo {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo span { color: var(--blue); }
+  .header-search {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text2);
+    font-size: 13px;
+    width: 220px;
+  }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .header-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .header-avatar {
+    width: 32px; height: 32px;
+    background: var(--blue);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 13px;
+  }
+  /* ── 본문 (메인 레이아웃 + 우측 사이드바 패널 + 아이콘 레일) — 헤더 아래 풀높이 채움 */
+  .body {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+  }
+  /* tpm 스타일 — 우측 끝의 아이콘 레일은 항상 보이고, sidebar-panel은 토글로 펼침 */
+  .sidebar-panel {
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+    transition: width 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    background: var(--sidebar);
+    border-left: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-panel.open { width: 280px; }
+  .sidebar-header,
+  .sidebar-section { min-width: 280px; }
+  .sidebar-header {
+    padding: 14px 12px 14px 16px;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--text);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sidebar-header-btns {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  /* $/원 토글 — tpm cur-switch */
+  .cur-switch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2px;
+    cursor: pointer;
+    user-select: none;
+    gap: 0;
+  }
+  .cur-switch-label {
+    position: relative;
+    z-index: 1;
+    padding: 2px 9px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #8a8c90;
+    transition: color 0.22s ease;
+    line-height: 1.6;
+  }
+  .cur-switch-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(50% - 2px);
+    bottom: 2px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 16px;
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .cur-switch.krw .cur-switch-thumb { transform: translateX(100%); }
+  .cur-switch.krw .cur-switch-label:last-of-type,
+  .cur-switch:not(.krw) .cur-switch-label:first-of-type { color: #eaecef; }
+
+  /* 내 투자 표시 필터 — 총자산은 항상 보이고, 포트폴리오·포지션은 토글 */
+  .view-filters {
+    display: flex;
+    gap: 6px;
+    padding: 8px 16px 0;
+  }
+  .view-chip {
+    background: rgba(255,255,255,0.04);
+    color: #8a8c90;
+    border: 0;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .view-chip.on {
+    background: rgba(49, 130, 246, 0.18);
+    color: #fff;
+  }
+  /* 숨김 처리 — 포트폴리오/포지션 비활성 시 */
+  .view-hidden { display: none !important; }
+
+  /* 내 투자 — 선물/현물/주식 탭 (모바일 거래탭 스타일 — 활성 색 + 하단 22px 슬라이드 바) */
+  .invest-tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 12px 16px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+  }
+  .invest-tab {
+    background: none;
+    border: 0;
+    color: #8a8c90;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0 0 4px;
+    transition: color 0.18s ease;
+    letter-spacing: -0.2px;
+    position: relative;
+  }
+  .invest-tab.active { color: #eaecef; }
+  .invest-tab.active::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 3px;
+    background: #fff;
+    border-radius: 3px;
+  }
+  .sidebar-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    color: var(--text2);
+    font-size: 13px;
+    /* 패딩은 내부 콘텐츠(.assets-scroll 등)가 담당 — 이중 거터 방지 */
+  }
+  /* 아이콘 레일 — 항상 보이는 56px 컬럼 */
+  .sidebar-icons {
+    width: 56px;
+    background: var(--sidebar);
+    border-left: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .si-btn {
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #8a8c90;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.1px;
+    border: none;
+    background: none;
+    transition: background 0.14s, color 0.14s;
+    user-select: none;
+  }
+  .si-btn:hover { background: rgba(255,255,255,0.06); color: #b7bdc6; }
+  .si-btn.active { color: #fff; background: rgba(255,255,255,0.1); }
+  .si-btn svg { width: 20px; height: 20px; fill: currentColor; stroke: none; }
+  .si-fold-btn { padding: 14px 0; }
+  .si-fold-icon {
+    width: 26px;
+    height: 26px;
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: rotate(0deg);
+  }
+  .si-fold-btn.folded .si-fold-icon { transform: rotate(-180deg); }
+  .si-divider {
+    width: 28px;
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 6px 0;
+    flex-shrink: 0;
+  }
+  .up { color: var(--up); }
+  .down { color: var(--down); }
+
+  /* ── 메인 레이아웃 (3컬럼: 차트 / 호가+Market·Community / 총자산) ── */
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: var(--gap);
+    padding: var(--gap);
+    background: var(--bg);
+    min-height: 0;
+    height: 100%;
+    flex: 1;
+    min-width: 0;
+  }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+  /* ── 차트 패널 ── */
+  .panel-chart .chart-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .symbol-headline {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .symbol-headline .sh-sym { font-size: 16px; font-weight: 800; color: var(--text); }
+  .symbol-headline .sh-name { font-size: 12px; color: var(--text3); }
+  .symbol-headline .sh-px { font-size: 20px; font-weight: 800; color: var(--up); font-variant-numeric: tabular-nums; margin-left: 14px; }
+  .symbol-headline .sh-chg { font-size: 13px; font-weight: 700; color: var(--up); font-variant-numeric: tabular-nums; }
+  .tf-bar { display: flex; gap: 4px; margin-left: auto; }
+  .tf-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .tf-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .chart-stage {
+    flex: 1;
+    background: #000;
+    position: relative;
+    min-height: 0;
+    /* 모바일 차트(black 다크) — 좌측 끝 OHLC 오버레이, 우측 가격 스케일, 하단 시간 라벨 */
+  }
+  /* OHLC 오버레이 (모바일 .chart-overlay-ohlc 패턴) */
+  .chart-overlay-ohlc {
+    position: absolute;
+    top: 10px;
+    left: 14px;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: #8b95a1;
+    line-height: 1.3;
+  }
+  .chart-overlay-ohlc .tf-badge {
+    font-size: 11px;
+    color: #eaecef;
+    font-weight: 700;
+  }
+  .ohlc-values-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ohlc-values-row em {
+    font-style: normal;
+    color: #f2f3f5;
+    font-weight: 500;
+    margin-left: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .ohlc-change-row { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ohlc-change-row.up { color: #0ecb81; }
+  .ohlc-change-row.down { color: #f6465d; }
+  /* 봉 카운터 — 차트 우측 상단 */
+  .bar-count {
+    position: absolute;
+    top: 10px;
+    right: 60px;
+    z-index: 10;
+    font-size: 10px;
+    color: #8a8c90;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+  }
+  /* 가격 스케일 — 차트 우측 세로 라벨 */
+  .price-scale {
+    position: absolute;
+    top: 0; right: 0; bottom: 22px;
+    width: 60px;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .price-tick {
+    position: absolute;
+    right: 6px;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: #8a8c90;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  /* 현재가 가로 라인 + 라벨 */
+  .current-price-line {
+    position: absolute;
+    left: 0; right: 60px;
+    height: 1px;
+    background: repeating-linear-gradient(to right, #0ecb81 0, #0ecb81 4px, transparent 4px, transparent 8px);
+    z-index: 6;
+    pointer-events: none;
+  }
+  .current-price-tag {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #0ecb81;
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.4;
+    z-index: 7;
+  }
+  /* 시간 축 (하단) */
+  .time-axis {
+    position: absolute;
+    left: 0; right: 60px; bottom: 0;
+    height: 22px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    z-index: 4;
+    pointer-events: none;
+  }
+  .time-tick {
+    position: absolute;
+    transform: translateX(-50%);
+    top: 5px;
+    font-size: 10px;
+    color: #8a8c90;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  /* 캔들 영역 */
+  .chart-candles {
+    position: absolute;
+    left: 0; right: 60px; top: 0; bottom: 22px;
+    z-index: 3;
+  }
+  .chart-candles svg { width: 100%; height: 100%; display: block; }
+
+  /* ── 가운데 컬럼 — 총자산 + 호가 ── */
+  .panel-middle {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    background: transparent;
+    border: 0;
+  }
+  /* ── 우측 총자산 풀높이 패널 (모바일 .trade-account-summary 디자인 기반) ── */
+  .panel-assets-full {
+    background: var(--surface);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    letter-spacing: -0.2px;
+  }
+  .assets-scroll {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 16px;
+    gap: 10px;
+  }
+  /* 모바일 .tas-hero — 총자산 헤더 */
+  .tas-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tas-hero-label {
+    font-size: 11px;
+    color: #8a8c90;
+  }
+  .tas-hero-row {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+  }
+  .tas-hero-val {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .tas-hero-val--compact { font-size: 20px; }
+  .tas-cur {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .tas-cur-ico { opacity: 0.8; }
+  .tas-hero-approx {
+    font-size: 11px;
+    color: #8b95a1;
+    margin-top: 2px;
+  }
+  /* 모바일 ▼ wallet-toggle — 가격 옆에 컴팩트하게, 클릭 시 wallet-detail 펼침 */
+  .tas-wallet-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: #8a8c90;
+    cursor: pointer;
+    margin-left: auto;
+  }
+  .tas-wallet-toggle svg {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.2s ease;
+  }
+  .tas-wallet-toggle.open svg { transform: rotate(180deg); }
+  /* 펼침 영역 — grid-rows 0fr→1fr 트랜지션 (모바일과 동일) */
+  .tas-wallet-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 0.25s ease, opacity 0.25s ease, margin-top 0.25s ease;
+  }
+  .tas-wallet-wrap.open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 8px;
+  }
+  /* 지갑 잔고 / 미실현 손익 — 2열 */
+  .tas-wallet-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .tas-wallet-col { display: flex; flex-direction: column; gap: 2px; }
+  .tas-wallet-k { font-size: 10px; color: #8a8c90; }
+  .tas-wallet-v { font-size: 12px; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+  .tas-wallet-v.up { color: var(--up); }
+  .tas-wallet-v.down { color: var(--down); }
+  .tas-wallet-approx { font-size: 9px; color: #8b95a1; font-variant-numeric: tabular-nums; }
+  /* 구분선 */
+  .tas-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 4px 0;
+  }
+  /* 포트폴리오 타이틀 */
+  .tas-pos-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 400;
+    color: #8a8c90;
+  }
+  .tas-pos-title .cnt { color: #eaecef; font-weight: 600; }
+  /* 포트폴리오 한 줄 행 (모바일 .tas-mkt-row) — 포트·포지션 둘 다 노출일 때만 5행 스크롤로 제한 */
+  .tas-mkt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  /* 포지션 그룹도 함께 보일 때만 포트폴리오를 5행으로 잘라 스크롤 */
+  #sidebar-invest.both-on .tas-mkt-list {
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .tas-mkt-list::-webkit-scrollbar { width: 0; }
+  .tas-mkt-list { scrollbar-width: none; }
+
+  /* 그룹 간 상하 여백 — 총자산↔포트폴리오, 포트폴리오↔포지션 */
+  .view-group { padding-top: 14px; }
+  .view-group + .view-group { padding-top: 18px; }
+  /* 그룹 내부 divider 위/아래 자체 padding은 없음 — 그룹 padding이 담당 */
+  .view-group > .tas-divider { margin: 0 0 12px; }
+  .tas-mkt-row {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "logo sym   pnl"
+      "logo badge roe";
+    align-items: end;
+    column-gap: 8px;
+    row-gap: 3px;
+    padding: 7px 0;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  .tas-mkt-row:hover { background: #161618; }
+  .tas-mkt-logo {
+    grid-area: logo;
+    align-self: center;
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #fff;
+  }
+  .tas-mkt-logo.btc { background: linear-gradient(135deg, #f7931a, #ffb04a); }
+  .tas-mkt-logo.eth { background: linear-gradient(135deg, #627eea, #8a98ef); }
+  .tas-mkt-logo.sol { background: linear-gradient(135deg, #9945ff, #14f195); }
+  .tas-mkt-sym {
+    grid-area: sym;
+    font-size: 13px;
+    font-weight: 700;
+    color: #eaecef;
+  }
+  .tas-mkt-pnlval {
+    grid-area: pnl;
+    justify-self: end;
+    font-size: 13px;
+    font-weight: 700;
+    color: #eaecef;
+    font-variant-numeric: tabular-nums;
+  }
+  .tas-mkt-badges {
+    grid-area: badge;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .tas-mkt-badge {
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 1.5px 3px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+  }
+  .tas-mkt-badge.dir.long { color: var(--up); border-color: rgba(14,203,129,0.5); }
+  .tas-mkt-badge.dir.short { color: var(--down); border-color: rgba(246,70,93,0.5); }
+  .tas-mkt-badge.lev { color: #b7bdc6; border-color: rgba(255,255,255,0.18); }
+  .tas-mkt-roe {
+    grid-area: roe;
+    justify-self: end;
+    font-size: 10px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .tas-mkt-roe.up { color: var(--up); }
+  .tas-mkt-roe.down { color: var(--down); }
+
+  /* ── 포지션 디테일 카드 (모바일 PositionCard 스타일 기반) ── */
+  /* Positions/Orders는 한 줄, Show current는 다음 줄(우측 정렬) */
+  .pos-tabs {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-top: 4px;
+    font-size: 13px;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .pos-tab { color: #8a8c90; font-weight: 700; cursor: pointer; }
+  .pos-tab.active { color: #eaecef; }
+  .pos-tab .cnt { font-weight: 700; }
+  .pos-show {
+    color: #8a8c90;
+    font-size: 11px;
+    display: flex; align-items: center; gap: 4px;
+    flex-basis: 100%;             /* 두 번째 줄로 떨어지게 */
+    justify-content: flex-start;  /* 좌측 정렬 */
+  }
+  .pos-show input { accent-color: var(--blue); width: 12px; height: 12px; }
+  /* 모바일 .position-card 패턴 — 가로 패딩 0으로 부모(.assets-scroll 16px) 거터에 정렬, 배경/보더 없음 */
+  .pos-card {
+    background: none;
+    border-radius: 0;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .pos-card .pos-sym {
+    font-size: 14px;
+    font-weight: 700;
+    color: #eaecef;
+  }
+  .pos-card .pos-badges {
+    display: flex; gap: 4px; margin: 6px 0 10px;
+  }
+  .pos-card .pos-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding-bottom: 8px;
+  }
+  .pos-card .pos-k { font-size: 11px; color: #8a8c90; }
+  .pos-card .pos-v {
+    font-size: 15px; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+    color: #eaecef;
+  }
+  .pos-card .pos-v.up { color: var(--up); }
+  .pos-card .pos-v.down { color: var(--down); }
+  .pos-card .pos-vsub {
+    font-size: 11px; color: #8a8c90;
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pos-card .pos-v2 {
+    font-size: 13px; font-weight: 700; color: #eaecef;
+    font-variant-numeric: tabular-nums; margin-top: 2px;
+  }
+  .pos-card .pos-grid3 {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    padding: 6px 0;
+  }
+  .pos-card .pos-realized {
+    margin-top: 6px; padding: 8px 0 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    font-size: 11px;
+    color: #8a8c90;
+  }
+  .pos-card .pos-realized .v {
+    color: #eaecef; font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .tas-notice {
+    color: #8a8c90;
+    font-size: 11px;
+    text-align: center;
+    padding: 4px 0;
+  }
+  .assets-label { font-size: 11px; color: var(--text3); font-weight: 600; }
+  .assets-value-row {
+    display: flex; align-items: baseline; gap: 6px; margin-top: 4px;
+  }
+  .assets-val { font-size: 22px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+  .assets-cur { font-size: 13px; font-weight: 700; color: var(--text2); }
+  .assets-approx { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .assets-divider { border-top: 1px solid var(--border); margin: 14px 0 10px; }
+  .assets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .assets-grid .k { font-size: 11px; color: var(--text3); }
+  .assets-grid .v { font-size: 13px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+  .assets-grid .v.up { color: var(--up); }
+  .portfolio-title {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 700;
+    display: flex; justify-content: space-between;
+  }
+  .portfolio-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .portfolio-row:last-child { border-bottom: 0; }
+  .portfolio-row .logo {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: linear-gradient(135deg, #f7931a, #ffb04a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #fff;
+  }
+  .portfolio-row .logo.eth { background: linear-gradient(135deg, #627eea, #8a98ef); }
+  .portfolio-row .logo.sol { background: linear-gradient(135deg, #9945ff, #14f195); }
+  .portfolio-row .meta { font-size: 12px; }
+  .portfolio-row .meta .nm { font-weight: 700; color: var(--text); }
+  .portfolio-row .meta .sm { color: var(--text3); font-size: 11px; }
+  .portfolio-row .pnl { text-align: right; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* ── 호가창 (모바일 .orderbook 디자인) — 콘텐츠 높이 고정 (flex 0 0 auto) ── */
+  .panel-orderbook {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    letter-spacing: -0.2px;
+  }
+  .orderbook {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+  .funding-rate-countdown {
+    font-size: 10px;
+    color: #848e9c;
+    line-height: 1.3;
+    margin-bottom: 7px;
+    text-align: right;
+    width: 100%;
+    transform-origin: right;
+    transform: scaleX(0.95);
+  }
+  .funding-value { color: #eaecef; font-weight: 600; }
+  .orderbook-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #848e9c;
+    margin-bottom: 6px;
+  }
+  .col-price, .col-qty {
+    display: inline-block;
+    transform: scaleX(0.95);
+  }
+  .col-price { transform-origin: left; }
+  .col-qty { text-align: right; transform-origin: right; }
+  .book-side {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .book-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .book-row span,
+  .book-row strong {
+    z-index: 2;
+    font-size: 10px;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    display: inline-block;
+    transform: scaleX(0.95);
+  }
+  .price-red { color: #f6465d; transform-origin: left; }
+  .price-green { color: #0ecb81; transform-origin: left; }
+  .qty-val { color: #b7bdc6; text-align: right; transform-origin: right; }
+  .gauge-red, .gauge-green {
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    z-index: 1;
+    opacity: 0.28;
+  }
+  .gauge-red { background: #f6465d; }
+  .gauge-green { background: #0ecb81; }
+
+  /* 현재가 / 시장가 영역 */
+  .mark-price {
+    padding: 6px 0;
+    display: flex;
+    flex-direction: column;
+    margin: 5px 0;
+  }
+  .price-arrow-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .current-price-val {
+    font-size: 17px;
+    font-weight: 700;
+    color: #eaecef;
+    display: inline-block;
+    transform: scaleX(0.95);
+    transform-origin: left;
+    font-variant-numeric: tabular-nums;
+  }
+  .current-price-val.up { color: #0ecb81; }
+  .current-price-val.down { color: #f6465d; }
+  .current-price-val.flat { color: #eaecef; }
+  .arrow-next { color: #848e9c; font-size: 12px; }
+  .market-price-val {
+    font-size: 11px;
+    color: #848e9c;
+    margin-top: 2px;
+    display: inline-block;
+    transform: scaleX(0.95);
+    transform-origin: left;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 강도 비율 바 */
+  .book-ratio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    margin-top: 8px;
+  }
+  .ratio-buy { color: #0ecb81; font-weight: 700; display: inline-block; transform: scaleX(0.95); transform-origin: left; }
+  .ratio-sell { color: #f6465d; font-weight: 700; display: inline-block; transform: scaleX(0.95); transform-origin: right; }
+  .ratio-bar {
+    flex: 1; height: 3px; border-radius: 99px;
+    display: flex; overflow: hidden; margin: 0 6px;
+  }
+  .bar-buy { background: #0ecb81; height: 100%; }
+  .bar-sell { background: #f6465d; height: 100%; }
+
+  /* 오더북 하단 컨트롤 */
+  .orderbook-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px;
+  }
+  .ob-filter-btn {
+    color: #848e9c;
+    background: none; border: 0;
+    cursor: pointer;
+    width: 20px; height: 20px;
+    padding: 0;
+    display: flex; align-items: center;
+    justify-content: flex-start;
+    margin-left: -2px;
+  }
+  .ob-decimals-btn {
+    display: flex; align-items: center; gap: 4px;
+    background: #202126;
+    color: #eaecef;
+    border: 0;
+    border-radius: 4px;
+    min-width: 112px;
+    height: 20px;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* ── 우측 패널 (Market ↔ Community 토글) — 호가창 아래 남은 공간 채움 ── */
+  .panel-right {
+    background: var(--surface);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+  }
+  .right-tabs {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 16px;
+  }
+  .right-tab {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text3);
+    cursor: pointer;
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s;
+  }
+  .right-tab.active {
+    color: var(--text);
+    border-bottom-color: var(--blue);
+  }
+  .right-tab-status {
+    margin-left: auto;
+    color: var(--up);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  /* Market 리스트 (우측 탭 활성 시) */
+  .market-filters {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+  }
+  .market-chip {
+    background: var(--surface2);
+    color: var(--text2);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .market-chip.active { background: var(--blue); color: #fff; }
+  .market-head {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 0.9fr;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .market-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 8px;
+  }
+  .market-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 0.9fr;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .market-row:hover { background: var(--surface2); }
+  .market-row.selected { background: var(--surface2); }
+  .market-row .sym { font-size: 13px; font-weight: 700; color: var(--text); }
+  .market-row .name { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .market-row .px { text-align: right; font-size: 13px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+  .market-row .chg { text-align: right; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .chat-msg { display: flex; gap: 8px; align-items: flex-start; }
+  .chat-msg .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--surface2);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--text);
+  }
+  .chat-msg .bubble {
+    flex: 1; min-width: 0;
+  }
+  .chat-msg .meta {
+    display: flex; align-items: baseline; gap: 6px;
+    font-size: 11px;
+  }
+  .chat-msg .meta .nick { color: var(--text); font-weight: 700; }
+  .chat-msg .meta .time { color: var(--text3); }
+  .chat-msg .body {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 3px;
+    word-break: break-word;
+  }
+  .chat-input {
+    padding: 10px 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+  }
+  .chat-input input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+  }
+  .chat-input button {
+    background: var(--blue);
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    padding: 0 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- main-area: 헤더+본문+사이드바 (footer 위) -->
+<div class="main-area">
+
+  <!-- 메인 컬럼 (헤더 + 본문). 사이드바 펼치면 이 컬럼이 좁아져 헤더 콘텐츠도 밀려남 -->
+  <div class="app-main">
+
+    <!-- ── 헤더 ── -->
+    <header class="header">
+      <div class="logo">Auto<span>Trade</span></div>
+      <input class="header-search" placeholder="🔍  Search symbol (BTC, ETH...)" />
+      <div class="header-right">
+        <button class="header-btn">KRW · USDT</button>
+        <button class="header-btn">🔔</button>
+        <div class="header-avatar">A</div>
+      </div>
+    </header>
+
+    <!-- ── 본문 ── -->
+    <div class="body">
+
+    <!-- ── 메인 (3 패널: 차트 / 총자산+호가 / Market↔Community 토글) ── -->
+    <main class="main-layout">
+
+      <!-- ── 차트 패널 ── -->
+      <section class="panel panel-chart">
+        <div class="chart-toolbar">
+          <div class="symbol-headline">
+            <span class="sh-sym">BTCUSDT.P</span>
+            <span class="sh-name">Perpetual</span>
+            <span class="sh-px">63,985.4</span>
+            <span class="sh-chg">+531.9 (+0.84%)</span>
+          </div>
+          <div class="tf-bar">
+            <button class="tf-btn">1m</button>
+            <button class="tf-btn">5m</button>
+            <button class="tf-btn">15m</button>
+            <button class="tf-btn active">1H</button>
+            <button class="tf-btn">4H</button>
+            <button class="tf-btn">1D</button>
+            <button class="tf-btn">1W</button>
+          </div>
+        </div>
+        <div class="chart-stage">
+          <!-- 좌상단 OHLC + 변동 (모바일 .chart-overlay-ohlc) -->
+          <div class="chart-overlay-ohlc">
+            <span class="tf-badge">BTCUSDT.P · 1H</span>
+            <div class="ohlc-values-row">
+              <span>O <em>63,500.0</em></span>
+              <span>H <em>64,210.0</em></span>
+              <span>L <em>63,310.0</em></span>
+              <span>C <em>63,985.4</em></span>
+            </div>
+            <span class="ohlc-change-row up">+485.4 (+0.76%)</span>
+          </div>
+          <!-- 우상단 봉 카운터 (현재 보고 있는 봉 범위 / 전체) -->
+          <div class="bar-count">120 / 320 봉</div>
+
+          <!-- 캔들 영역 — 가짜 캔들 28개, 트렌딩 업 -->
+          <div class="chart-candles">
+            <svg viewBox="0 0 700 400" preserveAspectRatio="none">
+              <!-- 캔들 생성 (간격 25px, 폭 14px), green=#0ecb81 / red=#f6465d -->
+              <!-- 가짜 캔들 시퀀스: (x, openY, closeY, highY, lowY, isUp) -->
+              <g>
+                <!-- candle 1 -->
+                <line x1="14" y1="290" x2="14" y2="240" stroke="#f6465d" stroke-width="1"/>
+                <rect x="8" y="265" width="12" height="20" fill="#f6465d"/>
+                <!-- candle 2 -->
+                <line x1="39" y1="280" x2="39" y2="230" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="33" y="245" width="12" height="30" fill="#0ecb81"/>
+                <!-- candle 3 -->
+                <line x1="64" y1="270" x2="64" y2="220" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="58" y="240" width="12" height="22" fill="#0ecb81"/>
+                <!-- candle 4 -->
+                <line x1="89" y1="270" x2="89" y2="215" stroke="#f6465d" stroke-width="1"/>
+                <rect x="83" y="235" width="12" height="25" fill="#f6465d"/>
+                <!-- candle 5 -->
+                <line x1="114" y1="265" x2="114" y2="205" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="108" y="220" width="12" height="35" fill="#0ecb81"/>
+                <!-- candle 6 -->
+                <line x1="139" y1="230" x2="139" y2="195" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="133" y="210" width="12" height="15" fill="#0ecb81"/>
+                <!-- candle 7 -->
+                <line x1="164" y1="225" x2="164" y2="190" stroke="#f6465d" stroke-width="1"/>
+                <rect x="158" y="200" width="12" height="20" fill="#f6465d"/>
+                <!-- candle 8 -->
+                <line x1="189" y1="220" x2="189" y2="175" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="183" y="185" width="12" height="30" fill="#0ecb81"/>
+                <!-- candle 9 -->
+                <line x1="214" y1="200" x2="214" y2="170" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="208" y="180" width="12" height="15" fill="#0ecb81"/>
+                <!-- candle 10 -->
+                <line x1="239" y1="195" x2="239" y2="160" stroke="#f6465d" stroke-width="1"/>
+                <rect x="233" y="170" width="12" height="20" fill="#f6465d"/>
+                <!-- candle 11 -->
+                <line x1="264" y1="195" x2="264" y2="150" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="258" y="160" width="12" height="30" fill="#0ecb81"/>
+                <!-- candle 12 -->
+                <line x1="289" y1="170" x2="289" y2="145" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="283" y="155" width="12" height="13" fill="#0ecb81"/>
+                <!-- candle 13 -->
+                <line x1="314" y1="170" x2="314" y2="135" stroke="#f6465d" stroke-width="1"/>
+                <rect x="308" y="148" width="12" height="20" fill="#f6465d"/>
+                <!-- candle 14 -->
+                <line x1="339" y1="160" x2="339" y2="125" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="333" y="135" width="12" height="22" fill="#0ecb81"/>
+                <!-- candle 15 -->
+                <line x1="364" y1="140" x2="364" y2="115" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="358" y="125" width="12" height="13" fill="#0ecb81"/>
+                <!-- candle 16 -->
+                <line x1="389" y1="145" x2="389" y2="105" stroke="#f6465d" stroke-width="1"/>
+                <rect x="383" y="120" width="12" height="22" fill="#f6465d"/>
+                <!-- candle 17 -->
+                <line x1="414" y1="135" x2="414" y2="95" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="408" y="105" width="12" height="28" fill="#0ecb81"/>
+                <!-- candle 18 -->
+                <line x1="439" y1="110" x2="439" y2="85" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="433" y="95" width="12" height="13" fill="#0ecb81"/>
+                <!-- candle 19 -->
+                <line x1="464" y1="115" x2="464" y2="80" stroke="#f6465d" stroke-width="1"/>
+                <rect x="458" y="93" width="12" height="20" fill="#f6465d"/>
+                <!-- candle 20 -->
+                <line x1="489" y1="115" x2="489" y2="70" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="483" y="85" width="12" height="28" fill="#0ecb81"/>
+                <!-- candle 21 -->
+                <line x1="514" y1="90" x2="514" y2="62" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="508" y="75" width="12" height="13" fill="#0ecb81"/>
+                <!-- candle 22 -->
+                <line x1="539" y1="90" x2="539" y2="56" stroke="#f6465d" stroke-width="1"/>
+                <rect x="533" y="70" width="12" height="18" fill="#f6465d"/>
+                <!-- candle 23 -->
+                <line x1="564" y1="85" x2="564" y2="48" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="558" y="60" width="12" height="23" fill="#0ecb81"/>
+                <!-- candle 24 -->
+                <line x1="589" y1="70" x2="589" y2="42" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="583" y="52" width="12" height="16" fill="#0ecb81"/>
+                <!-- candle 25 -->
+                <line x1="614" y1="72" x2="614" y2="38" stroke="#f6465d" stroke-width="1"/>
+                <rect x="608" y="50" width="12" height="20" fill="#f6465d"/>
+                <!-- candle 26 -->
+                <line x1="639" y1="65" x2="639" y2="32" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="633" y="42" width="12" height="20" fill="#0ecb81"/>
+                <!-- candle 27 -->
+                <line x1="664" y1="48" x2="664" y2="28" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="658" y="38" width="12" height="9" fill="#0ecb81"/>
+                <!-- candle 28 (현재 봉) -->
+                <line x1="689" y1="60" x2="689" y2="25" stroke="#0ecb81" stroke-width="1"/>
+                <rect x="683" y="35" width="12" height="20" fill="#0ecb81"/>
+              </g>
+            </svg>
+          </div>
+
+          <!-- 우측 가격 스케일 -->
+          <div class="price-scale">
+            <span class="price-tick" style="top:5%;">64,210.0</span>
+            <span class="price-tick" style="top:20%;">64,100.0</span>
+            <span class="price-tick" style="top:35%;">63,990.0</span>
+            <span class="price-tick" style="top:50%;">63,880.0</span>
+            <span class="price-tick" style="top:65%;">63,770.0</span>
+            <span class="price-tick" style="top:80%;">63,660.0</span>
+            <span class="price-tick" style="top:95%;">63,550.0</span>
+          </div>
+
+          <!-- 현재가 가로 라인 + 태그 -->
+          <div class="current-price-line" style="top:34%;"></div>
+          <div class="current-price-tag" style="top:34%;">63,985.4</div>
+
+          <!-- 시간 축 -->
+          <div class="time-axis">
+            <span class="time-tick" style="left:8%;">06:00</span>
+            <span class="time-tick" style="left:25%;">09:00</span>
+            <span class="time-tick" style="left:42%;">12:00</span>
+            <span class="time-tick" style="left:60%;">15:00</span>
+            <span class="time-tick" style="left:78%;">18:00</span>
+            <span class="time-tick" style="left:94%;">21:00</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 가운데: 호가 (상단, 콘텐츠 높이 고정) + Market/Community (하단, 남은 공간) ── -->
+      <section class="panel-middle">
+
+        <!-- 모바일 .orderbook 구조 -->
+        <aside class="panel-orderbook">
+          <div class="orderbook">
+            <div class="funding-rate-countdown">
+              Funding rate / Countdown<br />
+              <span class="funding-value">0.0017% / 06:56:12 (8h)</span>
+            </div>
+            <div class="orderbook-head">
+              <span class="col-price">Price<br/>(USDT)</span>
+              <span class="col-qty">Quantity<br/>(USDT)</span>
+            </div>
+            <!-- 매도 (Asks) — 위에서 아래로 최우선 매도가가 맨 아래 -->
+            <div class="book-side asks">
+              <div class="book-row"><span class="price-red">64,030</span><strong class="qty-val">958.24K</strong><i class="gauge-red" style="width:40%"></i></div>
+              <div class="book-row"><span class="price-red">64,020</span><strong class="qty-val">2.49M</strong><i class="gauge-red" style="width:90%"></i></div>
+              <div class="book-row"><span class="price-red">64,010</span><strong class="qty-val">2.40M</strong><i class="gauge-red" style="width:87%"></i></div>
+              <div class="book-row"><span class="price-red">64,000</span><strong class="qty-val">2.18M</strong><i class="gauge-red" style="width:79%"></i></div>
+              <div class="book-row"><span class="price-red">63,990</span><strong class="qty-val">1.56M</strong><i class="gauge-red" style="width:56%"></i></div>
+              <div class="book-row"><span class="price-red">63,980</span><strong class="qty-val">1.24M</strong><i class="gauge-red" style="width:45%"></i></div>
+            </div>
+            <!-- 현재가 / 시장가 -->
+            <div class="mark-price">
+              <div class="price-arrow-row">
+                <strong class="current-price-val up">63,985.4</strong>
+                <span class="arrow-next">&gt;</span>
+              </div>
+              <span class="market-price-val">63,985.4</span>
+            </div>
+            <!-- 매수 (Bids) -->
+            <div class="book-side bids">
+              <div class="book-row"><span class="price-green">63,970</span><strong class="qty-val">100.48K</strong><i class="gauge-green" style="width:4%"></i></div>
+              <div class="book-row"><span class="price-green">63,960</span><strong class="qty-val">1.12M</strong><i class="gauge-green" style="width:41%"></i></div>
+              <div class="book-row"><span class="price-green">63,950</span><strong class="qty-val">1.50M</strong><i class="gauge-green" style="width:55%"></i></div>
+              <div class="book-row"><span class="price-green">63,940</span><strong class="qty-val">2.23M</strong><i class="gauge-green" style="width:81%"></i></div>
+              <div class="book-row"><span class="price-green">63,930</span><strong class="qty-val">2.13M</strong><i class="gauge-green" style="width:77%"></i></div>
+              <div class="book-row"><span class="price-green">63,920</span><strong class="qty-val">2.75M</strong><i class="gauge-green" style="width:100%"></i></div>
+            </div>
+            <!-- 매수/매도 강도 -->
+            <div class="book-ratio">
+              <span class="ratio-buy">B 47%</span>
+              <div class="ratio-bar">
+                <span class="bar-buy" style="width:47%"></span>
+                <span class="bar-sell" style="width:53%"></span>
+              </div>
+              <span class="ratio-sell">53% S</span>
+            </div>
+            <!-- 호가 단위/그리드 -->
+            <div class="orderbook-footer">
+              <button type="button" class="ob-filter-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M4 11h5V5H4v6zm0 8h5v-6H4v6zm7 0h5v-6h-5v6zm7 0h5v-6h-5v6zm-7-8h5V5h-5v6zm7-6v6h5V5h-5z"/>
+                </svg>
+              </button>
+              <button type="button" class="ob-decimals-btn">
+                <span>10</span>
+                <span>▾</span>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Market ↔ Community 토글 (하단, 남은 공간 채움) -->
+        <div class="panel panel-right">
+          <div class="right-tabs">
+            <div class="right-tab">Market</div>
+            <div class="right-tab active">Community</div>
+            <span class="right-tab-status">● 142 online</span>
+          </div>
+          <div class="chat-messages">
+            <div class="chat-msg">
+              <div class="avatar">J</div>
+              <div class="bubble">
+                <div class="meta"><span class="nick">jordan_</span><span class="time">12:34</span></div>
+                <div class="body">64k 저항 강함. 음봉 시작</div>
+              </div>
+            </div>
+            <div class="chat-msg">
+              <div class="avatar" style="background:#3b3f4b">M</div>
+              <div class="bubble">
+                <div class="meta"><span class="nick">marketmkr</span><span class="time">12:35</span></div>
+                <div class="body">63.5k 지지 봐야할듯</div>
+              </div>
+            </div>
+            <div class="chat-msg">
+              <div class="avatar" style="background:#5a3a3a">T</div>
+              <div class="bubble">
+                <div class="meta"><span class="nick">trader.kr</span><span class="time">12:36</span></div>
+                <div class="body">롱 절반 익절 👍</div>
+              </div>
+            </div>
+            <div class="chat-msg">
+              <div class="avatar" style="background:#3a5a3a">H</div>
+              <div class="bubble">
+                <div class="meta"><span class="nick">han.dev</span><span class="time">12:38</span></div>
+                <div class="body">데스크톱 화면 너무 좋다</div>
+              </div>
+            </div>
+            <div class="chat-msg">
+              <div class="avatar" style="background:#3a3a5a">D</div>
+              <div class="bubble">
+                <div class="meta"><span class="nick">delta_</span><span class="time">12:40</span></div>
+                <div class="body">FOMC 다음주라 변동성 주의</div>
+              </div>
+            </div>
+            <div class="chat-msg">
+              <div class="avatar" style="background:#5a4a2a">R</div>
+              <div class="bubble">
+                <div class="meta"><span class="nick">ronin</span><span class="time">12:41</span></div>
+                <div class="body">차트 + 호가 + 채팅 한 화면 만족</div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input">
+            <input placeholder="메시지를 입력하세요..." />
+            <button>전송</button>
+          </div>
+        </div>
+
+      </section>
+
+
+    </main>
+    </div><!-- /.body -->
+  </div><!-- /.app-main -->
+
+    <!-- tpm 스타일 사이드바 패널 (토글로 펼침/접힘 — 디폴트 닫힘) -->
+    <aside class="sidebar-panel" id="sidebar-panel">
+      <div class="sidebar-header">
+        <span id="sidebar-title">내 투자</span>
+        <div class="sidebar-header-btns">
+          <div class="cur-switch krw" id="cur-switch">
+            <span class="cur-switch-label">$</span>
+            <span class="cur-switch-label">원</span>
+            <div class="cur-switch-thumb"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 내 투자 — 선물/현물/주식 탭 + 총자산 + 포트폴리오 + 포지션 디테일 (모바일 .trade-account-summary) -->
+      <div class="sidebar-section" id="sidebar-invest">
+        <!-- 모바일 거래탭 스타일 — 전체(자산 현황 종합) / 선물 / 현물 / 주식 -->
+        <div class="invest-tabs">
+          <button class="invest-tab">전체</button>
+          <button class="invest-tab active">선물</button>
+          <button class="invest-tab">현물</button>
+          <button class="invest-tab">주식</button>
+        </div>
+
+        <!-- 표시 필터 — 총자산은 항상 보임. 포트폴리오/포지션 토글 -->
+        <div class="view-filters">
+          <button class="view-chip on" data-target="portfolio">포트폴리오</button>
+          <button class="view-chip on" data-target="positions">포지션</button>
+        </div>
+        <div class="assets-scroll">
+
+          <div class="tas-hero">
+            <span class="tas-hero-label">총자산</span>
+            <div class="tas-hero-row">
+              <strong class="tas-hero-val tas-hero-val--compact">12,345,678,901</strong>
+              <span class="tas-cur">원
+                <svg class="tas-cur-ico" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 3 20 7 16 11" />
+                  <line x1="20" y1="7" x2="5" y2="7" />
+                  <polyline points="8 21 4 17 8 13" />
+                  <line x1="4" y1="17" x2="19" y2="17" />
+                </svg>
+              </span>
+              <!-- 모바일 ▼ wallet-toggle — 클릭 시 지갑잔고/미실현 펼침 -->
+              <button type="button" class="tas-wallet-toggle" id="wallet-toggle" aria-label="지갑 상세">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+            </div>
+            <span class="tas-hero-approx">≈ 8,063,847.97 USDT</span>
+            <div class="tas-wallet-wrap" id="wallet-wrap">
+              <div class="tas-wallet-detail">
+                <div class="tas-wallet-col">
+                  <span class="tas-wallet-k">지갑 잔고</span>
+                  <span class="tas-wallet-v">270,396원</span>
+                  <span class="tas-wallet-approx">≈ 176.61 USDT</span>
+                </div>
+                <div class="tas-wallet-col">
+                  <span class="tas-wallet-k">미실현 손익</span>
+                  <span class="tas-wallet-v up">+285,615원</span>
+                  <span class="tas-wallet-approx">≈ +186.55 USDT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-group" data-view="portfolio">
+          <div class="tas-divider"></div>
+
+          <div class="tas-pos-title">
+            <span>포트폴리오</span>
+            <span class="cnt">6개</span>
+          </div>
+
+          <div class="tas-mkt-list">
+            <div class="tas-mkt-row">
+              <span class="tas-mkt-logo btc">₿</span>
+              <span class="tas-mkt-sym">BTC</span>
+              <span class="tas-mkt-pnlval up">+285,615원</span>
+              <span class="tas-mkt-badges">
+                <span class="tas-mkt-badge dir long">Long</span>
+                <span class="tas-mkt-badge lev">50x</span>
+              </span>
+              <span class="tas-mkt-roe up">+104.66%</span>
+            </div>
+            <div class="tas-mkt-row">
+              <span class="tas-mkt-logo eth">Ξ</span>
+              <span class="tas-mkt-sym">ETH</span>
+              <span class="tas-mkt-pnlval down">-12,400원</span>
+              <span class="tas-mkt-badges">
+                <span class="tas-mkt-badge dir short">Short</span>
+                <span class="tas-mkt-badge lev">20x</span>
+              </span>
+              <span class="tas-mkt-roe down">-3.42%</span>
+            </div>
+            <div class="tas-mkt-row">
+              <span class="tas-mkt-logo sol">◎</span>
+              <span class="tas-mkt-sym">SOL</span>
+              <span class="tas-mkt-pnlval up">+8,200원</span>
+              <span class="tas-mkt-badges">
+                <span class="tas-mkt-badge dir long">Long</span>
+                <span class="tas-mkt-badge lev">10x</span>
+              </span>
+              <span class="tas-mkt-roe up">+5.21%</span>
+            </div>
+            <div class="tas-mkt-row">
+              <span class="tas-mkt-logo btc" style="background:linear-gradient(135deg,#9e3aff,#c47fff);">X</span>
+              <span class="tas-mkt-sym">XRP</span>
+              <span class="tas-mkt-pnlval up">+15,300원</span>
+              <span class="tas-mkt-badges">
+                <span class="tas-mkt-badge dir long">Long</span>
+                <span class="tas-mkt-badge lev">25x</span>
+              </span>
+              <span class="tas-mkt-roe up">+12.84%</span>
+            </div>
+            <div class="tas-mkt-row">
+              <span class="tas-mkt-logo eth" style="background:linear-gradient(135deg,#26a17b,#5dd0a8);">U</span>
+              <span class="tas-mkt-sym">UNI</span>
+              <span class="tas-mkt-pnlval down">-3,210원</span>
+              <span class="tas-mkt-badges">
+                <span class="tas-mkt-badge dir short">Short</span>
+                <span class="tas-mkt-badge lev">5x</span>
+              </span>
+              <span class="tas-mkt-roe down">-1.92%</span>
+            </div>
+            <div class="tas-mkt-row">
+              <span class="tas-mkt-logo sol" style="background:linear-gradient(135deg,#f0a030,#ffd07a);">L</span>
+              <span class="tas-mkt-sym">LINK</span>
+              <span class="tas-mkt-pnlval up">+22,800원</span>
+              <span class="tas-mkt-badges">
+                <span class="tas-mkt-badge dir long">Long</span>
+                <span class="tas-mkt-badge lev">15x</span>
+              </span>
+              <span class="tas-mkt-roe up">+8.74%</span>
+            </div>
+          </div>
+          </div>
+
+          <div class="view-group" data-view="positions">
+          <div class="tas-divider"></div>
+
+          <div class="pos-tabs">
+            <span class="pos-tab active">Positions <span class="cnt">(1)</span></span>
+            <span class="pos-tab">Orders <span class="cnt">(2)</span></span>
+            <span class="pos-show"><input type="checkbox" /> Show current</span>
+          </div>
+
+          <div class="pos-card">
+            <div class="pos-sym">BTCUSDT &nbsp;›</div>
+            <div class="pos-badges">
+              <span class="tas-mkt-badge dir long">Long</span>
+              <span class="tas-mkt-badge lev">50x</span>
+              <span class="tas-mkt-badge lev">Cross</span>
+              <span class="tas-mkt-badge lev">USDT</span>
+            </div>
+            <div class="pos-row">
+              <div>
+                <div class="pos-k">Unrealized PnL (원)</div>
+                <div class="pos-v up">+285,615원</div>
+                <div class="pos-vsub">≈ $186.55</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="pos-k">ROE</div>
+                <div class="pos-v up">+104.66%</div>
+              </div>
+            </div>
+            <div class="pos-grid3">
+              <div>
+                <div class="pos-k">Size (USDT)</div>
+                <div class="pos-v2">8,727.6358</div>
+              </div>
+              <div>
+                <div class="pos-k">Margin (USDT)</div>
+                <div class="pos-v2">174.5527</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="pos-k">MMR</div>
+                <div class="pos-v2">13.22%</div>
+              </div>
+            </div>
+            <div class="pos-grid3">
+              <div>
+                <div class="pos-k">Entry price</div>
+                <div class="pos-v2">63,150.00</div>
+              </div>
+              <div>
+                <div class="pos-k">Mark price</div>
+                <div class="pos-v2">63,985.60</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="pos-k">Est. liq. price</div>
+                <div class="pos-v2" style="color:#f0a030">62,128.55</div>
+              </div>
+            </div>
+            <div class="pos-realized">
+              <div style="display:flex; justify-content:space-between;">
+                <span>Realized PnL (원)</span>
+                <span class="v" style="color:var(--down)">-4,201원</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top: 4px;">
+                <span>Entire TP/SL</span>
+                <span class="v"><span style="color:var(--up)">80,000.00</span> / <span style="color:var(--down)">62,150.00</span></span>
+              </div>
+            </div>
+          </div>
+          </div><!-- /.view-group positions -->
+
+        </div><!-- /.assets-scroll -->
+
+        <!-- 조회 전용 — sidebar-section 하단에 고정 (assets-scroll 밖) -->
+        <div class="tas-notice">조회 전용 · 주문은 거래소 앱에서</div>
+      </div>
+
+      <!-- 다른 섹션 placeholder -->
+      <div class="sidebar-section" id="sidebar-interest" style="display:none;">
+        <div style="color: var(--text3); font-size: 12px;">관심 종목 영역 (mockup placeholder)</div>
+      </div>
+      <div class="sidebar-section" id="sidebar-recent" style="display:none;">
+        <div style="color: var(--text3); font-size: 12px;">최근 본 영역 (mockup placeholder)</div>
+      </div>
+      <div class="sidebar-section" id="sidebar-live" style="display:none;">
+        <div style="color: var(--text3); font-size: 12px;">실시간 시세 영역 (mockup placeholder)</div>
+      </div>
+    </aside>
+
+    <!-- tpm 스타일 아이콘 레일 (항상 보임) -->
+    <nav class="sidebar-icons">
+      <button class="si-btn si-fold-btn" id="si-fold-btn">
+        <svg class="si-fold-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6.41 6 5 7.41 9.58 12 5 16.59 6.41 18l6-6-6-6zm8 0-1.41 1.41L17.58 12l-4.58 4.59L14.41 18l6-6-6-6z"/>
+        </svg>
+      </button>
+      <div class="si-divider"></div>
+      <button class="si-btn" id="si-invest">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg>
+        <span>내 투자</span>
+      </button>
+      <div class="si-divider"></div>
+      <button class="si-btn" id="si-interest">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <span>관심</span>
+      </button>
+      <button class="si-btn" id="si-recent">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+        <span>최근 본</span>
+      </button>
+      <button class="si-btn active" id="si-live">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.48 12.35c-1.57-4.08-7.16-4.3-5.81-10.23.1-.44-.37-.78-.75-.55C9.29 3.71 6.68 8 8.87 13.62c.18.46-.36.89-.75.59-1.81-1.37-2-3.34-1.84-4.75.06-.52-.62-.77-.91-.34C4.69 10.16 4 11.84 4 14c0 4.22 3.8 7.99 8 8 4.28.02 7.96-3.77 8-8.02.03-1.81-.35-3.9-.52-1.63z"/></svg>
+        <span>실시간</span>
+      </button>
+    </nav>
+
+</div><!-- /.main-area -->
+
+<!-- 하단 푸터 — 페이지 끝 표시 -->
+<footer class="app-footer">
+  <span>© 2026 Bullum · Mockup</span>
+  <span>v0.1 · 1600 × 1000</span>
+</footer>
+
+</div><!-- /.app -->
+<script>
+  // mockup용 간단 토글 + 섹션 전환
+  const panel = document.getElementById('sidebar-panel');
+  const foldBtn = document.getElementById('si-fold-btn');
+  const titleEl = document.getElementById('sidebar-title');
+  const TABS = [
+    { id: 'invest',   title: '내 투자' },
+    { id: 'interest', title: '관심' },
+    { id: 'recent',   title: '최근 본' },
+    { id: 'live',     title: '실시간' },
+  ];
+  const sectionBtns = TABS.map(t => document.getElementById('si-' + t.id));
+
+  function showSection(tabId) {
+    TABS.forEach(t => {
+      const sec = document.getElementById('sidebar-' + t.id);
+      if (sec) sec.style.display = t.id === tabId ? '' : 'none';
+    });
+    const tab = TABS.find(t => t.id === tabId);
+    if (tab && titleEl) titleEl.textContent = tab.title;
+    sectionBtns.forEach(b => b.classList.toggle('active', b.id === 'si-' + tabId));
+  }
+
+  // 초기: 내 투자 표시
+  showSection('invest');
+
+  foldBtn.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    foldBtn.classList.toggle('folded', panel.classList.contains('open'));
+  });
+  sectionBtns.forEach((btn, i) => btn.addEventListener('click', () => {
+    showSection(TABS[i].id);
+    if (!panel.classList.contains('open')) {
+      panel.classList.add('open');
+      foldBtn.classList.add('folded');
+    }
+  }));
+
+  // 통화 토글 ($/원)
+  const curSwitch = document.getElementById('cur-switch');
+  curSwitch.addEventListener('click', () => curSwitch.classList.toggle('krw'));
+
+  // 내 투자 탭 (선물/현물/주식)
+  document.querySelectorAll('.invest-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.invest-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // 지갑잔고/미실현 ▼ 펼침/접힘
+  const walletBtn = document.getElementById('wallet-toggle');
+  const walletWrap = document.getElementById('wallet-wrap');
+  if (walletBtn && walletWrap) {
+    walletBtn.addEventListener('click', () => {
+      walletBtn.classList.toggle('open');
+      walletWrap.classList.toggle('open');
+    });
+  }
+
+  // 표시 필터 — 포트폴리오/포지션 그룹 토글 (둘 다 OFF는 불가, 최소 1개 ON 보장)
+  const investSection = document.getElementById('sidebar-invest');
+  const viewChips = [...document.querySelectorAll('.view-chip')];
+  function applyViewState() {
+    let anyOn = false;
+    viewChips.forEach(chip => {
+      const on = chip.classList.contains('on');
+      anyOn = anyOn || on;
+      const target = chip.dataset.target;
+      const group = document.querySelector(`.view-group[data-view="${target}"]`);
+      if (group) group.classList.toggle('view-hidden', !on);
+    });
+    // 포트폴리오 + 포지션 둘 다 ON일 때만 포트폴리오 5행 스크롤 제한
+    const bothOn = viewChips.every(c => c.classList.contains('on'));
+    investSection.classList.toggle('both-on', bothOn);
+  }
+  viewChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const willOff = chip.classList.contains('on');
+      if (willOff) {
+        // 다른 chip이 ON 상태인지 확인 — 모두 OFF 방지
+        const othersOn = viewChips.some(c => c !== chip && c.classList.contains('on'));
+        if (!othersOn) return; // 클릭 무시 (둘 다 끌 수 없음)
+      }
+      chip.classList.toggle('on');
+      applyViewState();
+    });
+  });
+  applyViewState(); // 초기 상태 반영
+</script>
+</body>
+</html>

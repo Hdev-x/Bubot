@@ -1,0 +1,686 @@
+import { useEffect, useState, useCallback, useRef, useLayoutEffect } from 'react';
+import { getWorkerStatus, type WorkerStatus } from '../api/adminApi';
+import { useMainTrade } from '../hooks/useMainTrade';
+import { useDelayedReady } from '../hooks/useDelayedReady';
+import { useSpotValueUsdt } from '../hooks/useSpotValueUsdt';
+import { TotalAssetHero } from '../components/TotalAssetHero';
+import { fetchUsdKrwRate } from '../api/exchangeRate';
+import { useCurrency, currencyLabel } from '../contexts/CurrencyContext';
+import { useRealtimePrices } from '../hooks/useRealtimePrices';
+import type { BotState, PositionState } from '../types/bot';
+import ApiKeyManager from '../components/settings/ApiKeyManager';
+import PullToRefresh from '../components/PullToRefresh';
+
+type AssetTab = 'overview' | 'futures' | 'api-keys';
+
+// Futures 탭은 임시 숨김(현재 빈 화면) — overview/API만 노출
+const tabs: { id: AssetTab; label: string }[] = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'api-keys', label: 'API' },
+];
+
+const REFRESH_MS = 10_000;
+
+function formatPrice(price: number, decimals = 2) {
+  return price.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
+// 통화 전환 버튼(거래탭과 동일) — 라벨 + 전환(⇄) 아이콘, 클릭하면 USDT↔원 토글
+function CurrencyToggleBtn({ displayCurrency, setDisplayCurrency }: { displayCurrency: 'USDT' | 'KRW'; setDisplayCurrency: (v: 'USDT' | 'KRW') => void }) {
+  return (
+    <button
+      type="button"
+      aria-label="통화 전환"
+      onClick={() => setDisplayCurrency(displayCurrency === 'USDT' ? 'KRW' : 'USDT')}
+      style={{ cursor: 'pointer', fontSize: '16px', fontWeight: 600, color: '#fff', display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'none', border: 'none', padding: 0 }}
+    >
+      {currencyLabel(displayCurrency)}
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="16 3 20 7 16 11" />
+        <line x1="20" y1="7" x2="5" y2="7" />
+        <polyline points="8 21 4 17 8 13" />
+        <line x1="4" y1="17" x2="19" y2="17" />
+      </svg>
+    </button>
+  );
+}
+
+function formatAssetPrice(price: number) {
+  if (price > 0 && price < 1) return formatPrice(price, 4);
+  return formatPrice(price, 1);
+}
+
+function mapWorkerStatusToBotState(workerStatus: WorkerStatus): BotState | null {
+  const snapshot = workerStatus.snapshot;
+  if (!snapshot) return null;
+
+  const positions: PositionState[] = snapshot.configs
+    .filter(config => config.hasPosition && config.direction && config.entryPrice != null && config.size != null)
+    .map(config => ({
+      symbol: config.symbol,
+      direction: config.direction as 'long' | 'short',
+      entryPrice: config.entryPrice ?? 0,
+      size: config.size ?? 0,
+      tpPrice: config.tpPrice ?? 0,
+      sl1Price: config.sl1Price ?? 0,
+      sl2Price: config.sl2Price ?? 0,
+      entryTime: snapshot.ts,
+      botName: config.botName ?? 'Worker',
+    }));
+
+  const byPhase = snapshot.trackers.reduce<Record<string, number>>((acc, tracker) => {
+    acc[tracker.phase] = (acc[tracker.phase] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  return {
+    status: workerStatus.alive ? 'running' : 'stopped',
+    startedAt: snapshot.ts,
+    balance: snapshot.subBalance ?? 0,
+    balanceUpdatedAt: snapshot.ts,
+    mainBalance: snapshot.mainBalance ?? 0,
+    mainUnrealized: 0,
+    mainPositions: snapshot.mainPositions ?? [],
+    position: positions[0] ?? null,
+    positions,
+    pendingOrder: null,
+    lastPrice: {},
+    engineStatus: {
+      trackers: snapshot.trackers.length,
+      activePositions: positions.map(position => position.symbol),
+      byPhase,
+      trackersList: snapshot.trackers.map(tracker => ({
+        symbol: tracker.symbol,
+        type: tracker.type,
+        phase: tracker.phase,
+        mid: tracker.mid,
+        obTime: tracker.obTime,
+        lookAfterTime: tracker.lookAfterTime,
+        waitCount: tracker.waitCount,
+        holdCount: tracker.holdCount,
+        botName: tracker.botName ?? 'Worker',
+      })),
+    },
+    trades: [],
+  };
+}
+
+function ActionButtons({ futures = false }: { futures?: boolean }) {
+  if (futures) {
+    return (
+      <div className="asset-actions-container three">
+        <div className="action-btn-item">
+          <button type="button" className="action-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="9" y1="17" x2="9" y2="8" />
+              <line x1="15" y1="17" x2="15" y2="12" />
+            </svg>
+          </button>
+          <span className="action-label">Trade</span>
+        </div>
+        <div className="action-btn-item">
+          <button type="button" className="action-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="17 1 21 5 17 9" />
+              <line x1="3" y1="5" x2="21" y2="5" />
+              <polyline points="7 23 3 19 7 15" />
+              <line x1="21" y1="19" x2="3" y2="19" />
+            </svg>
+          </button>
+          <span className="action-label">Transfer</span>
+        </div>
+        <div className="action-btn-item">
+          <button type="button" className="action-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+              <polyline points="16 7 22 7 22 13" />
+              <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
+              <circle cx="13.5" cy="15.5" r="1.5" fill="currentColor" />
+            </svg>
+          </button>
+          <span className="action-label">PnL</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="asset-actions-container">
+      <div className="action-btn-item">
+        <button type="button" className="action-icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="16" y1="8" x2="8" y2="16" />
+            <polyline points="12 16 8 16 8 12" />
+          </svg>
+        </button>
+        <span className="action-label">Deposit</span>
+      </div>
+      <div className="action-btn-item">
+        <button type="button" className="action-icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="8" y1="16" x2="16" y2="8" />
+            <polyline points="12 8 16 8 16 12" />
+          </svg>
+        </button>
+        <span className="action-label">Withdraw</span>
+      </div>
+      <div className="action-btn-item">
+        <button type="button" className="action-icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="17 1 21 5 17 9" />
+            <line x1="3" y1="5" x2="21" y2="5" />
+            <polyline points="7 23 3 19 7 15" />
+            <line x1="21" y1="19" x2="3" y2="19" />
+          </svg>
+        </button>
+        <span className="action-label">Transfer</span>
+      </div>
+      <div className="action-btn-item">
+        <button type="button" className="action-icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+            <polyline points="16 7 22 7 22 13" />
+            <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
+            <circle cx="13.5" cy="15.5" r="1.5" fill="currentColor" />
+          </svg>
+        </button>
+        <span className="action-label">PnL</span>
+      </div>
+    </div>
+  );
+}
+
+
+
+// ── 개요 패널 ───────────────────────────────────────────────
+interface OverviewPanelProps {
+  data: BotState | null;
+  usdKrw: number;
+  realtimePrices: Record<string, number>;
+  displayCurrency: 'USDT' | 'KRW';
+  setDisplayCurrency: (val: 'USDT' | 'KRW') => void;
+  fallbackEquity?: number | null; // 워커 오프라인 시 MAIN 직접조회 equity (총자산 폴백)
+  spotValue?: number;             // 현물 평가(USDT) — 총자산에 합산(선물+봇 + 현물)
+  spotPriced?: boolean;           // 현물 시세 준비 완료 — 스켈레톤 해제 게이트
+}
+
+function OverviewPanel({
+  data,
+  usdKrw,
+  realtimePrices,
+  displayCurrency,
+  setDisplayCurrency,
+  fallbackEquity,
+  spotValue,
+  spotPriced
+}: OverviewPanelProps) {
+  const { isHideBalance, toggleHideBalance } = useCurrency();
+  const balance = data?.balance ?? 0;
+  const mainBalance = data?.mainBalance ?? 0;
+  const walletBalance = mainBalance + balance;
+  const pos = data?.position ?? null;
+  const currentPrice = pos ? (realtimePrices[pos.symbol] ?? data?.lastPrice[pos.symbol] ?? pos.entryPrice) : null;
+  
+  // 미실현 손익 — 메인계정 실제 포지션(mainPositions) 단일 소스로 실시간 재계산.
+  // (configs 기반 합산은 실제 포지션을 못 담아 누락되던 버그가 있어 폐기)
+  const unrealizedUsdt = (data?.mainPositions ?? []).reduce((acc, p) => {
+    const pPrice = realtimePrices[p.symbol] ?? data?.lastPrice[p.symbol] ?? p.entryPrice;
+    return acc + (p.direction === 'long' ? 1 : -1) * (pPrice - p.entryPrice) * p.size;
+  }, 0);
+
+  // 총 순자산 (지갑 가용 잔고 + 본 계정 잔고 + 미실현 손익).
+  // 워커 데이터 없으면(오프라인) MAIN 직접조회 equity로 폴백.
+  const baseAsset = data ? walletBalance + unrealizedUsdt : (fallbackEquity ?? 0);
+  const totalAsset = baseAsset + (spotValue ?? 0);
+  // 선물(base) + 현물 시세 둘 다 도착한 뒤에만 표시(부분합 점프 방지). 1.5초 폴백.
+  const ready = useDelayedReady(baseAsset > 0 && (spotPriced ?? false));
+
+  const maskVal = (val: string) => (isHideBalance ? '••••' : val);
+  const maskApprox = (val: number) => {
+    if (isHideBalance) return displayCurrency === 'USDT' ? '≈ ••••원' : '≈ •••• USDT';
+    if (displayCurrency === 'USDT') {
+      const krwVal = Math.round(val * usdKrw);
+      return `≈ ${krwVal.toLocaleString()}원`;
+    } else {
+      return `≈ ${formatPrice(val, 2)} USDT`;
+    }
+  };
+
+  return (
+    <>
+      <section className="assets-summary overview">
+        {/* 총자산 — 거래탭 디자인 공유(사이즈업 + 눈). 우측 시계=내역 */}
+        <div className="asset-hero-wrap" style={{ marginBottom: '12px' }}>
+          <TotalAssetHero
+            totalUsdt={totalAsset}
+            ready={ready}
+            label="총자산"
+            rightSlot={
+              <button type="button" aria-label="내역" style={{ color: '#8e9197', display: 'flex', alignItems: 'center', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 8v4l3 3" />
+                  <circle cx="12" cy="12" r="9" />
+                </svg>
+              </button>
+            }
+          />
+        </div>
+        <ActionButtons />
+      </section>
+
+      {/* 기존 자산/계정 세션 100% 유지 */}
+      <section className="asset-section">
+        <div className="asset-section-head">
+          <div className="asset-subtabs">
+            <button type="button" className="active">자산</button>
+            <button type="button">계정</button>
+          </div>
+          <div className="asset-view-toggle">
+            <button type="button">i</button>
+            <button type="button" className="active">▰</button>
+            <button type="button">◔</button>
+          </div>
+        </div>
+
+        {/* 실제 USDT 상세 잔고 반영 */}
+        <div className="asset-row">
+          <span className="asset-coin-logo">₮</span>
+          <div>
+            <strong>USDT</strong>
+            <span>테더</span>
+          </div>
+          <div>
+            <strong>{maskVal(formatPrice(walletBalance, 8))}</strong>
+            <span>{maskApprox(walletBalance)}</span>
+          </div>
+        </div>
+
+        {/* 현재 활성 포지션이 있는 경우 자산 목록에 특별 동적 렌더링 */}
+        {pos && (() => {
+          const pPrice = realtimePrices[pos.symbol] ?? data?.lastPrice[pos.symbol] ?? pos.entryPrice;
+          const posPnl = (pos.direction === 'long' ? 1 : -1) * (pPrice - pos.entryPrice) * pos.size;
+          return (
+            <div className="asset-row" style={{ borderTop: '1px solid #151515', marginTop: '12px', paddingTop: '12px' }}>
+              <span className="asset-coin-logo" style={{ background: '#3182f6' }}>★</span>
+              <div>
+                <strong>{pos.symbol.replace('USDT', '')} 포지션</strong>
+                <span className={posPnl >= 0 ? 'up' : 'down'} style={{ fontSize: '12px', fontWeight: 'bold' }}>
+                  {pos.direction.toUpperCase()} ×20 ({posPnl >= 0 ? '+' : ''}{displayCurrency === 'USDT' ? `${formatPrice(posPnl, 2)} USDT` : `${Math.round(posPnl * usdKrw).toLocaleString()}원`})
+                </span>
+              </div>
+              <div>
+                <strong>{maskVal(formatPrice(pos.size, 2))} SOL</strong>
+                <span>진입: {maskVal(formatPrice(pos.entryPrice, 2))}</span>
+              </div>
+            </div>
+          );
+        })()}
+      </section>
+
+      {/* 시안 디자인과 동일한 다크 배너 보증 카드 */}
+      <section className="asset-info-block" style={{ paddingBottom: '120px' }}>
+        <div className="protection-card">
+          <div className="protection-content">
+            <h4>Your asset safety, our responsibility</h4>
+            <p>Our 483.14M Bitget Protection Fund ensures the safety of your funds.</p>
+            <a href="#/assets" className="more-link">More</a>
+          </div>
+          <div className="protection-icon-shield">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#00c8df" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.85 }}>
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+        </div>
+
+        <div className="protection-card" style={{ marginTop: '16px' }}>
+          <div className="protection-content">
+            <h4>Proof of Reserves</h4>
+            <a href="#/assets" className="more-link">More</a>
+          </div>
+          <div className="protection-icon-reserves" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8e9197" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
+              <path d="M4 19h16" />
+              <path d="M4 15h16" />
+              <path d="M4 11h16" />
+              <path d="M5 6h14" />
+            </svg>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ── 선물 패널 ───────────────────────────────────────────────
+interface FuturesPanelProps {
+  data: BotState | null;
+  usdKrw: number;
+  realtimePrices: Record<string, number>;
+  displayCurrency: 'USDT' | 'KRW';
+  setDisplayCurrency: (val: 'USDT' | 'KRW') => void;
+}
+
+function FuturesPanel({ data, usdKrw, realtimePrices, displayCurrency, setDisplayCurrency }: FuturesPanelProps) {
+  const { isHideBalance, toggleHideBalance } = useCurrency();
+  const balance = data?.balance ?? 0;
+  const mainBalance = data?.mainBalance ?? 0;
+  const walletBalance = mainBalance + balance;
+  const pos = data?.position ?? null;
+  const currentPrice = pos ? (realtimePrices[pos.symbol] ?? data?.lastPrice[pos.symbol] ?? pos.entryPrice) : null;
+
+  // 미실현 손익 — 메인계정 실제 포지션(mainPositions) 단일 소스로 실시간 재계산.
+  const unrealizedUsdt = (data?.mainPositions ?? []).reduce((acc, p) => {
+    const pPrice = realtimePrices[p.symbol] ?? data?.lastPrice[p.symbol] ?? p.entryPrice;
+    return acc + (p.direction === 'long' ? 1 : -1) * (pPrice - p.entryPrice) * p.size;
+  }, 0);
+
+  // 개별(첫번째) 포지션 표시용 미실현 수익률
+  const unrealizedPct = pos && currentPrice
+    ? (pos.direction === 'long' ? 1 : -1) * (currentPrice - pos.entryPrice) / pos.entryPrice * 100 * 20
+    : 0;
+
+  const totalFuturesAsset = walletBalance + unrealizedUsdt;
+
+  const maskVal = (val: string) => (isHideBalance ? '••••' : val);
+  const maskApprox = (val: number) => {
+    if (isHideBalance) return displayCurrency === 'USDT' ? '≈ ••••원' : '≈ •••• USDT';
+    if (displayCurrency === 'USDT') {
+      const krwVal = Math.round(val * usdKrw);
+      return `≈ ${krwVal.toLocaleString()}원`;
+    } else {
+      return `≈ ${formatPrice(val, 2)} USDT`;
+    }
+  };
+
+  return (
+    <>
+      <section className="assets-summary">
+        {/* 기존 선물 타입 탭바 보존 */}
+        <div className="futures-type-tabs">
+          <button type="button" className="active">USDT-M 선물</button>
+          <button type="button">Coin-M 선물</button>
+          <button type="button">USDC-M 선물</button>
+        </div>
+
+        <div className="summary-head">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>Total assets</span>
+            <button 
+              type="button" 
+              onClick={toggleHideBalance}
+              style={{ background: 'none', border: 'none', color: '#8e9197', padding: '0 4px', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}
+            >
+              {isHideBalance ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
+          <button type="button" style={{ color: '#8e9197', display: 'flex', alignItems: 'center', background: 'none', border: 'none' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 8v4l3 3" />
+              <circle cx="12" cy="12" r="9" />
+            </svg>
+          </button>
+        </div>
+
+        {/* 실시간 연동 평가 잔고 */}
+        <div className="asset-balance" style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+          <strong style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.5px', color: '#fff', lineHeight: 1.1 }}>
+            {maskVal(displayCurrency === 'USDT' ? formatAssetPrice(totalFuturesAsset) : Math.round(totalFuturesAsset * usdKrw).toLocaleString())}
+          </strong>
+          <CurrencyToggleBtn displayCurrency={displayCurrency} setDisplayCurrency={setDisplayCurrency} />
+        </div>
+        <p className="approx" style={{ fontSize: '13px', color: '#8b95a1', marginTop: '6px' }}>
+          {maskApprox(totalFuturesAsset)}
+        </p>
+        
+        {/* 미실현 손익률 및 금액 표시 - 시안 1 스타일 */}
+        <div className="futures-today-pnl-link" style={{ marginTop: '14px', display: 'flex', alignItems: 'center' }}>
+          <span style={{ color: '#8e9197', fontSize: '13px' }}>Today's PnL</span>
+          <span className={unrealizedUsdt >= 0 ? 'up' : 'down'} style={{ fontSize: '13px', fontWeight: 'bold', marginLeft: '8px' }}>
+            {unrealizedUsdt >= 0 ? '+' : ''}{maskVal(displayCurrency === 'USDT' ? `${formatPrice(unrealizedUsdt, 2)} USDT` : `${Math.round(unrealizedUsdt * usdKrw).toLocaleString()}원`)}
+          </span>
+          <span style={{ color: '#8e9197', fontSize: '12px', marginLeft: '4px' }}>›</span>
+        </div>
+
+        {/* 실제 지갑 잔고 및 미실현 손익 매핑 - 2열 그리드 디자인 최적화 */}
+        <div className="asset-metrics" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '16px' }}>
+          <div>
+            <span style={{ color: '#8e9197', fontSize: '12px', display: 'block', marginBottom: '4px' }}>Wallet balance</span>
+            <strong style={{ color: '#fff', fontSize: '15px' }}>{maskVal(formatPrice(walletBalance, 4))} USDT</strong>
+            <p style={{ color: '#58606c', fontSize: '11px', margin: '2px 0 0' }}>{maskApprox(walletBalance)}</p>
+          </div>
+          <div>
+            <span style={{ color: '#8e9197', fontSize: '12px', display: 'block', marginBottom: '4px' }}>Unrealized PnL</span>
+            <strong className={unrealizedUsdt >= 0 ? 'up' : 'down'} style={{ fontSize: '15px' }}>
+              {maskVal((unrealizedUsdt >= 0 ? '+' : '') + (displayCurrency === 'USDT' ? `${formatPrice(unrealizedUsdt, 2)} USDT` : `${Math.round(unrealizedUsdt * usdKrw).toLocaleString()}원`))}
+            </strong>
+            <p style={{ color: '#58606c', fontSize: '11px', margin: '2px 0 0' }}>
+              {displayCurrency === 'USDT' ? maskApprox(unrealizedUsdt) : `≈ ${formatPrice(unrealizedUsdt, 2)} USDT`}
+            </p>
+          </div>
+        </div>
+        <ActionButtons futures />
+      </section>
+
+      {/* 기존 선물 상세 자산/자동예치 세션 보존 */}
+      <section className="asset-section">
+        <div className="asset-section-head">
+          <h2>Assets</h2>
+          <div className="asset-tools" style={{ display: 'flex', gap: '16px', fontSize: '20px' }}>
+            <span>⌕</span>
+            <span>☷</span>
+          </div>
+        </div>
+
+        {/* 유휴 자산 자동 예치 로우 - iOS 토글 스위치 적용 */}
+        <div className="auto-earn-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span className="auto-earn-icon" style={{ fontSize: '18px', color: '#00c8df' }}>⟳</span>
+            <strong style={{ fontSize: '14px', color: '#fff', fontWeight: '500' }}>Auto Earn on idle funds</strong>
+          </div>
+          <label className="ios-switch" style={{ display: 'inline-block', position: 'relative', width: '42px', height: '24px' }}>
+            <input type="checkbox" defaultChecked style={{ opacity: 0, width: 0, height: 0 }} />
+            <span className="ios-slider"></span>
+          </label>
+        </div>
+
+        {/* 가용 선물 USDT 자산 노출 */}
+        <div className="asset-row">
+          <span className="asset-coin-logo">₮</span>
+          <div>
+            <strong>USDT</strong>
+            <span>USDT Perpetual</span>
+          </div>
+          <div>
+            <strong>{maskVal(formatPrice(walletBalance, 8))}</strong>
+            <span>{maskApprox(walletBalance)}</span>
+          </div>
+        </div>
+
+        {/* 선물 포지션이 살아 있을 경우, 하단에 포지션 정보 카드 표시 */}
+        {pos && (
+          <div className="futures-active-position-detail" style={{
+            background: 'rgba(49, 130, 246, 0.04)',
+            border: '1px solid rgba(49, 130, 246, 0.15)',
+            borderRadius: '12px',
+            padding: '14px',
+            marginTop: '16px'
+          }}>
+            <div className="pos-detail-header" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <span className={`dir-tag ${pos.direction}`} style={{
+                background: pos.direction === 'long' ? '#0ecb81' : '#f6465d',
+                color: '#fff',
+                fontSize: '10px',
+                fontWeight: 'bold',
+                padding: '2px 6px',
+                borderRadius: '4px'
+              }}>{pos.direction.toUpperCase()}</span>
+              <strong style={{ color: '#fff', fontSize: '14px' }}>{pos.symbol} 무기한 x20</strong>
+            </div>
+            <div className="pos-detail-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 16px', fontSize: '12px' }}>
+              <div className="detail-item">
+                <span>진입 가격</span>
+                <strong>{maskVal(formatPrice(pos.entryPrice, 4))}</strong>
+              </div>
+              <div className="detail-item">
+                <span>현재 가격</span>
+                <strong>{currentPrice ? maskVal(formatPrice(currentPrice, 4)) : '—'}</strong>
+              </div>
+              <div className="detail-item">
+                <span>계약 크기</span>
+                <strong>{maskVal(pos.size.toString())} SOL</strong>
+              </div>
+              <div className="detail-item">
+                <span>미실현 PNL</span>
+                <strong className={unrealizedPct >= 0 ? 'up' : 'down'}>
+                  {unrealizedPct >= 0 ? '+' : ''}{maskVal(unrealizedPct.toFixed(2))}%
+                </strong>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+    </>
+  );
+}
+
+// ── 메인 컴포넌트 ────────────────────────────────────────────
+export default function AssetsPage({ active = true, onTabBar }: { active?: boolean; onTabBar?: (p: { x: number; y: number } | null) => void }) {
+  const [activeTab, setActiveTab] = useState<AssetTab>('overview');
+
+  // 활성 탭 위치를 App에 보고 — App의 공유 인디케이터가 그 자리로 슬라이드(거래↔자산 공유)
+  const tabsNavRef = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    if (!active) return;
+    const nav = tabsNavRef.current;
+    if (!nav) return;
+    const btn = nav.querySelector(`button[data-tab="${activeTab}"]`) as HTMLElement | null;
+    if (!btn) return;
+    const br = btn.getBoundingClientRect();
+    if (br.width === 0) return;
+    onTabBar?.({ x: br.left + br.width / 2 - 11, y: nav.getBoundingClientRect().bottom - 6 });
+  }, [activeTab, active, onTabBar]);
+  const [data, setData] = useState<BotState | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { displayCurrency, setDisplayCurrency } = useCurrency();
+  const [usdKrw, setUsdKrw] = useState<number>(1380);
+  const activeSymbols = Array.from(new Set((data?.positions ?? []).map(pos => pos.symbol)));
+  const realtimePrices = useRealtimePrices(active ? activeSymbols : []);
+  // 워커 데이터 없으면 MAIN 직접조회로 총자산 폴백(워커 오프라인에도 표시)
+  const { data: directMain } = useMainTrade(active && !data);
+  const fallbackEquity = directMain.hasKey ? directMain.equity : null;
+  // 현물 평가(USDT) — 총자산에 합산(선물+봇 + 현물). 워커 연결과 무관.
+  const spot = useSpotValueUsdt(active);
+
+  const fetchStatus = useCallback(async () => {
+    setLoading(true);
+    const [nextUsdKrw, workerStatus] = await Promise.all([
+      fetchUsdKrwRate(1380),
+      getWorkerStatus().catch(() => null),
+    ]);
+    setUsdKrw(nextUsdKrw);
+
+    const mappedData = workerStatus ? mapWorkerStatusToBotState(workerStatus) : null;
+    if (mappedData) {
+      setData(mappedData);
+      setError(null);
+    } else {
+      setError('Worker API 연동 지연');
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (!active) return; // 자산 화면 밖이면 워커 상태 폴링 중단
+    fetchStatus();
+    const intervalId = setInterval(fetchStatus, REFRESH_MS);
+    return () => clearInterval(intervalId);
+  }, [active, fetchStatus]);
+
+  return (
+    <main className="assets-page">
+      {/* 탭바는 '개요', '선물' 두 가지만 활성화되도록 필터링 */}
+      <nav ref={tabsNavRef} className="assets-top-tabs has-slide-indicator" aria-label="자산 분류" style={{ position: 'sticky', top: 0, zIndex: 10, background: '#000' }}>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            data-tab={tab.id}
+            className={activeTab === tab.id ? 'active' : ''}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+        {/* 거래 탭과 같은 위치(우측 끝)의 + 버튼 — 현재 기능 없음(자리만) */}
+        <button
+          type="button"
+          className="assets-tab-add-btn"
+          aria-label="추가"
+          /* .assets-top-tabs button의 700/scaleX(0.95) 상속을 끊어 거래 탭 +와 동일하게 */
+          style={{ marginLeft: 'auto', flex: '0 0 auto', background: 'none', border: 'none', color: '#848e9c', fontSize: 22, fontWeight: 400, transform: 'none', lineHeight: 1, padding: '0 2px 4px', cursor: 'pointer' }}
+        >+</button>
+        {loading && (
+          <span style={{
+            position: 'absolute',
+            right: '16px',
+            bottom: '16px',
+            width: '12px',
+            height: '12px',
+            border: '2px solid rgba(255,255,255,0.2)',
+            borderTopColor: '#3182f6',
+            borderRadius: '50%',
+            animation: 'asset-spin 0.8s linear infinite'
+          }} />
+        )}
+      </nav>
+
+      <PullToRefresh onRefresh={fetchStatus}>
+        {/* 탭 전환 시 페이드+슬라이드 — key가 바뀌며 재마운트돼 애니메이션 재생 */}
+        <div key={activeTab} className="assets-tab-pane">
+        {activeTab === 'overview' && (
+          <OverviewPanel
+            data={data}
+            usdKrw={usdKrw}
+            realtimePrices={realtimePrices}
+            displayCurrency={displayCurrency}
+            setDisplayCurrency={setDisplayCurrency}
+            fallbackEquity={fallbackEquity}
+            spotValue={spot.value}
+            spotPriced={spot.priced}
+          />
+        )}
+        {activeTab === 'futures' && (
+          <FuturesPanel
+            data={data}
+            usdKrw={usdKrw}
+            realtimePrices={realtimePrices}
+            displayCurrency={displayCurrency}
+            setDisplayCurrency={setDisplayCurrency}
+          />
+        )}
+        {activeTab === 'api-keys' && (
+          <div style={{ padding: '0 16px' }}>
+            <ApiKeyManager />
+          </div>
+        )}
+        </div>
+      </PullToRefresh>
+    </main>
+  );
+}
