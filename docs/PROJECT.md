@@ -17,12 +17,13 @@
 
 ## 문서 정본
 
-- 현재 위치와 다음 행동: `docs/CURRENT.md`
-- 사용자 확정 기준: `docs/DECISIONS.md`
+- 현재 상태·TODO: `work-status/CURRENT.md`
+- 사용자 확정 기준: `work-status/DECISIONS.md`
+- 미확정 질문: `work-status/OPEN-QUESTIONS.md`
+- 장기 순서: `work-status/ROADMAP.md`
 - Git 규칙: `docs/GIT-WORKFLOW.md`
 - 실행·검증 명령: `docs/COMMANDS.md`
-- 장기 순서: `docs/ROADMAP.md`
-- 미확정 질문: `docs/OPEN-QUESTIONS.md`
+- 문서 역할·기록 경계: `docs/DOCUMENTATION.md`
 
 ## 기술
 
