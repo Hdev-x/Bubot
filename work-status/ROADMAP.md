@@ -22,7 +22,8 @@
 - [x] T-03 Beta 제외 기능을 `labs`로 분리하고 필요한 코드만 남긴다 | `plan:refactor/wp-02-beta-boundary`
 - T-04 로고 자산 — 현행 유지로 결정(D-20260903-06), 항목 닫음
 - [x] T-04b `apps/web` 폴더 구조 재편(계층 우선 + 앱별 분리 + CSS 동반) | `plan:refactor/wp-03-web-structure`
-- [ ] T-04c `apps/web` CSS 정리(컴포넌트별 분리·미사용 규칙 삭제·지표시트 통합 OQ-12)와 큰 파일 분해 — 순서·PLAN은 사용자 결정
+- [ ] T-04c `apps/web` CSS 정리(미사용 규칙 삭제·컴포넌트별 분리·OQ-12) | `plan:refactor/wp-04-css-cleanup`
+- [ ] T-04d 큰 파일 분해(`WebApp`·`MarketChart`·`useAutoPatterns`·`OrderPage`) — wp-04 후 PLAN
 
 ## Beta Track
 
