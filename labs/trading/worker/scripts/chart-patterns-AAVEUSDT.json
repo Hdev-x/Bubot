@@ -1,0 +1,781 @@
+{
+  "generatedAt": "2026-06-15T03:00:23.527Z",
+  "basis": "wick",
+  "candleLimit": 1200,
+  "scanLengths": [
+    55,
+    34,
+    21,
+    13,
+    8,
+    5
+  ],
+  "source": "binance-futures",
+  "symbols": {
+    "AAVEUSDT": {
+      "30m": {
+        "candles": 1199,
+        "lastClose": 68.59,
+        "completed": [
+          {
+            "scanLen": 5,
+            "name": "Bullish Bat",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 687,
+                "price": 69.41,
+                "time": 1780570800
+              },
+              "A": {
+                "type": "high",
+                "i": 695,
+                "price": 72.83,
+                "time": 1780585200
+              },
+              "B": {
+                "type": "low",
+                "i": 700,
+                "price": 71.28,
+                "time": 1780594200
+              },
+              "C": {
+                "type": "high",
+                "i": 702,
+                "price": 72.74,
+                "time": 1780597800
+              },
+              "D": {
+                "type": "low",
+                "i": 710,
+                "price": 69.78,
+                "time": 1780612200
+              }
+            },
+            "error": 0.003463263285573004,
+            "abcdMatch": true,
+            "abcdType": ">=1.0",
+            "closestAbcd": "1.618",
+            "abcdRatio": 1.9311856504656222,
+            "tp1": 70.92972480125754,
+            "tp2": 71.64947297116677,
+            "sl": 69.41000000000001,
+            "przPrice": 69.79162440450332
+          }
+        ],
+        "emergingTouched": [],
+        "emergingUntouched": [
+          {
+            "scanLen": 21,
+            "name": "Bearish Crab (Emerging)",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 853,
+                "price": 65.43,
+                "time": 1780869600
+              },
+              "A": {
+                "type": "low",
+                "i": 938,
+                "price": 59.62,
+                "time": 1781022600
+              },
+              "B": {
+                "type": "high",
+                "i": 984,
+                "price": 63.88,
+                "time": 1781105400
+              },
+              "C": {
+                "type": "low",
+                "i": 997,
+                "price": 60.05,
+                "time": 1781128800
+              }
+            },
+            "przPrice": 69.30025274561318,
+            "przMin": 69.30025274561318,
+            "przMax": 71.80618752096613,
+            "slPrice": 71.80618752096613,
+            "bcAbRatio": 0.8958713932368944,
+            "bcAbTier": "0.786~1.0",
+            "bcProjectionRatio": 2.3172221219207634,
+            "bcProjectionRange": "2.0~4.236",
+            "bcProjectionMatch": true,
+            "abcdRatio": 2.075933010804507,
+            "abcdTier": "1.618",
+            "abcdMatch": true,
+            "abXaRatio": 0.742180857165531,
+            "xcXaRatio": 0.9227177413771057,
+            "isPrzTouched": false,
+            "error": 0
+          }
+        ]
+      },
+      "4h": {
+        "candles": 1199,
+        "lastClose": 68.28,
+        "completed": [
+          {
+            "scanLen": 21,
+            "name": "Bullish Shark",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 207,
+                "price": 142.57,
+                "time": 1767196800
+              },
+              "A": {
+                "type": "high",
+                "i": 242,
+                "price": 176.87,
+                "time": 1767700800
+              },
+              "B": {
+                "type": "low",
+                "i": 278,
+                "price": 160.73,
+                "time": 1768219200
+              },
+              "C": {
+                "type": "high",
+                "i": 291,
+                "price": 180.38,
+                "time": 1768406400
+              },
+              "D": {
+                "type": "low",
+                "i": 357,
+                "price": 145.4,
+                "time": 1769356800
+              }
+            },
+            "error": 0.03044246816720375,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 2.252892542657645,
+            "tp1": 161.94830039244005,
+            "tp2": 176.0010461704578,
+            "sl": 138.276162820317,
+            "przPrice": 146.44495542087444
+          },
+          {
+            "scanLen": 21,
+            "name": "Bearish 5-0",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 242,
+                "price": 176.87,
+                "time": 1767700800
+              },
+              "A": {
+                "type": "low",
+                "i": 278,
+                "price": 160.73,
+                "time": 1768219200
+              },
+              "B": {
+                "type": "high",
+                "i": 291,
+                "price": 180.38,
+                "time": 1768406400
+              },
+              "C": {
+                "type": "low",
+                "i": 357,
+                "price": 145.4,
+                "time": 1769356800
+              },
+              "D": {
+                "type": "high",
+                "i": 374,
+                "price": 163.82,
+                "time": 1769601600
+              }
+            },
+            "error": 0.05330394253550008,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 1.03415907513708,
+            "tp1": 145.4,
+            "tp2": 140.75833545545862,
+            "sl": 166.1208037584871,
+            "przPrice": 161.94830039244005
+          },
+          {
+            "scanLen": 21,
+            "name": "Bearish Cypher",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 480,
+                "price": 131.88,
+                "time": 1771128000
+              },
+              "A": {
+                "type": "low",
+                "i": 527,
+                "price": 111.2,
+                "time": 1771804800
+              },
+              "B": {
+                "type": "high",
+                "i": 544,
+                "price": 124.26,
+                "time": 1772049600
+              },
+              "C": {
+                "type": "low",
+                "i": 559,
+                "price": 104.64,
+                "time": 1772265600
+              },
+              "D": {
+                "type": "high",
+                "i": 573,
+                "price": 126.96,
+                "time": 1772467200
+              }
+            },
+            "error": 0.049670518531387264,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 1.7411397211462787,
+            "tp1": 117.920873055388,
+            "tp2": 112.6610926104654,
+            "sl": 128.4470341457375,
+            "przPrice": 125.5093152199761
+          },
+          {
+            "scanLen": 8,
+            "name": "Bearish Cypher",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 495,
+                "price": 130.75,
+                "time": 1771344000
+              },
+              "A": {
+                "type": "low",
+                "i": 527,
+                "price": 111.2,
+                "time": 1771804800
+              },
+              "B": {
+                "type": "high",
+                "i": 544,
+                "price": 124.26,
+                "time": 1772049600
+              },
+              "C": {
+                "type": "low",
+                "i": 559,
+                "price": 104.64,
+                "time": 1772265600
+              },
+              "D": {
+                "type": "high",
+                "i": 573,
+                "price": 126.96,
+                "time": 1772467200
+              }
+            },
+            "error": 0.08195265640970517,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 1.7411397211462787,
+            "tp1": 117.920873055388,
+            "tp2": 112.6610926104654,
+            "sl": 127.47143807535693,
+            "przPrice": 124.66326258235603
+          },
+          {
+            "scanLen": 8,
+            "name": "Bearish Deep Gartley",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 591,
+                "price": 119.86,
+                "time": 1772726400
+              },
+              "A": {
+                "type": "low",
+                "i": 610,
+                "price": 103.61,
+                "time": 1773000000
+              },
+              "B": {
+                "type": "high",
+                "i": 621,
+                "price": 114.75,
+                "time": 1773158400
+              },
+              "C": {
+                "type": "low",
+                "i": 632,
+                "price": 106.89,
+                "time": 1773316800
+              },
+              "D": {
+                "type": "high",
+                "i": 638,
+                "price": 119.08,
+                "time": 1773403200
+              }
+            },
+            "error": 0.06918680438093328,
+            "abcdMatch": true,
+            "abcdType": "1:1",
+            "closestAbcd": "1:1",
+            "abcdRatio": 1.057512281984453,
+            "tp1": 112.9150506842411,
+            "tp2": 109.26691105601145,
+            "sl": 122.1517550816326,
+            "przPrice": 117.88571909367013
+          },
+          {
+            "scanLen": 5,
+            "name": "Bullish Cypher",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 62,
+                "price": 181.77,
+                "time": 1765108800
+              },
+              "A": {
+                "type": "high",
+                "i": 68,
+                "price": 199.98,
+                "time": 1765195200
+              },
+              "B": {
+                "type": "low",
+                "i": 73,
+                "price": 187.09,
+                "time": 1765267200
+              },
+              "C": {
+                "type": "high",
+                "i": 82,
+                "price": 207.05,
+                "time": 1765396800
+              },
+              "D": {
+                "type": "low",
+                "i": 84,
+                "price": 186.85,
+                "time": 1765425600
+              }
+            },
+            "error": 0.002324419172846315,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 1.5407157006845407,
+            "tp1": 194.3226734901538,
+            "tp2": 199.08789749107828,
+            "sl": 184.4884798472439,
+            "przPrice": 186.90656461406468
+          },
+          {
+            "scanLen": 5,
+            "name": "Bearish Deep Gartley",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 518,
+                "price": 124.87,
+                "time": 1771675200
+              },
+              "A": {
+                "type": "low",
+                "i": 527,
+                "price": 111.2,
+                "time": 1771804800
+              },
+              "B": {
+                "type": "high",
+                "i": 530,
+                "price": 119.75,
+                "time": 1771848000
+              },
+              "C": {
+                "type": "low",
+                "i": 536,
+                "price": 111.43,
+                "time": 1771934400
+              },
+              "D": {
+                "type": "high",
+                "i": 544,
+                "price": 124.26,
+                "time": 1772049600
+              }
+            },
+            "error": 0.07176321697359955,
+            "abcdMatch": true,
+            "abcdType": "1:1",
+            "closestAbcd": "1.618",
+            "abcdRatio": 1.4711886126678009,
+            "tp1": 119.09918855986385,
+            "tp2": 116.01852344321127,
+            "sl": 126.76636695529419,
+            "przPrice": 123.23039277722638
+          },
+          {
+            "scanLen": 5,
+            "name": "Bearish Butterfly",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 553,
+                "price": 121.53,
+                "time": 1772179200
+              },
+              "A": {
+                "type": "low",
+                "i": 559,
+                "price": 104.64,
+                "time": 1772265600
+              },
+              "B": {
+                "type": "high",
+                "i": 563,
+                "price": 118.67,
+                "time": 1772323200
+              },
+              "C": {
+                "type": "low",
+                "i": 568,
+                "price": 110.53,
+                "time": 1772395200
+              },
+              "D": {
+                "type": "high",
+                "i": 573,
+                "price": 126.96,
+                "time": 1772467200
+              }
+            },
+            "error": 0.020116516313750887,
+            "abcdMatch": true,
+            "abcdType": ">=1.0",
+            "closestAbcd": "1:1",
+            "abcdRatio": 1.1014496073502975,
+            "tp1": 117.920873055388,
+            "tp2": 112.6610926104654,
+            "sl": 129.29674904952887,
+            "przPrice": 126.57840722335366
+          }
+        ],
+        "emergingTouched": [],
+        "emergingUntouched": []
+      },
+      "1d": {
+        "candles": 1199,
+        "lastClose": 68.28,
+        "completed": [
+          {
+            "scanLen": 21,
+            "name": "Bullish Bat",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 951,
+                "price": 80.01,
+                "time": 1760054400
+              },
+              "A": {
+                "type": "high",
+                "i": 1012,
+                "price": 207.05,
+                "time": 1765324800
+              },
+              "B": {
+                "type": "low",
+                "i": 1033,
+                "price": 142.57,
+                "time": 1767139200
+              },
+              "C": {
+                "type": "high",
+                "i": 1047,
+                "price": 180.38,
+                "time": 1768348800
+              },
+              "D": {
+                "type": "low",
+                "i": 1130,
+                "price": 85.67,
+                "time": 1775520000
+              }
+            },
+            "error": 0.0421126894119801,
+            "abcdMatch": true,
+            "abcdType": ">=1.0",
+            "closestAbcd": "1.618",
+            "abcdRatio": 1.9954670287317706,
+            "tp1": 120.01317287431134,
+            "tp2": 147.8002212188558,
+            "sl": 80.01000000000002,
+            "przPrice": 89.1699247933415
+          },
+          {
+            "scanLen": 13,
+            "name": "Bullish Cypher",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 841,
+                "price": 212.82,
+                "time": 1750550400
+              },
+              "A": {
+                "type": "high",
+                "i": 867,
+                "price": 338.15,
+                "time": 1752796800
+              },
+              "B": {
+                "type": "low",
+                "i": 882,
+                "price": 244.81,
+                "time": 1754092800
+              },
+              "C": {
+                "type": "high",
+                "i": 903,
+                "price": 386.24,
+                "time": 1755907200
+              },
+              "D": {
+                "type": "low",
+                "i": 933,
+                "price": 241.76,
+                "time": 1758499200
+              }
+            },
+            "error": 0.00008028403918403093,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 1.4504737411531492,
+            "tp1": 289.14191772425886,
+            "tp2": 322.9465417361231,
+            "sl": 227.78270557676683,
+            "przPrice": 241.77156855728114
+          },
+          {
+            "scanLen": 8,
+            "name": "Bullish 5-0",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 310,
+                "price": 88.33,
+                "time": 1704672000
+              },
+              "A": {
+                "type": "high",
+                "i": 313,
+                "price": 118.1,
+                "time": 1704931200
+              },
+              "B": {
+                "type": "low",
+                "i": 338,
+                "price": 81.36,
+                "time": 1707091200
+              },
+              "C": {
+                "type": "high",
+                "i": 375,
+                "price": 154.05,
+                "time": 1710288000
+              },
+              "D": {
+                "type": "low",
+                "i": 382,
+                "price": 105,
+                "time": 1710892800
+              }
+            },
+            "error": 0.10043983987223104,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 1.0286299785297537,
+            "tp1": 154.05,
+            "tp2": 170.97877312259666,
+            "sl": 103.82949250371239,
+            "przPrice": 111.95315091590774
+          },
+          {
+            "scanLen": 8,
+            "name": "Bullish 5-0",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 579,
+                "price": 134.56,
+                "time": 1727913600
+              },
+              "A": {
+                "type": "high",
+                "i": 591,
+                "price": 165.93,
+                "time": 1728950400
+              },
+              "B": {
+                "type": "low",
+                "i": 611,
+                "price": 125.64,
+                "time": 1730678400
+              },
+              "C": {
+                "type": "high",
+                "i": 616,
+                "price": 199.65,
+                "time": 1731110400
+              },
+              "D": {
+                "type": "low",
+                "i": 622,
+                "price": 150.63,
+                "time": 1731628800
+              }
+            },
+            "error": 0.10831756398122439,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 1.0129212907756922,
+            "tp1": 199.65,
+            "tp2": 215.55130006792112,
+            "sl": 149.95603113305464,
+            "przPrice": 158.37937365705173
+          },
+          {
+            "scanLen": 5,
+            "name": "Bullish 5-0",
+            "isBullish": true,
+            "points": {
+              "X": {
+                "type": "low",
+                "i": 601,
+                "price": 131.5,
+                "time": 1729814400
+              },
+              "A": {
+                "type": "high",
+                "i": 606,
+                "price": 158.32,
+                "time": 1730246400
+              },
+              "B": {
+                "type": "low",
+                "i": 611,
+                "price": 125.64,
+                "time": 1730678400
+              },
+              "C": {
+                "type": "high",
+                "i": 616,
+                "price": 199.65,
+                "time": 1731110400
+              },
+              "D": {
+                "type": "low",
+                "i": 622,
+                "price": 150.63,
+                "time": 1731628800
+              }
+            },
+            "error": 0.10831756398122439,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 1.2186082483141985,
+            "tp1": 199.65,
+            "tp2": 215.55130006792112,
+            "sl": 149.95603113305464,
+            "przPrice": 158.37937365705173
+          },
+          {
+            "scanLen": 5,
+            "name": "Bearish 5-0",
+            "isBullish": false,
+            "points": {
+              "X": {
+                "type": "high",
+                "i": 672,
+                "price": 361.35,
+                "time": 1735948800
+              },
+              "A": {
+                "type": "low",
+                "i": 681,
+                "price": 256.24,
+                "time": 1736726400
+              },
+              "B": {
+                "type": "high",
+                "i": 689,
+                "price": 378.63,
+                "time": 1737417600
+              },
+              "C": {
+                "type": "low",
+                "i": 702,
+                "price": 191.99,
+                "time": 1738540800
+              },
+              "D": {
+                "type": "high",
+                "i": 716,
+                "price": 278.52,
+                "time": 1739750400
+              }
+            },
+            "error": 0.04783936759153962,
+            "abcdMatch": true,
+            "abcdType": "N/A",
+            "closestAbcd": "",
+            "abcdRatio": 0.9528784122419737,
+            "tp1": 191.99,
+            "tp2": 173.51197494026917,
+            "sl": 292.11194184169585,
+            "przPrice": 269.6167162844323
+          }
+        ],
+        "emergingTouched": [],
+        "emergingUntouched": []
+      }
+    }
+  },
+  "failed": []
+}
