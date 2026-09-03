@@ -11,15 +11,15 @@
 ## 현재 목표
 
 - 기준선 Track 완료(2026-09-03, PR #3~#7): `shared`·`apps/api`·`apps/web`·`labs/trading/worker`·`ops`가 원본 `develop`과 blob hash 동일하게 들어왔고, Web tests 22·build 2종·API bootWar·`ops/verify` 6종이 원본과 같은 결과다.
-- 프로젝트가 지금 달성하려는 결과: Beta 제외 기능(자동매매·Paper·Backtest·Admin·Push)을 Beta 실행 경로에서 분리한다 — `wp-02` 범위 결정 후 PLAN.
-- 완료 기준: `wp-02` PLAN에 분리 정도(Web `labs/trading/web` 이동, API 프로필 비활성화 등)·Delivery·Gate가 정의되고 사용자가 승인한다.
+- 프로젝트가 지금 달성하려는 결과: Beta 제외 기능(자동매매·Paper·Backtest·Admin·Push)을 Beta 실행 경로에서 분리한다 (`wp-02`).
+- 완료 기준: `wp-02` Milestone `beta-boundary-locked` 통과 — Beta 번들에 제외 API 호출 0, `apps/web`→`labs` import 0, beta 프로필 API에서 제외 endpoint 404, 로컬 핵심 화면 동작.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. `wp-02` 범위 결정: Web 자동매매 묶음(`StrategyPage`·`LivePage`·`components/{strategy,live}`·`PaperStatusPanel`·`backtestEngine`·`paperApi`·`adminApi`·`botApi`)의 `labs/trading/web` 이동 여부, API 비활성화 방식(프로필 vs 모듈 분리)
-2. `wp-02` PLAN 작성 후 승인
+1. `wp-02` PLAN 경계표 승인 후 `wp-02-d01-web-decouple` 시작
+2. d03 전 로컬 `application.properties`에 `spring.profiles.active=beta` 추가(사용자)
 
 ## Deferred
 
@@ -28,7 +28,7 @@
 
 ## 활성 Work Package
 
-- 없음. `wp-02` PLAN 작성 대기.
+- `refactor/wp-02-beta-boundary` — [PLAN](work/refactor/wp-02-beta-boundary/PLAN.md) · state `planned` · 범위 승인 대기 → 승인 시 `wp-02-d01-web-decouple`부터
 
 ## 완료된 Work Package (링크만)
 
