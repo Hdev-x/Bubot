@@ -10,7 +10,6 @@
 ## Git·CI
 
 - 질문: OQ-20260903-01 GitHub Ruleset(`main` PR 필수·force push 금지·required check)을 지금 적용할지 | `docs/GIT-WORKFLOW.md` 8절
-- 질문: OQ-20260903-02 API `contextLoads` test를 H2 등으로 자체 완결시켜 CI에 `./gradlew test`를 추가할지 | `docs/COMMANDS.md`
 
 ## 배포·제품
 
