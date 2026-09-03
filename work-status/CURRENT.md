@@ -18,7 +18,7 @@
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. 리팩터링 Work Package PLAN 초안 작성(`refactor/wp-01-rename-tpm`부터) 후 사용자 범위 승인
+1. `wp-01-rename-tpm` PLAN 범위 승인 후 `wp-01-d01-api` 시작 (패키지 `com.bubot`, 77개 파일)
 2. 로컬 기동 확인 — `apps/api`·`apps/web`에 `.env`·`application*.properties`를 두고 `/서버` 절차로 API·Web 기동
 
 ## Deferred
@@ -28,7 +28,7 @@
 
 ## 활성 Work Package
 
-- 없음. 다음 큰 작업(리팩터링)부터 `work-status/work/refactor/wp-01-*/PLAN.md`를 만든다.
+- `refactor/wp-01-rename-tpm` — [PLAN](work/refactor/wp-01-rename-tpm/PLAN.md) · state `planned` · 사용자 범위 승인 대기 → 승인 시 `wp-01-d01-api`부터
 
 ## 완료된 Work Package (링크만)
 
