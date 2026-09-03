@@ -3,11 +3,11 @@
 // 현물은 포지션/레버리지/미실현이 없어 "총자산(실시간 평가) + 가용/동결 + 보유자산 목록"으로 구성.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SpotHolding } from '../../../../api/server/spotTradeApi';
-import { useSettings, currencyLabel } from '../../../../contexts/CurrencyContext';
+import { useSettings, currencyLabel } from '../../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
 import { useRealtimePrices } from '../../../../hooks/market/useRealtimePrices';
 import { CoinLogo } from '../coin-list/CoinLogo';
-import { getOfficialLogo, coinColor } from '../../../../utils/coinFormatters';
+import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
 
 function fmtAsset(n: number): string {
   if (!Number.isFinite(n)) return '—';

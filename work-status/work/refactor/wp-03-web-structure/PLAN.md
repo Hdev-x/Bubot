@@ -99,11 +99,11 @@ deliveries:
   - id: wp-03-d05-app-desktop
     title: "app/desktop — 진입점·panels, web.css 통째 이동"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-03-d04-app-mobile]
     branch: refactor/web-d05-app-desktop
-    pull_requests: []
+    pull_requests: [29]
     evidence:
       - kind: parity-check
         locator: "12 rename(main·WebApp·WebLogin·WebSignup·panels 7·web.css→styles/desktop.css), importer 10 + labs 1은 import 줄만; web.html 스크립트 경로 갱신"
@@ -121,7 +121,19 @@ deliveries:
     depends_on: [wp-03-d05-app-desktop]
     branch: refactor/web-d06-shared
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "13 rename(types 2·constants 1·contexts 1·utils 9 → shared/), importer 43 + labs 12는 import 줄만(94줄 +/-). chart/analysis 재수출은 유지"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc; dev 서버 Mobile·Desktop 로드"
+        revision: working-tree
+        observed_at: 2026-09-03
+      - kind: document
+        locator: "STRUCTURE.md 트리·의존 방향, PROJECT.md 의존 방향 절, README 한 줄, WEB-STRUCTURE-REVIEW 4절 결과 주석"
+        revision: working-tree
+        observed_at: 2026-09-03
 milestones:
   - id: web-structure-locked
     title: "구조 재편 완료"

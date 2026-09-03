@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { AxiosHeaders } from 'axios';
-import type { Candle, ChartRange, CoinTicker, StockChartResponse, StockSummary, TickerResponse } from '../../types/market';
+import type { Candle, ChartRange, CoinTicker, StockChartResponse, StockSummary, TickerResponse } from '../../shared/types/market';
 import { getToken } from '../client';
 
 const api = axios.create({

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { SUB_ACCOUNT_NAMES } from '../../config/bots';
-import type { TrackerState } from '@web/types/bot';
+import type { TrackerState } from '@web/shared/types/bot';
 
 export interface LiveMonitoringTabProps {
   combinedTrackers: any[];

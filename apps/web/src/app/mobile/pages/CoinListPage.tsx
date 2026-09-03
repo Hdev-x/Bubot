@@ -2,18 +2,18 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { fetchCoinLogos } from '../../../api/server/marketApi';
 import { fetchMainTrade } from '../../../api/server/mainTradeApi';
 import { fetchUsdKrwRate } from '../../../api/exchange/exchangeRate';
-import { useCurrency } from '../../../contexts/CurrencyContext';
+import { useCurrency } from '../../../shared/contexts/CurrencyContext';
 import { useCoinDetailChart } from '../../../chart/hooks/useCoinDetailChart';
 import { useMarketTickers } from '../../../hooks/market/useMarketTickers';
 import { usePricePrecision } from '../../../hooks/market/usePricePrecision';
 import { useWatchlist } from '../../../hooks/account/useWatchlist';
-import type { CoinTicker } from '../../../types/market';
-import { EXCHANGE_SELECT_OPTIONS, isKrwExchange as isKrwExchangeId, type ExchangeId } from '../../../constants/exchanges';
+import type { CoinTicker } from '../../../shared/types/market';
+import { EXCHANGE_SELECT_OPTIONS, isKrwExchange as isKrwExchangeId, type ExchangeId } from '../../../shared/constants/exchanges';
 
 // Utilities
 import botzMark from '../../../assets/botz-mark.svg';
-import { formatRate, formatDisplaySymbol, coinColor } from '../../../utils/coinFormatters';
-import type { ProductFilter } from '../../../utils/coinFormatters';
+import { formatRate, formatDisplaySymbol, coinColor } from '../../../shared/utils/coinFormatters';
+import type { ProductFilter } from '../../../shared/utils/coinFormatters';
 
 // Components
 import { CoinRow } from '../components/coin-list/CoinRow';

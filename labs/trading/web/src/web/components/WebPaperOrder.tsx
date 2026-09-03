@@ -2,8 +2,8 @@
 // 기능 배선: 레버리지 pill / 시장가·지정가(trade-select) / 증거금(Cost) / % / Open long·short. 나머지는 모바일과 동일 비주얼.
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { usePersistentState } from '@web/hooks/ui/usePersistentState';
-import { EXCHANGES, type ExchangeId } from '@web/constants/exchanges';
-import { getOfficialLogo } from '@web/utils/coinFormatters';
+import { EXCHANGES, type ExchangeId } from '@web/shared/constants/exchanges';
+import { getOfficialLogo } from '@web/shared/utils/coinFormatters';
 import { snapFloat } from '@web/app/desktop/panels/snapFloat';
 import type { PaperOrderRaw } from '../../api/paperApi';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getOfficialLogo, coinColor } from '../../../../utils/coinFormatters';
+import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
 import { CoinLogo } from './CoinLogo';
 
 interface WatchlistStorySectionProps {

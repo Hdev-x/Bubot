@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCurrency } from '@web/contexts/CurrencyContext';
+import { useCurrency } from '@web/shared/contexts/CurrencyContext';
 
 export interface LiveAssetSummaryProps {
   totalAssets: number;

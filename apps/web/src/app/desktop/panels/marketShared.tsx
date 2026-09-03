@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import { fetchCoinFuturesTickers, fetchCoinTickers, fetchBinanceSpotTickers, fetchBinanceFuturesTickers, fetchCoinLogos } from '../../../api/server/marketApi';
 import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../../api/exchange/krw/krwTickers';
-import { getOfficialLogo, formatPriceWithDecimals } from '../../../utils/coinFormatters';
-import type { CoinTicker } from '../../../types/market';
-import type { ExchangeId } from '../../../constants/exchanges';
+import { getOfficialLogo, formatPriceWithDecimals } from '../../../shared/utils/coinFormatters';
+import type { CoinTicker } from '../../../shared/types/market';
+import type { ExchangeId } from '../../../shared/constants/exchanges';
 
 export type Market = 'spot' | 'futures';
 

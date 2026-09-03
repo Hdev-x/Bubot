@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useCurrency, currencyLabel } from '../../../contexts/CurrencyContext';
+import { useCurrency, currencyLabel } from '../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../hooks/market/useUsdKrw';
 
 // 자산 표기 규칙(거래탭 총자산과 동일): 1 미만 4자리, 그 외 1자리

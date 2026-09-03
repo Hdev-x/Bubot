@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, Reorder, useDragControls } from 'framer-motion';
 import { useScrollLock } from '../../../../hooks/ui/useScrollLock';
-import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../../../utils/sheetMotion';
+import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../../../shared/utils/sheetMotion';
 
 export type TradeTab = 'futures' | 'spot' | 'stock';
 

@@ -1,6 +1,6 @@
 // Trade 페이지 종목 헤더 — 선물/현물 공유. 스티키/스냅(.trade-symbol-row) 보존 위해
 // 루트를 그대로 <section className="trade-symbol-row">로 반환(추가 래퍼 없음).
-import { EXCHANGES, type ExchangeId } from '../../../../constants/exchanges';
+import { EXCHANGES, type ExchangeId } from '../../../../shared/constants/exchanges';
 
 type Props = {
   symbol: string;

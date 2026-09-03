@@ -1,5 +1,5 @@
 import { BOT_KEYS, SUB_ACCOUNT_NAMES } from '../../config/bots';
-import { useCurrency } from '@web/contexts/CurrencyContext';
+import { useCurrency } from '@web/shared/contexts/CurrencyContext';
 import type { WorkerStatus } from '../../api/adminApi';
 
 export interface LiveAccountAccordionProps {

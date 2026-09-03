@@ -2,17 +2,17 @@ import { useEffect } from 'react';
 import type { ISeriesApi, SeriesMarker, Time } from 'lightweight-charts';
 import { createSeriesMarkers } from 'lightweight-charts';
 import { getPivots } from '../analysis/pivots';
-import { buildSwingMarkers } from '../../utils/swingMarkers';
+import { buildSwingMarkers } from '../../shared/utils/swingMarkers';
 import { detectElliottWave, detectAbcWave, predictAbcWave } from '../analysis/elliottWavePattern';
 import { predictHarmonicPatterns } from '../analysis/harmonicPattern';
-import type { Candle } from '../../types/market';
+import type { Candle } from '../../shared/types/market';
 import type { PivotSetting } from '../indicators/IndicatorSheet';
 import type { ChartTheme } from '../settings/ChartSettingsSheet';
 import type { AutoShape } from '../overlays/AutoPatternOverlay';
 import type { ElliottWaveResult, AbcWaveResult, AbcEmergingResult } from '../analysis/elliottWavePattern';
 import type { EmergingHarmonicResult } from '../analysis/harmonicPattern';
 import type { AutoPatternOverlay } from '../overlays/AutoPatternOverlay';
-import type { TrackerState } from '../../types/bot';
+import type { TrackerState } from '../../shared/types/bot';
 
 interface UseAutoPatternsProps {
   candles: Candle[];

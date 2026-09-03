@@ -33,7 +33,7 @@ if (import.meta.env.DEV && 'serviceWorker' in navigator) {
   }
 }
 
-import { CurrencyProvider } from '../../contexts/CurrencyContext';
+import { CurrencyProvider } from '../../shared/contexts/CurrencyContext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

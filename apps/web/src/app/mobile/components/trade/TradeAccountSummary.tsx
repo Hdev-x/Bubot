@@ -4,11 +4,11 @@
 // 통화/잔고숨김은 자산 탭과 동일하게 useSettings(CurrencyContext) 공유.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { MainPosition } from '../../../../api/server/mainTradeApi';
-import { useSettings, currencyLabel } from '../../../../contexts/CurrencyContext';
+import { useSettings, currencyLabel } from '../../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
 import { useDelayedReady } from '../../../../hooks/ui/useDelayedReady';
 import { CoinLogo } from '../coin-list/CoinLogo';
-import { getOfficialLogo, coinColor } from '../../../../utils/coinFormatters';
+import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
 
 // 자산 탭 총자산 표기와 동일 규칙 (1 미만 4자리, 그 외 1자리)
 function fmtAsset(n: number): string {

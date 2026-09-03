@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
-import type { CoinTicker } from '../../../../types/market';
-import { formatPriceWithDecimals, getOfficialLogo } from '../../../../utils/coinFormatters';
+import type { CoinTicker } from '../../../../shared/types/market';
+import { formatPriceWithDecimals, getOfficialLogo } from '../../../../shared/utils/coinFormatters';
 import { CoinLogo } from './CoinLogo';
 
 interface CoinRowProps {

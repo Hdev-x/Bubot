@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { formatPriceWithDecimals, formatRate, formatDisplaySymbol, getOfficialLogo } from '../../../../utils/coinFormatters';
-import type { ProductFilter } from '../../../../utils/coinFormatters';
+import { formatPriceWithDecimals, formatRate, formatDisplaySymbol, getOfficialLogo } from '../../../../shared/utils/coinFormatters';
+import type { ProductFilter } from '../../../../shared/utils/coinFormatters';
 
 interface WatchlistBottomSheetProps {
   activeSheet: string | null;

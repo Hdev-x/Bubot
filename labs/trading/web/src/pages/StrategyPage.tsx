@@ -13,7 +13,7 @@ import { AnalysisPanel } from '../components/strategy/AnalysisPanel';
 import ExperimentsPanel from '../components/strategy/ExperimentsPanel';
 import PullToRefresh from '@web/app/mobile/components/PullToRefresh';
 import LivePage from './LivePage';
-import type { TrackerState } from '@web/types/bot';
+import type { TrackerState } from '@web/shared/types/bot';
 
 import TradeConfigManager from '../components/settings/TradeConfigManager';
 import KillSwitchPanel from '../components/settings/KillSwitchPanel';

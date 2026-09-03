@@ -1,5 +1,5 @@
 import { SUB_ACCOUNT_NAMES } from '../../config/bots';
-import { useCurrency } from '@web/contexts/CurrencyContext';
+import { useCurrency } from '@web/shared/contexts/CurrencyContext';
 
 export interface LivePositionTabProps {
   mainStatus: any;

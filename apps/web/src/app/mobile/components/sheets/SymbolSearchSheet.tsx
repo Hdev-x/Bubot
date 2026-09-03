@@ -6,8 +6,8 @@ import {
   fetchCoinFuturesTickers,
   fetchCoinTickers,
 } from '../../../../api/server/marketApi';
-import type { CoinTicker } from '../../../../types/market';
-import { getOfficialLogo, coinColor } from '../../../../utils/coinFormatters';
+import type { CoinTicker } from '../../../../shared/types/market';
+import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
 import { CoinLogo } from '../coin-list/CoinLogo';
 import binanceLogo from '../../../../assets/exchanges/binance.svg';
 import bitgetLogo from '../../../../assets/exchanges/bitget.svg';

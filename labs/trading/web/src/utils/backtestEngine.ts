@@ -1,4 +1,4 @@
-import type { Candle } from '@web/types/market';
+import type { Candle } from '@web/shared/types/market';
 import { predictHarmonicPatterns, harmonicEntryPrice } from '@web/chart/analysis/harmonicPattern';
 import type { EmergingHarmonicResult } from '@web/chart/analysis/harmonicPattern';
 import { detectOBs as detectOBsShared, detectFVGs as detectFVGsShared, classifyCandle as classifyCandleShared, eqBox as eqBoxShared } from '../../../../../shared/smc';

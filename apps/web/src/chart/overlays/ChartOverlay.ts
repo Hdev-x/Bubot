@@ -3,7 +3,7 @@ import type {
   ISeriesApi, IChartApi, Time, SeriesAttachedParameter,
 } from 'lightweight-charts';
 import type { CanvasRenderingTarget2D, BitmapCoordinatesRenderingScope } from 'fancy-canvas';
-import type { Candle } from '../../types/market';
+import type { Candle } from '../../shared/types/market';
 import type { FVG, OB, OBOptions } from '../analysis/chartIndicators';
 import { detectFVGs, detectOBs, DEFAULT_OB_OPTIONS, eqBox, spentAt } from '../analysis/chartIndicators';
 

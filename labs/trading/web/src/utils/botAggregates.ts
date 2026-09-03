@@ -1,4 +1,4 @@
-import type { BotPendingOrder, BotState, MainAccountStatus, PositionState, TradeLog, TrackerState } from '@web/types/bot';
+import type { BotPendingOrder, BotState, MainAccountStatus, PositionState, TradeLog, TrackerState } from '@web/shared/types/bot';
 
 export type BotResultMap = Record<string, { success: boolean; data: BotState | null; error: string | null }>;
 export type BotStatusResultLike = { botKey: string; data: BotState | null; error: unknown };

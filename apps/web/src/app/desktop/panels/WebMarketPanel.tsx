@@ -10,8 +10,8 @@ import {
 import { subscribeKrwTickers } from '../../../api/exchange/krw/krwRealtime';
 import { usePricePrecision } from '../../../hooks/market/usePricePrecision';
 import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
-import type { CoinTicker } from '../../../types/market';
-import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../constants/exchanges';
+import type { CoinTicker } from '../../../shared/types/market';
+import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../shared/constants/exchanges';
 import { SortIcon, WebSymbolRow, loadExchangeTickers, useWebFavorites, useCoinLogos, type Market } from './marketShared';
 
 type Filter = 'spot' | 'futures';
