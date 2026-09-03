@@ -1,6 +1,6 @@
 # 현재 상태
 
-- 마지막 갱신: 2026-09-03 (wp-02 완료)
+- 마지막 갱신: 2026-09-03 (wp-03 완료)
 
 > 이 문서는 다음 세션을 위한 상태판이다. 이력을 쌓지 않고 덮어쓴다.
 > Branch·Commit·작업 트리는 Git에서, 완료 작업의 상세·증거는 PLAN과 Git History에서 확인한다.
@@ -12,31 +12,31 @@
 
 - 기준선 Track 완료(2026-09-03, PR #3~#7): `shared`·`apps/api`·`apps/web`·`labs/trading/worker`·`ops`가 원본 `develop`과 blob hash 동일하게 들어왔고, Web tests 22·build 2종·API bootWar·`ops/verify` 6종이 원본과 같은 결과다.
 - 배포 전 품질 정리 완료(2026-09-03): README, CI lint(error 0·warning baseline 320), API test(H2 test 프로필), Ruleset `main-protection`.
-- 프로젝트가 지금 달성하려는 결과: `apps/web` 폴더 구조 재편(`wp-03-web-structure`) — 사용자와 Delivery 단위로 진행.
-- 완료 기준: Milestone `web-structure-locked` 통과 (목표 트리 일치, import 방향 규칙, Gate 유지, 화면 동일).
+- `apps/web` 폴더 구조 재편 완료(2026-09-03, `wp-03-web-structure`, PR #24~#30): `app/{mobile,desktop}` · `chart` · `hooks/{market,account,ui}` · `api/{client,server,exchange}` · `shared`. 의존 방향 규칙은 `docs/PROJECT.md`.
+- 프로젝트가 지금 달성하려는 결과: 다음 Work Package 선택 대기. 후보는 CSS 정리(wp-04: 컴포넌트별 CSS 분리·미사용 규칙 삭제·OQ-12)와 큰 파일 분해(`WebApp.tsx` 1,811·`MarketChart.tsx` 1,585·`useAutoPatterns.ts` 990·`OrderPage.tsx` 910). 사용자와 항목 단위로 진행.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. `wp-03-d00-dead-code` (dead code 8개 + labs 잔여 CSS 구역)
-2. `wp-03-d01-api` (`client.ts` 분리 내용 사전 공유 후 진행)
+1. 다음 Work Package 결정(CSS 정리 vs 큰 파일 분해) 후 PLAN 작성
 
 ## Deferred
 
-- Beta 배포(`wp-04` 예정): 도메인 구입 여부와 DB 위치가 정해질 때까지 보류. 후보 구성은 OQ-20260903-04. jar 전환·`ops/deploy.sh` 교체·`static/web` 생성 bundle 처리(OQ-08)는 이때 함께
+- Beta 배포(별도 wp 예정): 도메인 구입 여부와 DB 위치가 정해질 때까지 보류. 후보 구성은 OQ-20260903-04. jar 전환·`ops/deploy.sh` 교체·`static/web` 생성 bundle 처리(OQ-08)는 이때 함께
 
 - Private Worklog 연결(`.ai-workflow.local`) — OQ-20260903-07 결정 후
 - `labs/trading/worker/.env`·`ecosystem.config.cjs` 복사 — 워커를 다시 쓸 때(모의투자 Track)
 
 ## 활성 Work Package
 
-- 없음. `wp-03`(배포) PLAN 작성 대기.
+- 없음.
 
 ## 완료된 Work Package (링크만)
 
 - [refactor/wp-01-rename-tpm](work/refactor/wp-01-rename-tpm/PLAN.md) — 2026-09-03, PR #10·#11
 - [refactor/wp-02-beta-boundary](work/refactor/wp-02-beta-boundary/PLAN.md) — 2026-09-03, PR #14·#15·#16
+- [refactor/wp-03-web-structure](work/refactor/wp-03-web-structure/PLAN.md) — 2026-09-03, PR #24~#30
 
 ## Blocker·주의
 
@@ -44,6 +44,7 @@
 - `ops/check-secrets.sh` 파일명·비밀번호 규칙을 소스 코드 오탐 때문에 두 번 좁혔다(PR #4·#5). 가져오기 중 추가 오탐은 없었다.
 - API 기본 기동(`dev`)은 Beta 모드다. 자동매매·Paper·Push·Admin API는 `JAVA_TOOL_OPTIONS="-Dspring.profiles.active=dev,trading"`으로만 등록된다(`docs/COMMANDS.md`).
 - `labs/trading/web`은 `@web/*` alias로 `apps/web`을 참조하는 보존 코드다. 타입체크는 `apps/web/node_modules` symlink로 로컬에서만 한다.
+- Bubot Mobile dev 서버는 `localhost:5175`를 팀 프로젝트 PetCare Vite와 공유한다. PetCare가 떠 있으면 LAN IP로만 열리는데, API CORS 허용 목록(`app.cors.allowed-origins`, 로컬 properties)에 LAN 주소가 없어 로그인이 403이 된다. PetCare를 끄고 `localhost:5175/mobile/`로 접속한다.
 - 로컬 기동용 Git 밖 파일이 Bubot에 준비돼 있다: 루트 `.env`, `apps/web/.env`, `apps/api/src/main/resources/application*.properties`(MyBatis key `com.bubot`), `ops/back-end.sh`·`worker.sh`. 원본 AutoTrade와 같은 DB·계정을 가리킨다.
 
 ## 읽기 안내

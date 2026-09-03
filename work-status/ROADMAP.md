@@ -21,7 +21,8 @@
 - [x] T-02 TPM 이름을 Bubot으로 rename한다 (`com.tj.app`, `TpmApplication`, `tpmApi.ts`, `tpm_token`) | `plan:refactor/wp-01-rename-tpm`
 - [x] T-03 Beta 제외 기능을 `labs`로 분리하고 필요한 코드만 남긴다 | `plan:refactor/wp-02-beta-boundary`
 - T-04 로고 자산 — 현행 유지로 결정(D-20260903-06), 항목 닫음
-- [ ] T-04b `apps/web` 폴더 구조 재편(계층 우선 + 앱별 분리 + CSS 동반) | `plan:refactor/wp-03-web-structure`
+- [x] T-04b `apps/web` 폴더 구조 재편(계층 우선 + 앱별 분리 + CSS 동반) | `plan:refactor/wp-03-web-structure`
+- [ ] T-04c `apps/web` CSS 정리(컴포넌트별 분리·미사용 규칙 삭제·지표시트 통합 OQ-12)와 큰 파일 분해 — 순서·PLAN은 사용자 결정
 
 ## Beta Track
 
