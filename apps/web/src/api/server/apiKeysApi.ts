@@ -1,7 +1,7 @@
 // API 키 관리 API — /api/user/api-keys
 // 로그인 JWT를 사용하며, bot proxy를 경유하지 않음.
 
-import { authHeader } from './authApi';
+import { authHeader } from '../client';
 
 export interface ApiKeyItem {
   id: number;

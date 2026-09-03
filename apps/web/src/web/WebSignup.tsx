@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type CSSProperties } from 'react';
-import { signup } from '../api/authApi';
-import type { AuthUser } from '../api/authApi';
+import { signup } from '../api/server/authApi';
+import type { AuthUser } from '../api/server/authApi';
 import botzMark from '../assets/botz-mark.svg';
 
 // 데스크톱 웹 자체 회원가입 — POST /api/auth/register. 로그인 ID = 이메일. 성공 시 자동 로그인.

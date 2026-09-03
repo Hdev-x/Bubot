@@ -1,5 +1,5 @@
 import { getBotStreamPath } from '../config/bots';
-import { authHeader, getToken } from '@web/api/authApi';
+import { authHeader, getToken } from '@web/api/client';
 
 // 봇 실시간 스트림(WebSocket)은 Spring 프록시(/api/bot-ws)를 경유한다.
 // trader 비밀 토큰은 브라우저에 싣지 않고, 로그인 JWT만 프록시 검증용으로 보낸다.

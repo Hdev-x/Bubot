@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { fetchUsdKrwRate } from '@web/api/exchangeRate';
+import { fetchUsdKrwRate } from '@web/api/exchange/exchangeRate';
 import { getWorkerStatus, type WorkerStatus } from '../api/adminApi';
 import { useBotStreams } from '../hooks/useBotStreams';
 import { useMainTrade } from '@web/hooks/useMainTrade';

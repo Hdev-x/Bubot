@@ -1,7 +1,7 @@
 // 현물 보유자산 상세 카드 (하단 Holdings 탭) — 선물 PositionCard와 동일 스타일(.position-card).
 // 한국거래소 기준 필드: 평가손익·수익률·평가금액·매수금액·현재가·매수평균가·보유수량·비중.
 // 매입가(avgCost)는 체결내역 재구성값. 없거나 신뢰불가면 사용자가 직접 입력 가능(costSource='manual').
-import type { SpotHolding } from '../../api/spotTradeApi';
+import type { SpotHolding } from '../../api/server/spotTradeApi';
 import { useSettings, currencyLabel } from '../../contexts/CurrencyContext';
 import { useUsdKrw } from '../../hooks/useUsdKrw';
 

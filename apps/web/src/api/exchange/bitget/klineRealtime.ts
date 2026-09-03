@@ -1,7 +1,7 @@
 // Bitget 캔들(kline) WebSocket — 브라우저 직결. 티커(가격틱)와 달리 현재 캔들의 OHLCV(거래량 포함)를
 // 실시간으로 받는다. 업비트/빗썸은 공개 캔들 WS가 없어 별도(REST 폴링)로 처리.
 // (Binance kline은 지역차단 때문에 백엔드 릴레이로 — coinRealtime.subscribeBinanceKline)
-import type { CandleMessage, Subscription } from './coinRealtime';
+import type { CandleMessage, Subscription } from '../../server/coinRealtime';
 
 /** Bitget kline WS — data:[[ts,o,h,l,c,baseVol,...]]. ping/pong 25s. channel은 candle1H 등(WEB_TIMEFRAMES.channel). */
 export function subscribeBitgetKline(symbol: string, isFutures: boolean, channel: string, onCandle: (c: CandleMessage) => void): Subscription {

@@ -3,7 +3,7 @@ import { useMainTrade } from '../hooks/useMainTrade';
 import { useDelayedReady } from '../hooks/useDelayedReady';
 import { useSpotValueUsdt } from '../hooks/useSpotValueUsdt';
 import { TotalAssetHero } from '../components/TotalAssetHero';
-import { fetchUsdKrwRate } from '../api/exchangeRate';
+import { fetchUsdKrwRate } from '../api/exchange/exchangeRate';
 import { useCurrency, currencyLabel } from '../contexts/CurrencyContext';
 import { useRealtimePrices } from '../hooks/useRealtimePrices';
 import type { BotState } from '../types/bot';

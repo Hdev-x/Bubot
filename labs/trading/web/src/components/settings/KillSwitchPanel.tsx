@@ -1,7 +1,7 @@
 // 글로벌 kill switch 패널 — 운영자(admin) 전용.
 // ON 시 통합 워커가 다음 폴링에서 전 설정 정지·전 포지션 시장가 청산.
 import { useState, useEffect, useCallback } from 'react';
-import { fetchMe } from '@web/api/authApi';
+import { fetchMe } from '@web/api/server/authApi';
 import { getKillSwitch, setKillSwitch } from '../../api/adminApi';
 
 export default function KillSwitchPanel() {

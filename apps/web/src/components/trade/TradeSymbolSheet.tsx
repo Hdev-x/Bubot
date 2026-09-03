@@ -3,9 +3,9 @@
 // 각 행 오른쪽 별표로 즐겨찾기 토글(localStorage 'trade_favorites', `${market}|${symbol}` 키).
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
-import { fetchCoinFuturesTickers, fetchCoinTickers, fetchBinanceSpotTickers, fetchBinanceFuturesTickers } from '../../api/marketApi';
-import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../api/krwTickers';
-import { subscribeBitgetSpotTickers, subscribeBitgetFuturesTickers, type RealtimeTicker } from '../../api/coinRealtime';
+import { fetchCoinFuturesTickers, fetchCoinTickers, fetchBinanceSpotTickers, fetchBinanceFuturesTickers } from '../../api/server/marketApi';
+import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../api/exchange/krw/krwTickers';
+import { subscribeBitgetSpotTickers, subscribeBitgetFuturesTickers, type RealtimeTicker } from '../../api/server/coinRealtime';
 import { usePricePrecision } from '../../hooks/usePricePrecision';
 import { formatPriceWithDecimals } from '../../utils/coinFormatters';
 import type { CoinTicker } from '../../types/market';

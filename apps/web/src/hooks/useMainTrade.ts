@@ -1,5 +1,5 @@
 import { usePolledData } from './usePolledData';
-import { fetchMainTrade, type MainTradeOverview } from '../api/mainTradeApi';
+import { fetchMainTrade, type MainTradeOverview } from '../api/server/mainTradeApi';
 
 const EMPTY: MainTradeOverview = { hasKey: false, positions: [], orders: [], planOrders: [], available: 0, equity: 0 };
 

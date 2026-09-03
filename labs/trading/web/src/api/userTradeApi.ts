@@ -1,5 +1,5 @@
 // 사용자 체결기록(trades) API — 전략 섹션 페이퍼 실증 현황 표시용. 본인 거래만 반환됨.
-import { authedGetJson } from '@web/api/authApi';
+import { authedGetJson } from '@web/api/client';
 
 export interface UserTrade {
   id: number;

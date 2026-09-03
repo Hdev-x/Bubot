@@ -1,7 +1,7 @@
 // 통합 워커 상태 패널 — 운영자(admin) 전용.
 // 워커가 Spring에 push한 스냅샷을 5초마다 조회해 표시한다.
 import { useState, useEffect, useCallback } from 'react';
-import { fetchMe } from '@web/api/authApi';
+import { fetchMe } from '@web/api/server/authApi';
 import { getWorkerStatus, type WorkerStatus } from '../../api/adminApi';
 
 export default function WorkerStatusPanel() {

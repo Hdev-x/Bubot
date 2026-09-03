@@ -4,15 +4,15 @@ import {
   fetchBinanceSpotTickers,
   fetchCoinFuturesTickers,
   fetchCoinTickers,
-} from '../api/marketApi';
-import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../api/krwTickers';
+} from '../api/server/marketApi';
+import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../api/exchange/krw/krwTickers';
 import {
   subscribeBinanceFuturesTickers,
   subscribeBinanceSpotTickers,
   subscribeBitgetFuturesTickers,
   subscribeBitgetSpotTickers,
-} from '../api/coinRealtime';
-import type { RealtimeTicker } from '../api/coinRealtime';
+} from '../api/server/coinRealtime';
+import type { RealtimeTicker } from '../api/server/coinRealtime';
 import type { CoinTicker } from '../types/market';
 import type { ExchangeId } from '../constants/exchanges';
 

@@ -6,8 +6,8 @@ import {
   subscribeBitgetSpotTickers, subscribeBitgetFuturesTickers,
   subscribeBinanceSpotTickers, subscribeBinanceFuturesTickers,
   type RealtimeTicker,
-} from '../../api/coinRealtime';
-import { subscribeKrwTickers } from '../../api/krwRealtime';
+} from '../../api/server/coinRealtime';
+import { subscribeKrwTickers } from '../../api/exchange/krw/krwRealtime';
 import { usePricePrecision } from '../../hooks/usePricePrecision';
 import { useDelayedReady } from '../../hooks/useDelayedReady';
 import type { CoinTicker } from '../../types/market';

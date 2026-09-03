@@ -1,5 +1,5 @@
 // 모의투자(페이퍼) 가상계좌 API. 평가손익·총자산은 프론트가 실시간가로 계산하므로 여기선 잔고+포지션(진입정보)만 받는다.
-import { authedGetJson, authedMutate } from '@web/api/authApi';
+import { authedGetJson, authedMutate } from '@web/api/client';
 
 export interface PaperPositionRaw {
   id: number;

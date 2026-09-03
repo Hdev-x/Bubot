@@ -5,7 +5,7 @@ import {
   fetchBinanceSpotTickers,
   fetchCoinFuturesTickers,
   fetchCoinTickers,
-} from '../api/marketApi';
+} from '../api/server/marketApi';
 import type { CoinTicker } from '../types/market';
 import { getOfficialLogo, coinColor } from '../utils/coinFormatters';
 import { CoinLogo } from './coin-list/CoinLogo';

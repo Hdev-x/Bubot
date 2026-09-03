@@ -2,8 +2,8 @@
 // 모바일 거래탭 종목 시트(TradeSymbolSheet)에서 복붙·각색. 데이터/유틸은 공유 계층만 사용.
 import { useCallback, useEffect, useState } from 'react';
 import type { HTMLAttributes } from 'react';
-import { fetchCoinFuturesTickers, fetchCoinTickers, fetchBinanceSpotTickers, fetchBinanceFuturesTickers, fetchCoinLogos } from '../../api/marketApi';
-import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../api/krwTickers';
+import { fetchCoinFuturesTickers, fetchCoinTickers, fetchBinanceSpotTickers, fetchBinanceFuturesTickers, fetchCoinLogos } from '../../api/server/marketApi';
+import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../api/exchange/krw/krwTickers';
 import { getOfficialLogo, formatPriceWithDecimals } from '../../utils/coinFormatters';
 import type { CoinTicker } from '../../types/market';
 import type { ExchangeId } from '../../constants/exchanges';
