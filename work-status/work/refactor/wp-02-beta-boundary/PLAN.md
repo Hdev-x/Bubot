@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-02-beta-boundary
 title: Beta 제외 기능을 실행 경로에서 분리
 workstream: refactor
-state: active
+state: completed
 updated: 2026-09-03
 depends_on: [wp-01-rename-tpm]
 supersedes: []
@@ -18,11 +18,11 @@ deliveries:
   - id: wp-02-d01-web-decouple
     title: "Beta entry의 자동매매 정적 import 끊기와 준비 화면"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: []
     branch: refactor/web-decouple-trading
-    pull_requests: []
+    pull_requests: [14]
     evidence:
       - kind: command
         locator: "npm test 22 passed, build·build:web 통과; dist·dist-web에 /api/paper·/api/admin·/api/bot·backtest-runs·trade-configs 문자열 0; Beta 파일→labs 후보 import 0"
@@ -35,11 +35,11 @@ deliveries:
   - id: wp-02-d02-web-labs
     title: "Web 자동매매 묶음을 labs/trading/web으로 이동"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-02-d01-web-decouple]
     branch: refactor/web-move-trading-to-labs
-    pull_requests: []
+    pull_requests: [15]
     evidence:
       - kind: parity-check
         locator: "38개 git mv rename(내용 변경은 import 경로 줄뿐), ApiKeyManager는 config/accountTargets 분리로 Beta 유지; git grep 'labs/' -- apps/web/src = 0"
@@ -52,11 +52,11 @@ deliveries:
   - id: wp-02-d03-api-profile
     title: "API 제외 컨트롤러·서비스를 trading 프로필로 묶기 (Beta = trading 부재)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: []
     branch: refactor/api-trading-profile
-    pull_requests: []
+    pull_requests: [16]
     evidence:
       - kind: command
         locator: "@Profile(\"trading\") 20개 bean(backtest 2·bot 3·push 3·paper 4·trade 7·member 1); compileJava·bootWar 통과"
@@ -69,13 +69,21 @@ deliveries:
 milestones:
   - id: beta-boundary-locked
     title: "Beta 경계 고정"
-    state: pending
+    state: passed
     depends_on: [wp-02-d02-web-labs, wp-02-d03-api-profile]
     acceptance:
       - "GATE-AC-001: AC-001~AC-004 자동 검사 통과."
       - "GATE-AC-002: AC-005 로컬 기동 확인 (beta 프로필 API + Web 2종)."
     unlocks: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "main d6e792b: dist·dist-web 제외 API 문자열 0, apps/web→labs import 0, dev 모드 등록 컨트롤러 7·제외 접두어 0, Web tests 22·build 2종·API compile 통과, ops/verify 6종 원본 동일(4 OK·2 기존 drift)"
+        revision: d6e792b
+        observed_at: 2026-09-03
+      - kind: browser
+        locator: "로컬 API(dev=Beta)·Web 2종 기동, 사용자 로그인 후 Mobile 자산·차트·전략 준비 화면과 Desktop 전략 섹션 확인(사용자 보고)"
+        revision: d6e792b
+        observed_at: 2026-09-03
 extensions: {}
 ---
 
