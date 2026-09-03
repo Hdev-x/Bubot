@@ -1,5 +1,7 @@
 package com.bubot.member;
 
+import org.springframework.context.annotation.Profile;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,7 @@ import java.util.Map;
  *    네트워크 경계(내부망/localhost) + 토큰 검증으로만 보호된다.
  */
 @Slf4j
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @RestController
 @RequestMapping("/api/internal/bot-credentials")
 @RequiredArgsConstructor

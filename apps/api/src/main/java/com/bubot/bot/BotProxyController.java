@@ -1,5 +1,7 @@
 package com.bubot.bot;
 
+import org.springframework.context.annotation.Profile;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -21,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
  *
  * 실시간 WebSocket 스트림은 BotWebSocketProxyHandler가 /api/bot-ws/** 에서 별도 중계한다.
  * ============================================================ */
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @RestController
 @RequestMapping("/api/bot")
 public class BotProxyController {

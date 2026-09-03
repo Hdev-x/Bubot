@@ -1,5 +1,7 @@
 package com.bubot.trade;
 
+import org.springframework.context.annotation.Profile;
+
 import com.bubot.common.config.SystemFlagService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +22,7 @@ import java.util.Map;
  * (DB is_active는 그대로 두어 OFF 시 자동 재개되는 "비상 일시정지" 의미)
  */
 @Slf4j
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor

@@ -1,5 +1,7 @@
 package com.bubot.bot;
 
+import org.springframework.context.annotation.Profile;
+
 import com.bubot.common.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @Component
 public class BotWebSocketProxyHandler extends TextWebSocketHandler {
 

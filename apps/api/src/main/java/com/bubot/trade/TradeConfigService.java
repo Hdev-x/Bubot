@@ -1,5 +1,7 @@
 package com.bubot.trade;
 
+import org.springframework.context.annotation.Profile;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Slf4j
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @Service
 @RequiredArgsConstructor
 public class TradeConfigService {

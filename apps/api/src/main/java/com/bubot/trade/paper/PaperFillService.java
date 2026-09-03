@@ -1,5 +1,7 @@
 package com.bubot.trade.paper;
 
+import org.springframework.context.annotation.Profile;
+
 import com.bubot.market.coin.CoinMarketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import java.util.Map;
  * 대기 주문 0건이면 즉시 return이라 부하 거의 없음.
  */
 @Slf4j
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @Service
 @RequiredArgsConstructor
 public class PaperFillService {

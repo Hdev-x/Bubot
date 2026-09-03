@@ -1,5 +1,7 @@
 package com.bubot.trade.paper;
 
+import org.springframework.context.annotation.Profile;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,7 @@ import java.util.Map;
  * 체결가는 클라이언트가 보는 실시간가를 받아 사용(페이퍼 머니라 신뢰성 부담 작음, 서버 가격소스 일원화는 후속 하드닝).
  * 평가손익/총자산은 프론트가 실시간가로 계산 — 서버는 진입 정보와 잔고만 보관.
  */
+@Profile("trading") // trading 프로필에서만 등록. Beta(프로필 없음)에서는 제외 (wp-02 d03)
 @Service
 @RequiredArgsConstructor
 public class PaperService {
