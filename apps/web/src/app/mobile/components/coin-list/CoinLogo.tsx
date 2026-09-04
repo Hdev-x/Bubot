@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './coin-list.css';
 
 interface CoinLogoProps {
   symbol: string;

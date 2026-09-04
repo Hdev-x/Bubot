@@ -8,6 +8,7 @@ import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
 import { useRealtimePrices } from '../../../../hooks/market/useRealtimePrices';
 import { CoinLogo } from '../coin-list/CoinLogo';
 import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
+import './trade.css';
 
 function fmtAsset(n: number): string {
   if (!Number.isFinite(n)) return '—';

@@ -1,3 +1,4 @@
+import './trade.css';
 // Trade 페이지 공유 호가창 — 선물/현물 공통. 표시용 파생값은 부모가 계산해 props로 넘긴다.
 // (DOM/className은 styles.css의 .orderbook 규칙에 그대로 맞춤 — 동작 보존)
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import './coin-list.css';
 
 export const DropdownFilter = ({ 
   isOpen, 

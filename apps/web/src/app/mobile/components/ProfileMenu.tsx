@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import './components.css';
 
 interface Props {
   username?: string;

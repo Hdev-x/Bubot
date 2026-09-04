@@ -1,6 +1,7 @@
 import React from 'react';
 import { DropdownFilter } from './DropdownFilter';
 import type { ProductFilter } from '../../../../shared/utils/coinFormatters';
+import './coin-list.css';
 
 interface CoinListFilterBarProps {
   exchangeFilter: string;

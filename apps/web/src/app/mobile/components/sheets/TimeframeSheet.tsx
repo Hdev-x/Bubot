@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import './sheets.css';
 
 type TimeframeOption = {
   label: string;

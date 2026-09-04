@@ -1,0 +1,378 @@
+/* OrderPage — mobile.css에서 이 컴포넌트가 쓰는 규칙만 옮김 (wp-04 d03). 클래스 이름·값은 그대로. */
+
+.trade-page {
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100dvh;
+  /* 하단탭(53px)만큼만 비움 — 과한 패딩(130)은 스크롤 박스 아래 검은 띠를 만듦 */
+  padding-bottom: calc(53px + env(safe-area-inset-bottom));
+  color: #f2f3f5;
+  background: #000;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+  overflow-x: clip;
+  box-sizing: border-box;
+  letter-spacing: -0.2px; /* 트레이드 페이지 전체 자간 압축(상속) */
+}
+
+.trade-page.trade-page--bot {
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+/* 상단 탭바 */
+.trade-market-tabs {
+  /* 종목 헤더(.trade-symbol-row, 63px)와 높이 일치 — 스크롤 시 종목 헤더가 탑바를 빈틈없이 덮게.
+     노치 보호는 아래 padding-top(max 24/safe-area)이 담당, min-height는 노치없을 때 여백만 결정 */
+  min-height: 63px;
+  padding: max(24px, env(safe-area-inset-top)) 16px 10px;
+  border-bottom: 1px solid #14161a;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px;
+  background: #000000;
+  /* 탑바는 맨 위 고정 — 단 종목 헤더(z:30)보다 낮아서, 스크롤 시 종목 헤더가 위로 올라와 이 탑바를 덮어 가린다 (Bitget 동작) */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabs-scroll-container {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 13px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs-scroll-container button {
+  color: #848e9c;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 0 0 3px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+/* 비트겟 미지원 종목 안내(호가·주문 자리 대체) */
+.trade-unsupported {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.trade-unsupported-title {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #8a8c90;
+}
+
+.trade-unsupported-btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 8px;
+  background: #1f2023;
+  color: #eaecef;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 하단 포지션 영역 */
+.positions-panel {
+  border-top: 1px solid #14161a;
+  margin-top: 14px; /* 구분선 위쪽 여백 */
+  padding: 13px 16px 0;
+  background: #000000;
+}
+
+/* 헤더(스냅) 아래 콘텐츠 영역 — 화면 남은 높이에 고정, 포지션 많을 때만 내부 스크롤.
+   189px = 종목헤더(63) + 포지션헤더(73) + 하단탭(53). 박스 바닥이 하단탭에 딱 붙음.
+   ※ 포지션헤더 73은 내부 콘텐츠(탭줄 pb6 + Show current, tools margin-top 2) 자연높이 72.5 이상으로 잡아야 안 잘림. */
+.positions-scroll {
+  height: calc(100dvh - 189px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+
+/* 탭줄 + Show current/Close all 을 하나로 묶어 종목 헤더(70px) 아래에 함께 고정. 그 밑으로 목록만 스크롤 */
+.positions-header {
+  position: sticky;
+  /* 종목 헤더(63px) 아래에 스냅 — 노치(safe-area)만큼 같이 내려야 겹치지 않음 */
+  top: calc(63px + env(safe-area-inset-top));
+  z-index: 20;
+  background: #000000;
+  height: 73px;
+  box-sizing: border-box;
+}
+
+.position-tabs {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-top: 8px;
+  padding-bottom: 6px;
+}
+
+.position-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* 거래내역 햄버거 — 탭 줄 우측 끝(거터)에 정렬 */
+.tabs-history-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-right: -2px; /* svg 내부 path 여백 보정 → 글리프를 거터에 flush */
+  color: #848e9c;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tabs-history-btn:hover {
+  color: #eaecef;
+}
+
+.position-tabs button {
+  color: #848e9c;
+  font-size: 13px;
+  font-weight: 600;
+  background: none;
+  border: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.15s ease;
+}
+
+.tab-arrow-down {
+  font-size: 10px;
+  color: #848e9c;
+  margin-left: 2px;
+}
+
+/* 포지션 컨트롤 바 */
+.position-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2px;
+  /* Close all 버튼(28px) 제거 후에도 줄 높이 유지 → 아래 여백 보존 */
+  min-height: 28px;
+}
+
+.show-current-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #848e9c;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.show-current-label input {
+  display: none;
+}
+
+.checkbox-dummy {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid #474f59;
+  border-radius: 2px;
+  display: inline-block;
+  position: relative;
+}
+
+.show-current-label input:checked + .checkbox-dummy {
+  background: #f0b90b;
+  border-color: #f0b90b;
+}
+
+.show-current-label input:checked + .checkbox-dummy::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 3px;
+  border-left: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
+  transform: rotate(-45deg);
+  top: 2px;
+  left: 2px;
+}
+
+/* 포지션 빈 상태 목업 */
+.positions-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 82px;
+  padding: 10px 20px 0;
+  text-align: center;
+}
+
+.folder-icon-wrapper {
+  margin-bottom: 0;
+  opacity: 0.82;
+  transform: translateY(-32px);
+}
+
+.folder-icon-wrapper svg {
+  width: 44px;
+  height: 44px;
+}
+
+.available-balance-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.description-text {
+  font-size: 11px;
+  color: #848e9c;
+  max-width: 280px;
+  line-height: 1.4;
+  margin: 0 0 20px 0;
+}
+
+.empty-action-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.empty-action-btn {
+  flex: 1;
+  background: #181a20;
+  color: #eaecef;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  height: 32px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.empty-action-btn:hover {
+  background: #2b2f36;
+  color: #ffffff;
+}
+
+/* MAIN 키(수동) 포지션·미체결 행 목록 (보기 전용) */
+.position-list,
+.order-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 트레이드 선물↔현물 탭 전환 — 연결된 슬라이드(나가는 화면 ghost와 함께 옆이동) */
+.trade-pane {
+  height: 100%;
+}
+
+/* 나가는 화면 스냅샷: 새 화면 위에 겹쳐 같은 속도로 빠져나감 */
+.trade-pane-ghost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 웹 콘솔과 동일한 snappy 커브(cubic-bezier(0.22,1,0.36,1)) — 초반 빠르고 끝이 부드러워 튀는 느낌 감소 */
+.trade-pane.enter-right { animation: tpEnterRight 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+.trade-pane.enter-left { animation: tpEnterLeft 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+.trade-pane-ghost.exit-left { animation: tpExitLeft 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+.trade-pane-ghost.exit-right { animation: tpExitRight 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* ── 비트겟 스타일 서브계정 뱃지 ── */
+.sub-account-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.sub-account-badge.bot1 { color: #8542eb; background: rgba(133, 66, 235, 0.08); border: 1px solid rgba(133, 66, 235, 0.15); }
+
+.sub-account-badge.bot2 { color: #00c0a8; background: rgba(0, 192, 168, 0.08); border: 1px solid rgba(0, 192, 168, 0.15); }
+
+.sub-account-badge.bot3 { color: #8a939f; background: rgba(138, 147, 159, 0.08); border: 1px solid rgba(138, 147, 159, 0.15); }
+
+.sub-account-badge.bot4 { color: #3182f6; background: rgba(49, 130, 246, 0.08); border: 1px solid rgba(49, 130, 246, 0.15); }
+
+.sub-account-badge.bot5 { color: #ff5b5b; background: rgba(255, 91, 91, 0.08); border: 1px solid rgba(255, 91, 91, 0.15); }
+
+.sub-account-badge.bot6 { color: #f3ba2f; background: rgba(243, 186, 47, 0.08); border: 1px solid rgba(243, 186, 47, 0.15); }
+
+.sub-account-badge.bot7 { color: #f06a6a; background: rgba(240, 106, 106, 0.08); border: 1px solid rgba(240, 106, 106, 0.15); }
+
+/* ── 우측 사이드 탭 (오른쪽에서 왼쪽으로 슬라이드) ── */
+.side-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(2px);
+  z-index: 1999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.side-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 420px;
+  background-color: #07080a;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 20px;
+  padding-top: calc(20px + env(safe-area-inset-top));
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}

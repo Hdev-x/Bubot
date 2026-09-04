@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { EXCHANGE_OPTIONS, type ExchangeId } from '../../../../shared/constants/exchanges';
 import { useScrollLock } from '../../../../hooks/ui/useScrollLock';
 import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../../../shared/utils/sheetMotion';
+import './trade.css';
 
 type Props = {
   isOpen: boolean;

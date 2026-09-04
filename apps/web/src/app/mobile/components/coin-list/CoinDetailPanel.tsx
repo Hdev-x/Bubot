@@ -4,6 +4,7 @@ import MarketChart from '../../../../chart/MarketChart';
 import { formatPriceWithDecimals, formatRate, formatDisplaySymbol, getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
 import { CoinLogo } from './CoinLogo';
 import type { ProductFilter } from '../../../../shared/utils/coinFormatters';
+import './coin-list.css';
 
 interface CoinDetailPanelProps {
   detailOpen: boolean;

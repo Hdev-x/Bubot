@@ -8,6 +8,7 @@
 //   RefObject      — 내부 스크롤 컨테이너(overflow-y:auto)를 쓰는 페이지
 import { useRef, useState, useEffect, useCallback, type ReactNode, type RefObject } from 'react';
 import botzMark from '../../../assets/botz-mark.svg';
+import './components.css';
 
 const THRESHOLD = 70;     // 이 거리 이상 당기고 떼면 새로고침
 const MAX_PULL = 130;     // 최대 당김 거리

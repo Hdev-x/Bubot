@@ -28,6 +28,7 @@ import PullToRefresh from '../components/PullToRefresh';
 import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
 import { useSpotValueUsdt } from '../../../hooks/account/useSpotValueUsdt';
 import { TotalAssetHero } from '../components/TotalAssetHero';
+import './CoinListPage.css';
 
 type Props = {
   active?: boolean; // 마켓 화면이 떠 있을 때만 티커 폴링·WS 구독·자산 폴링

@@ -2,6 +2,7 @@ import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { formatPriceWithDecimals, formatRate, formatDisplaySymbol, getOfficialLogo } from '../../../../shared/utils/coinFormatters';
 import type { ProductFilter } from '../../../../shared/utils/coinFormatters';
+import './coin-list.css';
 
 interface WatchlistBottomSheetProps {
   activeSheet: string | null;

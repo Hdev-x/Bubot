@@ -48,11 +48,11 @@ deliveries:
   - id: wp-04-d02-chart
     title: "chart/ 공용 CSS 분리 — MarketChart·overlays·indicators (OQ-12 결정 반영)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-04-d01-unused]
     branch: refactor/css-d02-chart
-    pull_requests: []
+    pull_requests: [35]
     evidence:
       - kind: parity-check
         locator: "지표 시트 규칙 중 두 앱에 본문까지 같고 파일당 1회·@media 밖인 21개를 chart/indicators/indicators.css(148줄)로 이동, IndicatorSheet.tsx가 import. mobile 788→767, desktop 571→550 규칙, 남은 파일에 새 줄 0. Mobile 전용 interval-sheet* 7개는 d03으로. MarketChart.css는 필요 규칙이 앱마다 달라(drawing-delete-float 위치, chart-host Mobile 전용) 만들지 않음"
@@ -65,12 +65,24 @@ deliveries:
   - id: wp-04-d03-mobile
     title: "Mobile 컴포넌트별 CSS 분리 — pages·trade·coin-list·sheets, mobile.css는 셸·토큰만"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-04-d02-chart]
     branch: refactor/css-d03-mobile
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "767 규칙 → mobile.css 338 + 8개 파일 429 (coin-list 97·trade 90·AssetsPage 54·OrderPage 49·sheets 45·components 43·CoinChartPage 42·CoinListPage 9), 합계 767 보존, 새 줄 0. 목적지는 '클래스를 쓰는 컴포넌트 폴더'로 결정, 여러 폴더가 쓰는 규칙·요소 선택자·LoginPage(WebLogin과 공유)는 셸 잔류"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "정적 안전 검사: 같은 선택자가 다른 파일로 갈리는 경우 0, 같은 특이도·같은 속성·겹치는 rightmost 클래스 쌍이 순서 뒤집히는 경우 0. Desktop이 import하는 TradeOrderbook·StrategyComingSoon 클래스 중 desktop.css에 동일 규칙이 없는 10개는 Desktop 변화 방지를 위해 셸에 보류(d04에서 정리)"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. computed style 대조: Mobile 55 요소 동일(diff 0, 스타일시트 12개 로드), Desktop 325 중 14 diff는 OHLC·호가 게이지·클래스 없는 span(실시간)뿐, trade.css가 Desktop에도 로드됨을 확인"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-04-d04-desktop
     title: "Desktop 컴포넌트별 CSS 분리 — panels·WebApp 셸·로그인, desktop.css는 셸·토큰만"
     kind: git

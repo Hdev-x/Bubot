@@ -9,6 +9,7 @@ import { useRealtimePrices } from '../../../hooks/market/useRealtimePrices';
 import type { BotState } from '../../../shared/types/bot';
 import ApiKeyManager from '../components/ApiKeyManager';
 import PullToRefresh from '../components/PullToRefresh';
+import './AssetsPage.css';
 
 type AssetTab = 'overview' | 'futures' | 'api-keys';
 

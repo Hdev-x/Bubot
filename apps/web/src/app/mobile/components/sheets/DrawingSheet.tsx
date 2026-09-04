@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
+import './sheets.css';
 
 export type DrawingTool = { type: string; name: string };
 export type DrawingCategory = { id: string; name: string; tools: readonly DrawingTool[] };

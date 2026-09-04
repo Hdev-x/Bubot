@@ -1,0 +1,718 @@
+/* coin-list — mobile.css에서 이 컴포넌트가 쓰는 규칙만 옮김 (wp-04 d03). 클래스 이름·값은 그대로. */
+
+.coin-row {
+  width: 100%;
+  min-height: 76px;
+  color: inherit;
+  text-align: left;
+  background: #000;
+  border: 0;
+  border-bottom: 1px solid #202020;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  display: grid;
+}
+
+.coin-skeleton-row {
+  min-height: 76px;
+  border-bottom: 1px solid #151517;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  display: grid;
+}
+
+.coin-skeleton-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+}
+
+.coin-skeleton-main,
+.coin-skeleton-price {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.coin-skeleton-price {
+  align-items: flex-end;
+}
+
+.coin-skeleton-symbol {
+  width: 88px;
+  height: 18px;
+  border-radius: 7px;
+}
+
+.coin-skeleton-name {
+  width: 64px;
+  height: 13px;
+  border-radius: 6px;
+}
+
+.coin-skeleton-value {
+  width: 94px;
+  height: 18px;
+  border-radius: 7px;
+}
+
+.coin-skeleton-change {
+  width: 108px;
+  height: 13px;
+  border-radius: 6px;
+}
+
+.coin-skeleton-row:nth-child(2n) .coin-skeleton-symbol {
+  width: 72px;
+}
+
+.coin-skeleton-row:nth-child(3n) .coin-skeleton-value {
+  width: 116px;
+}
+
+.coin-skeleton-row:nth-child(3n + 1) .coin-skeleton-change {
+  width: 88px;
+}
+
+.coin-logo {
+  color: #fff;
+  border-radius: 999px;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  font-weight: 800;
+  display: inline-flex;
+}
+
+.coin-main,
+.coin-price {
+  flex-direction: column;
+  min-width: 0;
+  display: flex;
+}
+
+.coin-main strong {
+  letter-spacing: 0;
+  font-size: 22px;
+}
+
+.coin-main span {
+  color: #767676;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 3px;
+  font-size: 16px;
+  overflow: hidden;
+}
+
+.coin-price {
+  align-items: flex-end;
+}
+
+.coin-price strong {
+  font-size: 22px;
+}
+
+.coin-price span {
+  margin-top: 3px;
+  font-size: 16px;
+}
+
+.panel-handle {
+  background: #3a3a3a;
+  border-radius: 999px;
+  width: 46px;
+  height: 5px;
+  margin: 0 auto 42px;
+  flex-shrink: 0;
+}
+
+/* Header */
+.coin-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}
+
+.detail-logo {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.detail-header-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-header-text strong {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e8e8e8;
+}
+
+.detail-header-text span {
+  font-size: 12px;
+  color: #555;
+}
+
+.detail-heart-btn {
+  background: none;
+  border: none;
+  color: #555;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.detail-header-icons {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  align-items: center;
+}
+
+/* Price block */
+.coin-detail-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex-shrink: 0;
+  margin-bottom: 8px;
+}
+
+.detail-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-price-main {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.detail-price-currency {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+}
+
+.detail-price-change {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-rate-badge {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Chart — takes all remaining space */
+.detail-chart-wrap {
+  flex: 0 0 420px;
+  min-height: 0;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.detail-chart {
+  height: 100%;
+}
+
+.detail-icon-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  color: #9aa4b2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.detail-icon-btn:hover {
+  background: rgba(255,255,255,0.12);
+  color: #e8e8e8;
+}
+
+/* Period tabs */
+.period-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}
+
+.period-tab {
+  flex: none;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.period-tab:hover {
+  color: #fff;
+}
+
+.period-tab-fullscreen {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #555;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: color 0.15s;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.period-tab-fullscreen:hover {
+  color: #aaa;
+}
+
+/* Trade button */
+.detail-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+  margin: 12px -20px 24px;
+}
+
+.detail-trade-btn {
+  width: 100%;
+  background: #fff;
+  border: none;
+  border-radius: 18px;
+  color: #131722;
+  font-size: 20px;
+  font-weight: 700;
+  height: 54px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-bottom: 20px;
+  transition: background 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.detail-trade-btn:hover {
+  background: #e8e8e8;
+}
+
+/* [RESTORATION] Instagram Story Style & Swipeable Row */
+.coin-row-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.swipe-action-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 24px;
+  z-index: 0;
+}
+
+.swipe-action-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #c9cdd3;
+}
+
+.swipe-action-icon.favorite {
+  color: #f04452;
+}
+
+.swipe-action-icon span {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.coin-row {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 76px;
+  color: inherit;
+  text-align: left;
+  background: #000;
+  border: 0;
+  border-bottom: 1px solid #1a1a1a;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  display: grid;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Watchlist Section (Story Style) */
+.watchlist-section {
+  padding: 26px 0 0;
+  background: #000;
+}
+
+.watchlist-scroll-container {
+  position: relative;
+  overflow: hidden;
+  height: 96px;
+  padding-bottom: 18px;
+}
+
+.watchlist-empty {
+  display: flex;
+  align-items: center;
+  height: 78px;
+  font-size: 13px;
+  color: #666;
+  padding: 0 20px;
+  width: 100%;
+}
+
+/* More Item (View All) */
+.more-circle-glass {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(120, 145, 176, 0.12);
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(242, 243, 245, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.sheet-drag-zone {
+  padding: 0 0 1px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.watchlist-detail-item {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 76px;
+  padding: 12px 30px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid #1a1a1a;
+  color: inherit;
+  width: 100%;
+  text-align: left;
+}
+
+.watchlist-detail-item .coin-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.watchlist-detail-item .coin-info strong {
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.watchlist-detail-item .coin-info span {
+  font-size: 14px;
+  line-height: 1.35;
+  color: #8b95a1;
+}
+
+.watchlist-detail-item .coin-values {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+}
+
+.watchlist-detail-item .coin-values strong {
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.watchlist-detail-item .coin-values span {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.story-logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #111;
+  border: 1.5px solid #000;
+}
+
+.fixed-more-item {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  padding: 0 30px;
+  background: linear-gradient(90deg, transparent 0%, #000 15%, #000 100%);
+  border: 0;
+  cursor: pointer;
+  z-index: 50;
+}
+
+.fixed-more-item .more-label {
+  color: rgba(242, 243, 245, 0.72);
+  opacity: 1;
+}
+
+/* [RESTORATION] Filter Design - Toss Style */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 20px;
+  background: #000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-left-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.filter-right-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.product-segment {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.product-segment-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 48px;
+  height: calc(100% - 4px);
+  border-radius: 999px;
+  background: rgba(242, 243, 245, 0.14);
+  transition:
+    width 0.2s ease,
+    transform 0.2s ease;
+  pointer-events: none;
+}
+
+.product-segment button {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 26px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(242, 243, 245, 0.58);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  transition: color 0.16s ease;
+}
+
+.product-segment button span {
+  transform: translateY(-1px);
+}
+
+.filter-dropdown-wrap {
+  position: relative;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: rgba(242, 243, 245, 0.4);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.exchange-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  color: #edf1f7;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.exchange-btn-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+}
+
+.exchange-btn-label {
+  transform: translateY(-1px);
+}
+
+.filter-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0; 
+  min-width: 130px;
+  background: #0a0a0b;
+  border-radius: 12px;
+  padding: 8px 0;
+  z-index: 999;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-dropdown-item {
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  background: transparent;
+  color: rgba(242, 243, 245, 0.5);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+@media (max-width: 410px) {
+    .filter-bar {
+      padding: 8px 10px;
+      gap: 6px;
+    }
+    .filter-left-group {
+      gap: 6px;
+    }
+    .filter-right-group {
+      gap: 8px;
+    }
+    .exchange-btn {
+      font-size: 14px;
+      gap: 4px;
+    }
+    /* 스팟/퓨처 슬라이더 깨짐 방지 */
+    .product-segment {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px;
+    }
+    .product-segment-thumb {
+      display: none !important; /* 모바일에서는 슬라이더 썸을 감춰 겹침 오동작 차단 */
+    }
+    .product-segment button {
+      padding: 4px 10px;
+      font-size: 11.5px;
+      min-height: 22px;
+    }
+    .filter-chip {
+      font-size: 13px;
+    }
+    /* 코인 목록 모바일 최적화 (마일드 축소) */
+    .coin-row, 
+    .coin-skeleton-row {
+      min-height: 68px;
+      padding: 8px 14px;
+    }
+    .coin-logo, 
+    .coin-skeleton-logo {
+      width: 40px;
+      height: 40px;
+    }
+    .coin-logo {
+      font-size: 18px;
+    }
+    .coin-main strong, 
+    .coin-price strong {
+      font-size: 18px;
+    }
+    .coin-main span, 
+    .coin-price span {
+      font-size: 13px;
+    }
+    .panel-handle {
+      margin-bottom: 20px;
+    }
+    .detail-chart-wrap {
+      flex: 0 0 240px; /* 차트 높이 축소 */
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+    .detail-divider {
+      margin: 10px -16px 16px;
+    }
+    .detail-trade-btn {
+      height: 48px;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+}

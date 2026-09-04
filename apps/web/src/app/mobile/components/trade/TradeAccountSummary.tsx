@@ -9,6 +9,7 @@ import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
 import { useDelayedReady } from '../../../../hooks/ui/useDelayedReady';
 import { CoinLogo } from '../coin-list/CoinLogo';
 import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
+import './trade.css';
 
 // 자산 탭 총자산 표기와 동일 규칙 (1 미만 4자리, 그 외 1자리)
 function fmtAsset(n: number): string {

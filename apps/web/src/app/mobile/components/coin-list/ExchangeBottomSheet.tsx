@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { useScrollLock } from '../../../../hooks/ui/useScrollLock';
 import { SHEET_ENTER_TRANSITION, SHEET_EXIT_TRANSITION } from '../../../../shared/utils/sheetMotion';
+import './coin-list.css';
 
 interface ExchangeBottomSheetProps {
   activeSheet: string | null;

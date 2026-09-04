@@ -4,6 +4,7 @@ import { fetchApiKeys, saveApiKey, activateApiKey, deleteApiKey, type ApiKeyItem
 import { fetchMe } from '../../../api/server/authApi';
 import { SUB_ACCOUNT_NAMES } from '../../../config/accountTargets';
 import { EXCHANGES, EXCHANGE_OPTIONS, type ExchangeId } from '../../../shared/constants/exchanges';
+import './components.css';
 
 // 봇 슬롯 선택지 — MAIN + Bot 1~7
 const BOT_TARGETS: { value: string; label: string }[] = [

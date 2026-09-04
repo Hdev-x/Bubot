@@ -2,6 +2,7 @@
 // 일부 필드(margin/mmr/realizedPl/liqPrice/tp/sl)는 출처에 따라 없을 수 있어 방어적으로 '—' 표시.
 import { useSettings, currencyLabel } from '../../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
+import './trade.css';
 
 export type PositionCardData = {
   symbol: string;

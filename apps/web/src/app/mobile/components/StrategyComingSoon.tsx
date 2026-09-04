@@ -1,3 +1,4 @@
+import './components.css';
 export default function StrategyComingSoon({ compact = false }: { compact?: boolean }) {
   return (
     <div

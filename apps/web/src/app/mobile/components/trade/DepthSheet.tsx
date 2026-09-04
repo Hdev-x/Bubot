@@ -1,5 +1,6 @@
 // 호가 단위(묶음) 선택 바텀시트 — 비트겟 Order book depth. 선물/현물 공유.
 import type { DepthPrecision } from '../../../../api/exchange/bitget/bitgetMergeDepth';
+import './trade.css';
 
 type Option = { scale: DepthPrecision; label: string };
 

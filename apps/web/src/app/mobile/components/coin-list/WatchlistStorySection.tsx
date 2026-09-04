@@ -1,6 +1,7 @@
 import React from 'react';
 import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
 import { CoinLogo } from './CoinLogo';
+import './coin-list.css';
 
 interface WatchlistStorySectionProps {
   watchlistTickers: any[];

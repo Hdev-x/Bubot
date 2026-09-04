@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { registerSW } from 'virtual:pwa-register';
+import './components.css';
 
 /**
  * PWA 업데이트 배너 — 새 버전이 배포되면 하단에 "새 버전 → 업데이트" 토스트를 띄운다.
