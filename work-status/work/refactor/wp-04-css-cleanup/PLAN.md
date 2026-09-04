@@ -31,11 +31,11 @@ deliveries:
   - id: wp-04-d01-unused
     title: "미사용 규칙 삭제, labs 전용 규칙 처리 (Mobile·Desktop)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-04-d00-survey]
     branch: refactor/css-d01-unused
-    pull_requests: []
+    pull_requests: [34]
     evidence:
       - kind: command
         locator: "규칙 단위 처리(선택자 목록은 편집하지 않음). mobile 1,004 → 763 (삭제 177·labs 이동 64, 6,389 → 4,757줄), desktop 713 → 564 (삭제 65·labs 이동 84, 2,361 → 1,956줄). 남은 파일에 새 줄 0(HEAD에 없던 줄 없음), 사용 중 클래스 제거 0, 중괄호 균형"
@@ -48,12 +48,20 @@ deliveries:
   - id: wp-04-d02-chart
     title: "chart/ 공용 CSS 분리 — MarketChart·overlays·indicators (OQ-12 결정 반영)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-04-d01-unused]
     branch: refactor/css-d02-chart
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "지표 시트 규칙 중 두 앱에 본문까지 같고 파일당 1회·@media 밖인 21개를 chart/indicators/indicators.css(148줄)로 이동, IndicatorSheet.tsx가 import. mobile 788→767, desktop 571→550 규칙, 남은 파일에 새 줄 0. Mobile 전용 interval-sheet* 7개는 d03으로. MarketChart.css는 필요 규칙이 앱마다 달라(drawing-delete-float 위치, chart-host Mobile 전용) 만들지 않음"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. computed style 대조: Mobile 55 요소 동일(diff 0), Desktop 325 중 12 diff는 호가 게이지(실시간)뿐, indicators.css 로드 확인. 첫 빌드는 주석 안의 'app/*/'가 주석을 조기 종료해 실패 → 문구 수정"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-04-d03-mobile
     title: "Mobile 컴포넌트별 CSS 분리 — pages·trade·coin-list·sheets, mobile.css는 셸·토큰만"
     kind: git

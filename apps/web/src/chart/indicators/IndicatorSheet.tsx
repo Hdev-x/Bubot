@@ -10,6 +10,7 @@ import PivotSection from './PivotSection';
 import HarmonicSection from './HarmonicSection';
 import ElliottSection from './ElliottSection';
 import AbcSection from './AbcSection';
+import './indicators.css';
 
 // 공용 설정 타입/기본값/헬퍼는 indicators/settings로 이동. 기존 import 경로 호환을 위해 재export한다.
 export { hexToRgba, DEFAULT_PIVOT_SETTING, DEFAULT_MA_SETTINGS, DEFAULT_BB_SETTING };
