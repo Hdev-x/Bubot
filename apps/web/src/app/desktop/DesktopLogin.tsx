@@ -2,10 +2,10 @@ import { useState, type FormEvent, type CSSProperties } from 'react';
 import { login } from '../../api/server/authApi';
 import type { AuthUser } from '../../api/server/authApi';
 import botzMark from '../../assets/botz-mark.svg';
-import './WebLogin.css';
+import './DesktopLogin.css';
 
 // 데스크톱 웹 로그인 — 같은 백엔드(/api/auth/login). 올검 배경 + 로봇 로고 + 모바일 로그인 폼(ID/PW·SNS·회원가입) 디자인.
-export default function WebLogin({ onLogin, onSignupClick, onClose }: { onLogin: (user: AuthUser) => void; onSignupClick?: () => void; onClose?: () => void }) {
+export default function DesktopLogin({ onLogin, onSignupClick, onClose }: { onLogin: (user: AuthUser) => void; onSignupClick?: () => void; onClose?: () => void }) {
   // 개발 편의: 기본값 채워둠 → 로그인 버튼만 누르면 됨
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('admin1234');

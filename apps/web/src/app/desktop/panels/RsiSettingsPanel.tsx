@@ -62,7 +62,7 @@ function ColorPick({ value, onPick }: { value: string; onPick: (color: string) =
   );
 }
 
-export function WebRsiSettings({ settings, onChange, onClose }: {
+export function RsiSettingsPanel({ settings, onChange, onClose }: {
   settings: RsiSettings;
   onChange: (next: RsiSettings) => void;
   onClose: () => void;

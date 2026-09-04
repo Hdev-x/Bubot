@@ -10,7 +10,7 @@ import { usePricePrecision } from '../../../hooks/market/usePricePrecision';
 import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
 import type { CoinTicker } from '../../../shared/types/market';
 import type { ExchangeId } from '../../../shared/constants/exchanges';
-import { WebSymbolRow, loadExchangeTickers, parseFav, isDivider, dividerType, dividerLabel, withDividerLabel, useWebFavorites, useCoinLogos, type Market } from './marketShared';
+import { SymbolRow, loadExchangeTickers, parseFav, isDivider, dividerType, dividerLabel, withDividerLabel, useWebFavorites, useCoinLogos, type Market } from './marketShared';
 import './panels.css';
 
 // 드래그한 키를 타깃 키 위치로 이동(필터 무관하게 키 기준으로 favs 재배치)
@@ -23,7 +23,7 @@ function moveKey(arr: string[], fromKey: string, toKey: string): string[] {
   return next;
 }
 
-export function WebFavoritesPanel({ active, onSelect, editMode = false }: { active: boolean; onSelect?: (symbol: string, market: Market, exchange: ExchangeId) => void; editMode?: boolean }) {
+export function FavoritesPanel({ active, onSelect, editMode = false }: { active: boolean; onSelect?: (symbol: string, market: Market, exchange: ExchangeId) => void; editMode?: boolean }) {
   const { favs, isFav, toggleFav, setOrder, removeKey } = useWebFavorites();
   const dragKeyRef = useRef<string | null>(null);
   const logos = useCoinLogos();
@@ -167,7 +167,7 @@ export function WebFavoritesPanel({ active, onSelect, editMode = false }: { acti
               }
               const { exchange, market, t } = item;
               return (
-                <WebSymbolRow
+                <SymbolRow
                   key={key}
                   ticker={t}
                   market={market}
