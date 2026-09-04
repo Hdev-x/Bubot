@@ -18,12 +18,20 @@ deliveries:
   - id: wp-07-d01-drawing-toolbar
     title: "DrawingToolbar(641) → ColorPicker · DrawingFloatBar · DrawingSettings 3파일 (Desktop 전용, 기계적)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: []
     branch: refactor/lf-d01-drawing-toolbar
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "DrawingToolbar.tsx(641) 삭제 → panels/drawing/ColorPicker(133)·DrawingFloatBar(147)·DrawingSettings(373)·types(3). 옛 파일에 없던 줄은 export 추가 5줄·주석 3줄·GetManager 타입 재선언 1줄뿐. ChartStage import 경로 2줄 변경"
+        revision: working-tree
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "tsc ok · lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop 로드·툴바·차트 렌더링, 콘솔 오류는 로그인 전 ws-coin뿐. 드로잉 선택 시 플로팅바·설정 다이얼로그는 사용자 확인"
+        revision: working-tree
+        observed_at: 2026-09-05
   - id: wp-07-d02-auto-patterns
     title: "useAutoPatterns(990) → 순수 헬퍼 300줄을 chart/analysis/harmonicShapes.ts로 (공용, 기계적)"
     kind: git
