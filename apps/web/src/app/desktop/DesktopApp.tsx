@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AuthUser } from '../../api/server/authApi';
 import { useCoinLogos } from './panels/marketShared';
 import { WatchlistPanel } from './panels/WatchlistPanel';
-import { EXCHANGES } from '../../shared/constants/exchanges';
 import { useMainTrade } from '../../hooks/account/useMainTrade';
 import { useUsdKrw } from '../../hooks/market/useUsdKrw';
 import { useRealtimePrices } from '../../hooks/market/useRealtimePrices';
@@ -15,7 +14,6 @@ import { usePersistentState } from '../../hooks/ui/usePersistentState';
 import { useMtfCandles } from '../../chart/hooks/useMtfCandles';
 import { DEFAULT_OB_OPTIONS } from '../../chart/analysis/chartIndicators';
 import type { OBOptions } from '../../chart/overlays/ChartOverlay';
-import TradeOrderbook from '../mobile/components/trade/TradeOrderbook';
 import { useSpotTrade } from '../../hooks/account/useSpotTrade';
 import type { MainPosition } from '../../api/server/mainTradeApi';
 import type { SpotHolding } from '../../api/server/spotTradeApi';
@@ -36,21 +34,14 @@ import type { MarketChartRef } from '../../chart/MarketChart';
 import { SymbolHeader } from './panels/SymbolHeader';
 import { ChartToolbar } from './panels/ChartToolbar';
 import { ChartStage } from './panels/ChartStage';
+import { OrderbookPanel } from './panels/OrderbookPanel';
+import { RightPanel } from './panels/RightPanel';
 import './DesktopApp.css';
 
 // ── 데스크톱 웹 — 모바일 훅/컴포넌트를 그대로 재사용해 같은 데이터를 다룸(화면만 다름) ──
 // 실데이터: 내 투자(선물=useMainTrade, 현물=useSpotTrade) · 호가(useOrderbook) · 차트(useCoinCandles)
 //           · 마켓 리스트(useMarketTickers, BITGET 현물).
 // 목업: 커뮤니티 채팅 / 헤더 검색(요청상 보류).
-
-const CHATS = [
-  { av: 'J', bg: '', nick: 'jordan_', time: '12:34', body: '64k 저항 강함. 음봉 시작' },
-  { av: 'M', bg: '#3b3f4b', nick: 'marketmkr', time: '12:35', body: '63.5k 지지 봐야할듯' },
-  { av: 'T', bg: '#5a3a3a', nick: 'trader.kr', time: '12:36', body: '롱 절반 익절 👍' },
-  { av: 'H', bg: '#3a5a3a', nick: 'han.dev', time: '12:38', body: '데스크톱 화면 너무 좋다' },
-  { av: 'D', bg: '#3a3a5a', nick: 'delta_', time: '12:40', body: 'FOMC 다음주라 변동성 주의' },
-  { av: 'R', bg: '#5a4a2a', nick: 'ronin', time: '12:41', body: '차트 + 호가 + 채팅 한 화면 만족' },
-] as const;
 
 export default function DesktopApp({ user, onLoginClick, onLogout }: { user: AuthUser | null; onLoginClick: () => void; onLogout: () => void }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -200,9 +191,10 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
     activeTf, symbol: CHART_SYMBOL, productType: CHART_PRODUCT, exchange: chartSel.exchange, isBinance: chartIsBinance, isFutures: chartIsFutures,
   });
   const [depthOpen, setDepthOpen] = useState(false); // 자릿수(묶음) 선택 드롭다운
-  const { OB, obFmtPrice, obFmtMid, krwDec, getTickDecimals, depthScale, setDepthScale, depthSelectable, depthOptions, depthLabel, funding } = useOrderbookSnapshot({
+  const ob = useOrderbookSnapshot({
     symbol: CHART_SYMBOL, exchange: chartSel.exchange, isFutures: chartIsFutures, isKrw: chartIsKrw, livePrice, loadedSymbol,
   });
+  const { krwDec, getTickDecimals } = ob; // 차트 소수점 스테이징·fmtPx가 씀
   // solo 포커스: 그 패턴 TF에서 "한 단계 아래"까지만 TF 선택 허용 (drill-down 노이즈 방지)
   // 1D→4H / 4H→30m / 30m→5m / 1W→1D / 1M→1W. 범위=[하한 ~ 패턴TF] 인덱스 구간.
   const soloTfRange = useMemo<string[] | null>(() => {
@@ -411,89 +403,9 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
 
               {/* 가운데: 호가 + Market/Community */}
               <section className="panel-middle">
-                <aside className="panel-orderbook">
-                  <TradeOrderbook
-                    askRows={OB ? OB.asks : []}
-                    bidRows={OB ? OB.bids : []}
-                    maxLevelSize={OB ? OB.maxLevelSize : 1}
-                    fmtPrice={obFmtPrice}
-                    fmtMid={obFmtMid}
-                    centerPrice={OB ? OB.center : null}
-                    priceDir="flat"
-                    buyPct={OB ? OB.buyPct : 50}
-                    depthLabel={OB ? OB.depthLabel : depthLabel}
-                    showDepth={depthSelectable}
-                    onOpenDepthSheet={() => setDepthOpen((v) => !v)}
-                    funding={OB ? OB.funding : funding}
-                    quoteLabel={OB ? OB.quoteLabel : EXCHANGES[chartSel.exchange].quote}
-                  />
-                  {/* 자릿수(묶음) 선택 드롭다운 — Bitget 전용. 버튼(우하단) 위로 펼침 */}
-                  {depthOpen && depthSelectable && (
-                    <>
-                      <div className="ob-depth-backdrop" onClick={() => setDepthOpen(false)} />
-                      <div className="ob-depth-dd" role="listbox">
-                        {depthOptions.map((o) => (
-                          <button
-                            key={o.scale}
-                            type="button"
-                            className={`ob-depth-dd-item${depthScale === o.scale ? ' active' : ''}`}
-                            onClick={() => { setDepthScale(o.scale); setDepthOpen(false); }}
-                          >
-                            <span>{o.label}</span>
-                            {depthScale === o.scale && <span className="ob-depth-check">✓</span>}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </aside>
+                <OrderbookPanel ob={ob} depthOpen={depthOpen} setDepthOpen={setDepthOpen} exchange={chartSel.exchange} />
 
-                <div className="panel panel-right">
-                  <div className="right-tabs">
-                    <div className="right-tab active">Community</div>
-                    <span className="right-tab-status">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                      </svg>
-                      142
-                    </span>
-                  </div>
-                  <div className="chat-messages">
-                    {CHATS.map((c) => (
-                      <div key={c.nick} className="chat-msg">
-                        <div className="avatar" style={c.bg ? { background: c.bg } : undefined}>{c.av}</div>
-                        <div className="bubble">
-                          <div className="meta"><span className="nick">{c.nick}</span><span className="time">{c.time}</span></div>
-                          <div className="body">{c.body}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {user ? (
-                  <div className="chat-input">
-                    <textarea
-                      className="chat-textarea"
-                      rows={1}
-                      placeholder="메시지를 입력하세요..."
-                      onKeyDown={(e) => { if (e.key === 'Escape') e.currentTarget.blur(); }}
-                    />
-                    <button className="chat-send" aria-label="전송">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M19 7v4H5.83l3.58-3.59L8 6l-6 6 6 6 1.41-1.41L5.83 13H21V7z" />
-                      </svg>
-                    </button>
-                  </div>
-                  ) : (
-                  <div className="chat-input chat-input-locked" aria-disabled="true">
-                    <textarea className="chat-textarea" rows={1} placeholder="" readOnly />
-                    <span className="chat-send" aria-label="로그인 필요">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                        <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" />
-                      </svg>
-                    </span>
-                  </div>
-                  )}
-                </div>
+                <RightPanel user={user} />
               </section>
 
             </main>

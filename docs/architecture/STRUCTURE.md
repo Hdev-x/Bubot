@@ -23,7 +23,10 @@ Bubot/
 │       └── src/                   계층 우선: app → chart/hooks → api → shared
 │           ├── app/
 │           │   ├── mobile/        main·App, pages/ 5(+css), components/(sheets·coin-list·trade, 각 폴더 css), styles/mobile.css
-│           │   └── desktop/       main·DesktopApp·DesktopLogin·DesktopSignup(+css), panels/ 7(+panels.css), styles/desktop.css
+│           │   └── desktop/       main·DesktopApp(조립, 451줄)·DesktopLogin·DesktopSignup(+css), styles/desktop.css
+│           │       ├── panels/    영역 컴포넌트 — DesktopHeader·IconRail·Sidebar·InvestSection·SymbolHeader·ChartToolbar·ChartStage·OrderbookPanel·RightPanel + Market·Watchlist·Favorites·DrawingToolbar·RsiSettings (+panels.css)
+│           │       ├── hooks/     Desktop 전용 상태·데이터 훅 — useDesktopCandles·useOrderbookSnapshot·useHeaderSnapshot·useDrawingState·useIndicatorState·useChartViewState
+│           │       └── lib/       상수·순수 함수 — timeframes·orderbook·format·drawTools·indicatorDefaults·sections
 │           ├── chart/             MarketChart, overlays/ hooks/ indicators/ settings/ drawing/ analysis/(루트 shared 재수출)
 │           ├── hooks/             market/(시세·호가·정밀도) account/(계좌·관심) ui/(persist·scroll·poll)
 │           ├── api/               client.ts(fetch·토큰), server/(Spring 컨트롤러 1:1), exchange/(bitget·binance·krw 직접 호출)
