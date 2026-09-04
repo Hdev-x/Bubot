@@ -415,3 +415,7 @@ The current React implementation is in:
 - `frontend/src/styles.css`
 
 Use screenshots of the current app together with this file for best results.
+
+## 시안 파일
+
+- `desktop-mockup.html` — Desktop 화면 정적 시안(팀 프로젝트 시절 작성, `apps/web/web-mockup.html`에서 2026-09-04 이동). 빌드·진입점과 무관한 참고용.

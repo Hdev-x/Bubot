@@ -23,7 +23,7 @@ cd apps/web
 npm ci
 npm test
 npm run build        # Mobile → dist/
-npm run build:web    # Desktop → dist-web/
+npm run build:desktop    # Desktop → dist-desktop/
 npm run lint         # error 0 · warning 320 baseline(2026-09-03), CI 포함
 ```
 

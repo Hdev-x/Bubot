@@ -82,7 +82,7 @@
 ## 7. CI
 
 - `.github/workflows/ci.yml`이 `pull_request`와 `main` push에서 실행된다.
-- job: `web`(`apps/web` — `npm ci`, `npm run lint`, `npm test`, `npm run build`, `npm run build:web`), `api`(`apps/api` — `./gradlew test`, 컴파일 포함).
+- job: `web`(`apps/web` — `npm ci`, `npm run lint`, `npm test`, `npm run build`, `npm run build:desktop`), `api`(`apps/api` — `./gradlew test`, 컴파일 포함).
   로컬 `docs/COMMANDS.md`와 같은 명령만 쓴다. CI 전용 명령을 만들지 않는다.
 - 운영 안전장치: `permissions: contents: read`, 같은 ref의 이전 실행 취소(`concurrency`), job별 `timeout-minutes`, npm·Gradle 캐시.
 - 폴더 가져오기 동안 쓰던 폴더 부재 guard는 2026-09-03에 제거했다. 처음에는 전체를 실행한다. 실행 시간이 10분을 넘기 시작하면 경로 필터(`apps/web/**`+`shared/**` → web, `apps/api/**` → api)를 도입하되,
