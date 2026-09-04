@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AuthUser } from '../../api/server/authApi';
-import { MarketPanel } from './panels/MarketPanel';
 import { useCoinLogos } from './panels/marketShared';
 import { WatchlistPanel } from './panels/WatchlistPanel';
-import StrategyComingSoon from '../mobile/components/StrategyComingSoon';
-import botzMark from '../../assets/botz-mark.svg';
 import { EXCHANGES } from '../../shared/constants/exchanges';
 import { type BitgetTicker } from '../../api/exchange/bitget/bitgetTicker';
 import { fetchHeaderTicker } from '../../api/exchange/headerTicker';
@@ -50,28 +47,22 @@ import type { SpotHolding } from '../../api/server/spotTradeApi';
 import type { Candle } from '../../shared/types/market';
 import { WEB_TIMEFRAMES, getIntervalSeconds, getBucketTime, CHART_FALLBACK, TF, UNSUPPORTED_TF } from './lib/timeframes';
 import { depthLabelFor, aggregateLevels } from './lib/orderbook';
-import { fmtAsset, logoClass, calcRoe } from './lib/format';
+import { fmtAsset } from './lib/format';
 import { WEB_DRAW_TOOLS } from './lib/drawTools';
 import { DARK_THEME, INDICATORS_OFF, MA_OFF, pivotOff } from './lib/indicatorDefaults';
 import { ObjectTree } from './panels/ObjectTree';
 import { MiniCandles } from './panels/MiniCandles';
-import { SidebarAssetSkeleton, HeaderLogo, HdSk, Chevron } from './panels/SidebarBits';
+import { HeaderLogo, HdSk, Chevron } from './panels/SidebarBits';
+import { DesktopHeader } from './panels/DesktopHeader';
+import { IconRail } from './panels/IconRail';
+import { Sidebar } from './panels/Sidebar';
+import { type Section, type InvestTab } from './lib/sections';
 import './DesktopApp.css';
 
 // ── 데스크톱 웹 — 모바일 훅/컴포넌트를 그대로 재사용해 같은 데이터를 다룸(화면만 다름) ──
 // 실데이터: 내 투자(선물=useMainTrade, 현물=useSpotTrade) · 호가(useOrderbook) · 차트(useCoinCandles)
 //           · 마켓 리스트(useMarketTickers, BITGET 현물).
 // 목업: 커뮤니티 채팅 / 헤더 검색(요청상 보류).
-
-type Section = 'invest' | 'market' | 'strategy';
-const SECTIONS: { id: Section; title: string }[] = [
-  { id: 'invest', title: '내 투자' },
-  { id: 'market', title: '실시간' },
-  { id: 'strategy', title: '전략' },
-];
-
-const INVEST_TABS = ['전체', '선물', '현물', '주식'] as const;
-type InvestTab = (typeof INVEST_TABS)[number];
 
 const CHATS = [
   { av: 'J', bg: '', nick: 'jordan_', time: '12:34', body: '64k 저항 강함. 음봉 시작' },
@@ -603,58 +594,11 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
 
         {/* 메인 컬럼 (헤더 + 본문) */}
         <div className="app-main">
-          <header className="header">
-            <img className="header-logo" src={botzMark} alt="Botz" />
-            <div className="header-right">
-              <div className="header-search">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
-                <input placeholder="검색" />
-              </div>
-              {user && (
-                <button
-                  className={`header-watch-btn${effWatchMode !== 'hidden' ? ' active' : ''}`}
-                  title="관심 시세창"
-                  onClick={() => setWatchMode((m) => (m === 'hidden' ? 'float' : 'hidden'))}
-                >
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill={effWatchMode !== 'hidden' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round">
-                    <path d="M12 3.6l2.55 5.17 5.7.83-4.13 4.02.98 5.68L12 16.62l-5.1 2.68.98-5.68L3.75 9.6l5.7-.83z" />
-                  </svg>
-                </button>
-              )}
-              {!user ? (
-                <button className="header-login-btn" onClick={onLoginClick}>로그인</button>
-              ) : (
-              <div className="header-avatar-wrap" ref={menuRef}>
-                <button
-                  className="header-avatar"
-                  onClick={() => setMenuOpen((v) => !v)}
-                  aria-haspopup="menu"
-                  aria-expanded={menuOpen}
-                  aria-label="프로필"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
-                </button>
-                {menuOpen && (
-                  <div className="header-menu" role="menu">
-                    <div className="header-menu-user">
-                      <div className="header-menu-avatar">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
-                      </div>
-                      <div className="header-menu-meta">
-                        <div className="header-menu-name">{user.name || user.username}</div>
-                        <div className="header-menu-sub">@{user.username}</div>
-                      </div>
-                    </div>
-                    <div className="header-menu-divider" />
-                    <button className="header-menu-item" role="menuitem" onClick={onLogout}>
-                      로그아웃
-                    </button>
-                  </div>
-                )}
-              </div>
-              )}
-            </div>
-          </header>
+          <DesktopHeader
+            user={user} onLoginClick={onLoginClick} onLogout={onLogout}
+            menuOpen={menuOpen} setMenuOpen={setMenuOpen} menuRef={menuRef}
+            effWatchMode={effWatchMode} setWatchMode={setWatchMode}
+          />
 
           {/* 탑바(헤더)는 고정 — 그 아래 본문(sub-header+차트)만 dock 컬럼과 가로로 묶어 오른쪽으로 민다 */}
           <div className="app-body-row">
@@ -1236,277 +1180,20 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
         </div>
 
         {/* tpm 스타일 사이드바 패널 */}
-        <aside className={`sidebar-panel${sidebarOpen ? ' open' : ''}`}>
-          {sectionLocked && (
-            <div className="sidebar-login-gate">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-                <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" />
-              </svg>
-              <p className="sidebar-login-gate-msg">로그인이 필요한 서비스입니다</p>
-            </div>
-          )}
-          <div className="sidebar-header">
-            <span className="sidebar-title-wrap">
-              {SECTIONS.find((s) => s.id === section)?.title}
-            </span>
-            {/* 원화/USD 전환은 내 잔고에만 적용되므로 내투자 섹션에서만 노출 */}
-            {section === 'invest' && (
-              <div className="sidebar-header-btns">
-                <div className={`cur-switch${krw ? ' krw' : ''}`} onClick={() => setKrw((v) => !v)}>
-                  <span className="cur-switch-label">$</span>
-                  <span className="cur-switch-label">원</span>
-                  <div className="cur-switch-thumb" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* 내 투자 */}
-          {section === 'invest' && (
-            <div className={`sidebar-section${bothOn ? ' both-on' : ''}`} id="sidebar-invest">
-              <div className="invest-tabs">
-                {INVEST_TABS.map((t) => (
-                  <button key={t} className={`invest-tab${investTab === t ? ' active' : ''}`} onClick={() => setInvestTab(t)}>{t}</button>
-                ))}
-              </div>
-
-              {(investTab === '현물') ? (
-                spotSkeleton ? <SidebarAssetSkeleton /> : (
-                <div className="assets-scroll">
-                  <div className="tas-hero">
-                    <span className="tas-hero-label">총자산</span>
-                    <div className="tas-hero-row">
-                      <strong className="tas-hero-val">{spot.hasKey ? (krw ? Math.round(spotTotal * usdKrw).toLocaleString() : fmtAsset(spotTotal)) : '—'}</strong>
-                      <span className="tas-cur">{curLabel}</span>
-                    </div>
-                    {spot.hasKey && (
-                      <span className="tas-hero-approx">{krw ? `≈ ${fmtAsset(spotTotal)} USDT` : `≈ ${Math.round(spotTotal * usdKrw).toLocaleString()}원`}</span>
-                    )}
-                  </div>
-                  <div className="view-group">
-                    <div className="tas-divider" />
-                    <div className="tas-pos-title"><span>보유자산</span><span className="cnt">{spot.holdings.length}개</span></div>
-                    <div className="tas-mkt-list">
-                      {spotSorted.length === 0 && (
-                        <div style={{ color: 'var(--text3)', fontSize: 12, padding: '12px 0' }}>
-                          {spot.hasKey ? '보유 자산 없음' : 'API 키를 등록하면 표시됩니다.'}
-                        </div>
-                      )}
-                      {spotSorted.map((h) => {
-                        const cash = h.coin === 'USDT' || h.coin === 'USDC';
-                        const costOk = h.avgCost != null && h.costReliable === true;
-                        const price = spotPriceOf(h.coin);
-                        const pnlPct = costOk ? (price / (h.avgCost as number) - 1) * 100 : null;
-                        const pnlAmount = costOk ? (price - (h.avgCost as number)) * (h.available + h.frozen) : null;
-                        const valStr = pnlAmount != null ? `${pnlAmount >= 0 ? '+' : '-'}${fmtCur(Math.abs(pnlAmount))}` : '—';
-                        return (
-                          <div
-                            key={h.coin}
-                            className="tas-mkt-row"
-                            onClick={cash ? undefined : () => handleSelectChart(`${h.coin}USDT`, 'spot', 'BITGET')}
-                            style={cash ? undefined : { cursor: 'pointer' }}
-                          >
-                            <span className={`tas-mkt-logo ${logoClass(h.coin)}`}>{h.coin.slice(0, 1)}</span>
-                            <strong className="tas-mkt-sym">{h.coin}</strong>
-                            <span className="tas-mkt-pnlval">{valStr}</span>
-                            <span className="tas-mkt-amount">{fmtCur(spotValueOf(h))}</span>
-                            <span className={`tas-mkt-roe-spot ${pnlPct != null ? (pnlPct >= 0 ? 'up' : 'down') : 'na'}`}>
-                              {pnlPct != null ? `${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%` : cash ? '' : '원가 조회불가'}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-                )
-              ) : (
-                <>
-              <div className="view-filters">
-                <button className={`view-chip${portfolioOn ? ' on' : ''}`} onClick={togglePortfolio}>포트폴리오</button>
-                <button className={`view-chip${positionsOn ? ' on' : ''}`} onClick={togglePositions}>포지션</button>
-              </div>
-
-              {mainSkeleton ? <SidebarAssetSkeleton /> : (
-              <div className="assets-scroll">
-                <div className="tas-hero">
-                  <span className="tas-hero-label">총자산</span>
-                  <div className="tas-hero-row">
-                    <strong className={`tas-hero-val${mainVal.length > 11 ? ' tas-hero-val--compact' : ''}`}>{mainVal}</strong>
-                    <span className="tas-cur">{curLabel}
-                      <svg className="tas-cur-ico" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="16 3 20 7 16 11" />
-                        <line x1="20" y1="7" x2="5" y2="7" />
-                        <polyline points="8 21 4 17 8 13" />
-                        <line x1="4" y1="17" x2="19" y2="17" />
-                      </svg>
-                    </span>
-                    {hasKey && (
-                      <button type="button" className={`tas-wallet-toggle${walletOpen ? ' open' : ''}`} aria-label="지갑 상세" onClick={() => setWalletOpen((v) => !v)}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                  {hasKey && <span className="tas-hero-approx">{approx}</span>}
-                  <div className={`tas-wallet-wrap${walletOpen ? ' open' : ''}`}>
-                    <div className="tas-wallet-detail">
-                      <div className="tas-wallet-col">
-                        <span className="tas-wallet-k">지갑 잔고</span>
-                        <span className="tas-wallet-v">{fmtCur(available)}</span>
-                        <span className="tas-wallet-approx">{approxCur(available)}</span>
-                      </div>
-                      <div className="tas-wallet-col">
-                        <span className="tas-wallet-k">미실현 손익</span>
-                        <span className={`tas-wallet-v ${unrealTotal >= 0 ? 'up' : 'down'}`}>{unrealTotal >= 0 ? '+' : '-'}{fmtCur(Math.abs(unrealTotal))}</span>
-                        <span className="tas-wallet-approx">{approxCur(unrealTotal)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {portfolioOn && (
-                  <div className="view-group">
-                    <div className="tas-divider" />
-                    <div className="tas-pos-title">
-                      <span>포트폴리오</span>
-                      <span className="cnt">{positions.length}개</span>
-                    </div>
-                    <div className="tas-mkt-list">
-                      {positions.length === 0 && (
-                        <div style={{ color: 'var(--text3)', fontSize: 12, padding: '12px 0' }}>
-                          {hasKey ? '보유 포지션 없음' : 'MAIN 키를 등록하면 표시됩니다.'}
-                        </div>
-                      )}
-                      {positions.map((p, i) => {
-                        const base = p.symbol.replace(/USDT$|USDC$/, '');
-                        const up = p.unrealizedPl >= 0;
-                        const roe = calcRoe(p);
-                        return (
-                          <div key={p.symbol + p.direction} className="tas-mkt-row" onClick={() => { setSelPosIdx(i); handleSelectChart(p.symbol, 'futures', 'BITGET'); }}>
-                            <span className={`tas-mkt-logo ${logoClass(base)}`}>{base.slice(0, 1)}</span>
-                            <span className="tas-mkt-sym">{base}</span>
-                            <span className={`tas-mkt-pnlval ${up ? 'up' : 'down'}`}>{up ? '+' : '-'}{fmtCur(Math.abs(p.unrealizedPl))}</span>
-                            <span className="tas-mkt-badges">
-                              <span className={`tas-mkt-badge dir ${p.direction}`}>{p.direction === 'long' ? 'Long' : 'Short'}</span>
-                              <span className="tas-mkt-badge lev">{Math.round(p.leverage)}x</span>
-                            </span>
-                            <span className={`tas-mkt-roe ${roe >= 0 ? 'up' : 'down'}`}>{roe >= 0 ? '+' : ''}{roe.toFixed(2)}%</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {positionsOn && (
-                  <div className="view-group">
-                    <div className="tas-divider" />
-                    <div className="pos-tabs">
-                      <span className="pos-tab active">Positions <span className="cnt">({positions.length})</span></span>
-                      <span className="pos-tab">Orders <span className="cnt">({trade.orders.length})</span></span>
-                      <span className="pos-show"><input type="checkbox" /> Show current</span>
-                    </div>
-                    {selPos ? (() => {
-                      const up = selPos.unrealizedPl >= 0;
-                      const roe = calcRoe(selPos);
-                      return (
-                        <div className="pos-card">
-                          <div className="pos-sym">{selPos.symbol} &nbsp;›</div>
-                          <div className="pos-badges">
-                            <span className={`tas-mkt-badge dir ${selPos.direction}`}>{selPos.direction === 'long' ? 'Long' : 'Short'}</span>
-                            <span className="tas-mkt-badge lev">{Math.round(selPos.leverage)}x</span>
-                            <span className="tas-mkt-badge lev">{selPos.marginMode === 'isolated' ? 'Isolated' : 'Cross'}</span>
-                            <span className="tas-mkt-badge lev">USDT</span>
-                          </div>
-                          <div className="pos-row">
-                            <div>
-                              <div className="pos-k">Unrealized PnL ({curLabel})</div>
-                              <div className={`pos-v ${up ? 'up' : 'down'}`}>{up ? '+' : '-'}{fmtCur(Math.abs(selPos.unrealizedPl))}</div>
-                              <div className="pos-vsub">≈ ${selPos.unrealizedPl.toFixed(2)}</div>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <div className="pos-k">ROE</div>
-                              <div className={`pos-v ${roe >= 0 ? 'up' : 'down'}`}>{roe >= 0 ? '+' : ''}{roe.toFixed(2)}%</div>
-                            </div>
-                          </div>
-                          <div className="pos-grid3">
-                            <div><div className="pos-k">Size (USDT)</div><div className="pos-v2">{selPos.size.toLocaleString('en-US', { maximumFractionDigits: 4 })}</div></div>
-                            <div><div className="pos-k">Margin (USDT)</div><div className="pos-v2">{selPos.margin.toLocaleString('en-US', { maximumFractionDigits: 4 })}</div></div>
-                            <div style={{ textAlign: 'right' }}><div className="pos-k">MMR</div><div className="pos-v2">{(selPos.mmr * 100).toFixed(2)}%</div></div>
-                          </div>
-                          <div className="pos-grid3">
-                            <div><div className="pos-k">Entry price</div><div className="pos-v2">{selPos.entryPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })}</div></div>
-                            <div><div className="pos-k">Mark price</div><div className="pos-v2">{selPos.markPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })}</div></div>
-                            <div style={{ textAlign: 'right' }}><div className="pos-k">Est. liq. price</div><div className="pos-v2" style={{ color: '#f0a030' }}>{selPos.liqPrice > 0 ? selPos.liqPrice.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '—'}</div></div>
-                          </div>
-                          <div className="pos-realized">
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                              <span>Realized PnL ({curLabel})</span>
-                              <span className="v" style={{ color: selPos.realizedPl >= 0 ? 'var(--up)' : 'var(--down)' }}>{selPos.realizedPl >= 0 ? '+' : '-'}{fmtCur(Math.abs(selPos.realizedPl))}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-                              <span>Entire TP/SL</span>
-                              <span className="v">
-                                <span style={{ color: 'var(--up)' }}>{selPos.takeProfit > 0 ? selPos.takeProfit.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '—'}</span>
-                                {' / '}
-                                <span style={{ color: 'var(--down)' }}>{selPos.stopLoss > 0 ? selPos.stopLoss.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '—'}</span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })() : (
-                      <div style={{ color: 'var(--text3)', fontSize: 12, padding: '12px 0' }}>
-                        {hasKey ? '보유 포지션 없음' : 'MAIN 키를 등록하면 표시됩니다.'}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              )}
-                </>
-              )}
-
-              <div className="tas-notice">조회 전용 · 주문은 거래소 앱에서</div>
-            </div>
-          )}
-
-          {section === 'market' && (
-            <div className="sidebar-section web-market">
-              <MarketPanel active={marketActive} onSelect={handleSelectChart} />
-            </div>
-          )}
-          {section === 'strategy' && (
-            <div className="sidebar-section">
-              <StrategyComingSoon compact />
-            </div>
-          )}
-        </aside>
+        <Sidebar
+          sidebarOpen={sidebarOpen} section={section} sectionLocked={sectionLocked}
+          krw={krw} setKrw={setKrw} marketActive={marketActive} handleSelectChart={handleSelectChart}
+          invest={{
+            main: { trade, hasKey, positions, available, unrealTotal, mainVal, approx, mainSkeleton, selPos },
+            spot: { spot, spotSorted, spotTotal, spotValueOf, spotPriceOf, spotSkeleton },
+            currency: { krw, usdKrw, curLabel, fmtCur, approxCur },
+            view: { investTab, setInvestTab, portfolioOn, positionsOn, togglePortfolio, togglePositions, bothOn, walletOpen, setWalletOpen },
+            actions: { handleSelectChart, setSelPosIdx },
+          }}
+        />
 
         {/* 아이콘 레일 (항상 보임) */}
-        <nav className="sidebar-icons">
-          <button className={`si-btn si-fold-btn${!sidebarOpen ? ' folded' : ''}`} onClick={() => setSidebarOpen((v) => !v)}>
-            <svg className="si-fold-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6.41 6 5 7.41 9.58 12 5 16.59 6.41 18l6-6-6-6zm8 0-1.41 1.41L17.58 12l-4.58 4.59L14.41 18l6-6-6-6z" />
-            </svg>
-          </button>
-          <div className="si-divider" />
-          <button className={`si-btn${section === 'invest' && sidebarOpen ? ' active' : ''}`} onClick={() => openSection('invest')}>
-            <svg className="si-bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 L4 14 H11 L10 22 L20 9 H13 Z" /></svg>
-            <span>내 투자</span>
-          </button>
-          <div className="si-divider" />
-          <button className={`si-btn${section === 'strategy' && sidebarOpen ? ' active' : ''}`} onClick={() => openSection('strategy')}>
-            <img className="si-strategy-icon" src={botzMark} alt="" aria-hidden="true" />
-            <span>전략</span>
-          </button>
-          <button className={`si-btn${section === 'market' && sidebarOpen ? ' active' : ''}`} onClick={() => openSection('market')}>
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.48 12.35c-1.57-4.08-7.16-4.3-5.81-10.23.1-.44-.37-.78-.75-.55C9.29 3.71 6.68 8 8.87 13.62c.18.46-.36.89-.75.59-1.81-1.37-2-3.34-1.84-4.75.06-.52-.62-.77-.91-.34C4.69 10.16 4 11.84 4 14c0 4.22 3.8 7.99 8 8 4.28.02 7.96-3.77 8-8.02.03-1.81-.35-3.9-.52-1.63z" /></svg>
-            <span>실시간</span>
-          </button>
-        </nav>
+        <IconRail section={section} openSection={openSection} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       </div>
 

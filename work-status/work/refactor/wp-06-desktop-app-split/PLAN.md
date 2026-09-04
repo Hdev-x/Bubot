@@ -18,11 +18,11 @@ deliveries:
   - id: wp-06-d01-helpers
     title: "맨 위 340줄 분리 — 상수·순수 함수 → lib/, 소형 컴포넌트 6개 → panels/ (기계적)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: []
     branch: refactor/dapp-d01-helpers
-    pull_requests: []
+    pull_requests: [45]
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,812 → 1,529줄. 새 파일 8개 298줄: lib/timeframes(63)·orderbook(20)·format(22)·drawTools(33)·indicatorDefaults(25), panels/ObjectTree(56)·MiniCandles(20)·SidebarBits(59). DesktopApp 변경은 삭제 288줄 + import 8줄, 본문 변경 0. 옮긴 코드는 export 추가·React.ReactNode→ReactNode 외 동일. SECTIONS·INVEST_TABS·CHATS·CHART_FALLBACK 위치: CHART_FALLBACK은 timeframes로, 나머지는 d02까지 잔류"
@@ -35,12 +35,20 @@ deliveries:
   - id: wp-06-d02-shell
     title: "셸 영역 컴포넌트 — DesktopHeader · IconRail · Sidebar(InvestSection 포함)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-06-d01-helpers]
     branch: refactor/dapp-d02-shell
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "DesktopApp.tsx 1,529 → 1,216줄(삭제 331 + 호출 21줄 + import). 새 파일: panels/DesktopHeader(73, props 8)·IconRail(35, props 4)·Sidebar(59, props 7 + invest 묶음)·InvestSection(272, 묶음 5개: main 9·spot 6·currency 5·view 9·actions 2), lib/sections(10: Section·SECTIONS·INVEST_TABS·InvestTab — IconRail과 Sidebar가 같이 써서 Sidebar 대신 lib로). JSX 본문·핸들러·effect 내용 변경 0, menuRef는 바깥 클릭 effect가 써서 부모 소유 유지"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "tsc ok · lint 0(이동으로 불필요해진 import 6개 제거) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. Desktop 렌더링(header·rail 4버튼·sidebar), computed style 325 요소 중 14 diff는 실시간 값뿐. 비로그인 상호작용: 레일 '실시간' 클릭 → 사이드바 open·제목 '실시간'·MarketPanel 렌더, 접기 버튼 → 닫힘"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-06-d03-hooks
     title: "데이터 훅 — useHeaderSnapshot · useOrderbookSnapshot · useDesktopCandles"
     kind: git
