@@ -3,18 +3,9 @@ import type { AuthUser } from '../../api/server/authApi';
 import { useCoinLogos } from './panels/marketShared';
 import { WatchlistPanel } from './panels/WatchlistPanel';
 import { EXCHANGES } from '../../shared/constants/exchanges';
-import { type BitgetTicker } from '../../api/exchange/bitget/bitgetTicker';
-import { fetchHeaderTicker } from '../../api/exchange/headerTicker';
-import { krwDecimals } from '../../api/exchange/krw/krwTickers';
-import { fetchCoinMarketCap } from '../../api/server/marketApi';
 import { useMainTrade } from '../../hooks/account/useMainTrade';
 import { useUsdKrw } from '../../hooks/market/useUsdKrw';
-import { useOrderbook } from '../../hooks/market/useOrderbook';
-import { useFundingRate } from '../../hooks/market/useFundingRate';
 import { useRealtimePrices } from '../../hooks/market/useRealtimePrices';
-import { usePricePrecision } from '../../hooks/market/usePricePrecision';
-import { useCandleLoader } from '../../chart/hooks/useCandleLoader';
-import { useCoinCandles } from '../../chart/hooks/useCoinCandles';
 import { useChartTheme } from '../../chart/hooks/useChartTheme';
 import { useDelayedReady } from '../../hooks/ui/useDelayedReady';
 import { PRESET_THEMES } from '../../chart/settings/ChartSettingsSheet';
@@ -41,12 +32,10 @@ import PivotSection from '../../chart/indicators/PivotSection';
 import ElliottSection from '../../chart/indicators/ElliottSection';
 import TradeOrderbook from '../mobile/components/trade/TradeOrderbook';
 import { useSpotTrade } from '../../hooks/account/useSpotTrade';
-import type { DepthPrecision } from '../../api/exchange/bitget/bitgetMergeDepth';
 import type { MainPosition } from '../../api/server/mainTradeApi';
 import type { SpotHolding } from '../../api/server/spotTradeApi';
 import type { Candle } from '../../shared/types/market';
-import { WEB_TIMEFRAMES, getIntervalSeconds, getBucketTime, CHART_FALLBACK, TF, UNSUPPORTED_TF } from './lib/timeframes';
-import { depthLabelFor, aggregateLevels } from './lib/orderbook';
+import { getIntervalSeconds, TF, UNSUPPORTED_TF } from './lib/timeframes';
 import { fmtAsset } from './lib/format';
 import { WEB_DRAW_TOOLS } from './lib/drawTools';
 import { DARK_THEME, INDICATORS_OFF, MA_OFF, pivotOff } from './lib/indicatorDefaults';
@@ -57,6 +46,9 @@ import { DesktopHeader } from './panels/DesktopHeader';
 import { IconRail } from './panels/IconRail';
 import { Sidebar } from './panels/Sidebar';
 import { type Section, type InvestTab } from './lib/sections';
+import { useDesktopCandles } from './hooks/useDesktopCandles';
+import { useOrderbookSnapshot } from './hooks/useOrderbookSnapshot';
+import { useHeaderSnapshot } from './hooks/useHeaderSnapshot';
 import './DesktopApp.css';
 
 // ── 데스크톱 웹 — 모바일 훅/컴포넌트를 그대로 재사용해 같은 데이터를 다룸(화면만 다름) ──
@@ -225,45 +217,14 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const highlightTracker = soloOn ? focusTracker : null;
   const focusScrollKeyRef = useRef<string>('');
 
-  // ── 실데이터 — 호가 (선택 종목/거래소) ──
-  const [depthScale, setDepthScale] = useState<DepthPrecision>('scale3'); // 디폴트=가장 굵은 단위
+  // ── 실데이터 — 차트 캔들 + 호가 (useDesktopCandles → useOrderbookSnapshot 순서로 현재가를 넘긴다) ──
+  const { timeframe, loadCandles, candles, livePrice, dailyOpenPrice, loadedSymbol, handleVisibleRangeChange } = useDesktopCandles({
+    activeTf, symbol: CHART_SYMBOL, productType: CHART_PRODUCT, exchange: chartSel.exchange, isBinance: chartIsBinance, isFutures: chartIsFutures,
+  });
   const [depthOpen, setDepthOpen] = useState(false); // 자릿수(묶음) 선택 드롭다운
-  const { getTickDecimals } = usePricePrecision(2);
-  const orderbook = useOrderbook(CHART_SYMBOL, depthScale, chartIsFutures, true, chartSel.exchange, false);
-  const funding = useFundingRate(
-    CHART_SYMBOL,
-    (chartSel.exchange === 'BITGET' || chartSel.exchange === 'BINANCE') && chartIsFutures,
-    chartSel.exchange === 'BINANCE' ? 'BINANCE' : 'BITGET',
-  );
-  const scaleIndex = Number(depthScale.replace('scale', ''));
-  // 종목별 틱 소수점(precisionMap 조회). KRW는 맵에 없어 기본값으로 빠지므로 원(정수)=0으로 보정.
-  const symbolDecimals = chartIsKrw ? 0 : getTickDecimals(CHART_SYMBOL);
-  const obStep = Math.pow(10, scaleIndex - symbolDecimals); // 선택 단위(묶음 크기)
-  // 호가 가격 소수자리는 KRW일 때 현재가 기준(krwDec)이 필요해 centerPrice 이후에서 계산(아래).
-  // Bitget=API 묶음(precision), Binance=클라 묶음(obStep), KRW(업비트/빗썸)=네이티브 호가 그대로
-  // (호가 개수가 적어(30/15) 묶으면 행이 확 줄어 의미 없음 → 묶음 미적용·드롭다운 숨김).
-  const useClientAgg = chartSel.exchange === 'BINANCE';
-  const rawAsks = orderbook ? orderbook.asks : [];
-  const rawBids = orderbook ? orderbook.bids : [];
-  const askLevels = (useClientAgg ? aggregateLevels(rawAsks, obStep, 'ask') : rawAsks).slice(0, 6);
-  const bidLevels = (useClientAgg ? aggregateLevels(rawBids, obStep, 'bid') : rawBids).slice(0, 6);
-  const maxLevelSize = Math.max(1, ...askLevels.map((l) => l.size), ...bidLevels.map((l) => l.size));
-  const askRows = [...askLevels].reverse();
-  const bidRows = bidLevels;
-  const bestAsk = orderbook?.asks[0]?.price;
-  const bestBid = orderbook?.bids[0]?.price;
-  const midPrice = bestAsk != null && bestBid != null ? (bestAsk + bestBid) / 2 : bestAsk ?? bestBid;
-  const askVol = askLevels.reduce((s, l) => s + l.size, 0);
-  const bidVol = bidLevels.reduce((s, l) => s + l.size, 0);
-  const buyPct = askVol + bidVol > 0 ? Math.round((bidVol / (askVol + bidVol)) * 100) : 50;
-  // 자릿수(묶음) 선택 — KRW(업비트/빗썸)는 호가 개수가 적어 묶음 미지원(드롭다운 숨김).
-  const depthSelectable = !chartIsKrw;
-  // ×100(scale3)은 Bitget 선물 전용(서버 묶음). 그 외(Bitget 현물/타 거래소)는 ×10까지 —
-  // 타 거래소는 클라 묶음이라 ×100이면 받는 범위($)가 부족해 6행을 못 채움.
-  const depthSteps = (chartSel.exchange === 'BITGET' && chartIsFutures) ? [0, 1, 2, 3] : [0, 1, 2];
-  const depthOptions = depthSteps.map((i) => ({ scale: `scale${i}` as DepthPrecision, label: depthLabelFor(i, symbolDecimals) }));
-  const depthLabel = depthLabelFor(scaleIndex, symbolDecimals);
-
+  const { OB, obFmtPrice, obFmtMid, krwDec, getTickDecimals, depthScale, setDepthScale, depthSelectable, depthOptions, depthLabel, funding } = useOrderbookSnapshot({
+    symbol: CHART_SYMBOL, exchange: chartSel.exchange, isFutures: chartIsFutures, isKrw: chartIsKrw, livePrice, loadedSymbol,
+  });
   // solo 포커스: 그 패턴 TF에서 "한 단계 아래"까지만 TF 선택 허용 (drill-down 노이즈 방지)
   // 1D→4H / 4H→30m / 30m→5m / 1W→1D / 1M→1W. 범위=[하한 ~ 패턴TF] 인덱스 구간.
   const soloTfRange = useMemo<string[] | null>(() => {
@@ -285,25 +246,6 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartSel.exchange, soloTfRange]);
 
-  // ── 실데이터 — 차트 캔들 (선택 종목, clearOnSymbolChange:false로 전환 깜빡임 방지) ──
-  const timeframe = WEB_TIMEFRAMES[activeTf] ?? WEB_TIMEFRAMES['1H'];
-  const loadCandles = useCandleLoader({ symbol: CHART_SYMBOL, productType: CHART_PRODUCT, exchange: chartSel.exchange });
-  const { candles, livePrice, dailyOpenPrice, loadedSymbol, handleVisibleRangeChange } = useCoinCandles({
-    symbol: CHART_SYMBOL,
-    productType: CHART_PRODUCT,
-    isBinance: chartIsBinance,
-    isFutures: chartIsFutures,
-    timeframe,
-    loadCandles,
-    fallbackCandles: CHART_FALLBACK,
-    getBucketTime,
-    initialLimit: 600,
-    active: true,
-    clearOnSymbolChange: false,
-    exchange: chartSel.exchange,
-    priceFromTicker: true, // 현재가(헤더·호가중앙)는 캔들이 아닌 거래소 티커(last)에서 — 차트 TF 무관
-    liveCandle: true, // 현재 캔들 거래량 실시간(Binance/Bitget=kline WS, 업비트/빗썸=REST 폴링)
-  });
   // solo: 시간축 프레이밍 계산+적용을 한 함수로. 기본은 패턴 구간(X~D)으로 TF 바뀔 때마다 다시 맞춤
   // (같은 자리·크기 고정). 사용자가 solo에서 팬/줌해뒀으면(soloUserViewRef) 그 위치를 그대로 복원.
   // TF onClick에서 "동기적으로" 호출 → setActiveTf보다 먼저 focusRef가 세팅돼, 새 캔들이 로드되는
@@ -331,42 +273,6 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
     if (focusScrollKeyRef.current === key) return;
     frameForTf(activeTf);
   }, [soloOn, focusTracker, candles.length, activeTf, frameForTf]);
-
-  // 호가 중앙 현재가 = 캔들 종가(livePrice)로 헤더와 통일. livePrice 없을 때만 호가 mid 폴백.
-  const centerPrice = livePrice ?? midPrice;
-  // KRW 표시 소수자리 = 마켓 리스트와 동일 함수(krwDecimals(현재가)) — 저가 코인(100원 미만) 소수자리 일치.
-  // (차트축·헤더·호가가 전부 이 값을 써서 실시간마켓과 어긋나지 않음. 100원 이상은 0자리라 무영향)
-  const krwDec = krwDecimals(centerPrice ?? 0);
-  // 호가 가격 소수자리: KRW=krwDec, 그 외=선택 단위에 맞춰(틱×10^i)
-  const obDecimals = chartIsKrw ? krwDec : Math.max(0, symbolDecimals - scaleIndex);
-  const midDecimals = chartIsKrw ? krwDec : symbolDecimals;
-
-  // 자릿수(묶음) 단위: 종목 바뀌면 기본(scale2), 현물은 scale3 미지원 → scale2로
-  // 종목/거래소/마켓이 바뀌면 그 조합의 "가장 굵은 단위"를 디폴트로(Bitget 선물=scale3, 그 외=scale2)
-  useEffect(() => {
-    setDepthScale((chartSel.exchange === 'BITGET' && chartIsFutures) ? 'scale3' : 'scale2');
-  }, [CHART_SYMBOL, chartSel.exchange, chartIsFutures]);
-
-  // ── 호가 통합 스냅샷(OB) — 헤더처럼 "현재 종목 호가+현재가가 준비되면" 좌·우 통째 교체 ──
-  // obReady: 현재 호가(orderbook.key가 현재 거래소|심볼|선물여부)와 현재가(livePrice)가 모두 현재 종목 것.
-  // 준비 전(전환 중)엔 직전 스냅샷(행/소수자리/라벨/펀딩 묶음)을 그대로 유지 → 부분 도착으로 칸 밀림/섞임 없음.
-  const obKey = `${chartSel.exchange}|${CHART_SYMBOL}|${chartIsFutures}`;
-  const obReady = orderbook?.key === obKey && loadedSymbol === CHART_SYMBOL && livePrice != null;
-  const obRef = useRef<{
-    asks: { price: number; size: number }[]; bids: { price: number; size: number }[];
-    maxLevelSize: number; buyPct: number; center: number; obDec: number; midDec: number;
-    depthLabel: string; quoteLabel: string; funding: string;
-  } | null>(null);
-  if (obReady) {
-    obRef.current = {
-      asks: askRows, bids: bidRows, maxLevelSize, buyPct, center: livePrice,
-      obDec: obDecimals, midDec: midDecimals, depthLabel,
-      quoteLabel: EXCHANGES[chartSel.exchange].quote, funding,
-    };
-  }
-  const OB = obRef.current;
-  const obFmtPrice = (p: number) => p.toLocaleString('en-US', { minimumFractionDigits: OB?.obDec ?? 2, maximumFractionDigits: OB?.obDec ?? 2 });
-  const obFmtMid = (p: number) => p.toLocaleString('en-US', { minimumFractionDigits: OB?.midDec ?? 2, maximumFractionDigits: OB?.midDec ?? 2 });
 
   // 차트 소수점도 "표시 중인 캔들(loadedSymbol)"과 함께만 바뀌게 스테이징 — 데이터보다 소수점이 먼저 바뀌어
   // 옛 캔들이 새 소수점으로 재포맷되며 가격축 폭이 흔들리는 것 방지. KRW는 원(정수)=0.
@@ -453,98 +359,11 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
     }
   }, [CHART_SYMBOL, livePrice, dailyOpenPrice, chartIsFutures, pxDecimals]);
 
-  // ── 헤더 정보 — 거래소별 24h 티커(고가/저가/거래량/거래대금) ──
-  // sym 태그 — 어느 종목에 대한 값인지. 실패해도 {sym, t:null}로 resolve해 헤더 통합 스왑이 멈추지 않게.
-  const [tkr, setTkr] = useState<{ sym: string; t: BitgetTicker | null } | null>(null);
-  useEffect(() => {
-    let ignore = false;
-    const load = () => {
-      fetchHeaderTicker(chartSel.exchange, CHART_SYMBOL, chartIsFutures)
-        .then((t) => { if (!ignore) setTkr({ sym: CHART_SYMBOL, t: t ?? null }); })
-        .catch(() => { if (!ignore) setTkr({ sym: CHART_SYMBOL, t: null }); });
-    };
-    load();
-    const id = setInterval(load, 4000);
-    return () => { ignore = true; clearInterval(id); };
-  }, [CHART_SYMBOL, chartSel.exchange, chartIsFutures]);
-  const fmtVol = (n: number) => {
-    if (!Number.isFinite(n) || n <= 0) return '—';
-    if (n >= 1e12) return (n / 1e12).toFixed(2) + 'T';
-    if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
-    if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
-    if (n >= 1e3) return (n / 1e3).toFixed(2) + 'K';
-    return n.toFixed(2);
-  };
-
-  // ── 헤더 정보 — 전날 종가/당일 시가(일봉 2개), 시가총액(백엔드 CoinGecko 프록시) ──
-  // 실패/없음도 null 값으로 resolve(sym/base는 채움) → 통합 스왑이 멈추지 않음
-  const [dayStats, setDayStats] = useState<{ sym: string; prevClose: number | null; todayOpen: number | null } | null>(null);
-  const [marketCap, setMarketCap] = useState<{ base: string; cap: number | null } | null>(null);
-  useEffect(() => {
-    let ignore = false;
-    // loadCandles는 거래소별 라우팅(Bitget/Binance/업비트/빗썸) — KRW도 일봉 2개로 전날종가/당일시가 산출
-    const loadDay = () => {
-      loadCandles('1Dutc', 2)
-        .then((cs) => {
-          if (ignore) return;
-          if (cs.length < 1) { setDayStats({ sym: CHART_SYMBOL, prevClose: null, todayOpen: null }); return; }
-          const prev = cs[cs.length - 2] ?? cs[0];
-          const today = cs[cs.length - 1];
-          setDayStats({ sym: CHART_SYMBOL, prevClose: prev.close, todayOpen: today.open });
-        })
-        .catch(() => { if (!ignore) setDayStats({ sym: CHART_SYMBOL, prevClose: null, todayOpen: null }); });
-    };
-    const loadCap = () => {
-      fetchCoinMarketCap(chartBase)
-        .then((mc) => { if (!ignore) setMarketCap({ base: chartBase, cap: mc ?? null }); })
-        .catch(() => { if (!ignore) setMarketCap({ base: chartBase, cap: null }); });
-    };
-    loadDay(); loadCap();
-    const idDay = setInterval(loadDay, 60000);   // 일봉 60초
-    const idCap = setInterval(loadCap, 300000);  // 시총 5분(백엔드 10분 캐시)
-    return () => { ignore = true; clearInterval(idDay); clearInterval(idCap); };
-  }, [CHART_SYMBOL, chartBase, loadCandles]);
-
-  // ── 헤더 통합 스냅샷(H) — 좌측·우측 전부 한 종목으로, 모든 데이터가 준비됐을 때만 통째 교체 ──
-  // allReady: 현재 종목(CHART_SYMBOL)에 대해 현재가·일봉시가·티커·일봉통계·시총이 전부 도착(실패는 null로 resolve).
-  // 준비되면 모든 표시값을 미리 포맷해 headRef에 통째로 커밋(현재 종목이면 매 렌더 재커밋 → 가격 실시간 갱신).
-  // 준비 전(전환 중)엔 직전 종목 스냅샷을 그대로 유지 → 부분적으로 들어와 칸이 밀리는 레이아웃 시프트 없음.
-  const allReady =
-    loadedSymbol === CHART_SYMBOL && livePrice != null && dailyOpenPrice != null &&
-    tkr?.sym === CHART_SYMBOL &&
-    dayStats?.sym === CHART_SYMBOL &&
-    marketCap?.base === chartBase;
-  const headRef = useRef<{
-    symbol: string; title: string; isFutures: boolean;
-    exchange: 'BITGET' | 'BINANCE' | 'UPBIT' | 'BITHUMB'; base: string;
-    px: string; chg: { abs: string; pct: string; up: boolean } | null;
-    prevClose: string; todayOpen: string; high: string; low: string;
-    baseLabel: string; quoteLabel: string; baseVol: string; quoteVol: string; cap: string;
-  } | null>(null);
-  if (allReady) {
-    const abs = livePrice - dailyOpenPrice;
-    const pct = dailyOpenPrice !== 0 ? (abs / dailyOpenPrice) * 100 : 0;
-    const t = tkr!.t;
-    headRef.current = {
-      symbol: CHART_SYMBOL,
-      title: chartIsFutures ? `${CHART_SYMBOL}.P` : CHART_SYMBOL,
-      isFutures: chartIsFutures,
-      exchange: chartSel.exchange,
-      base: chartBase,
-      px: fmtPx(livePrice),
-      chg: { abs: fmtPx(abs), pct: pct.toFixed(2), up: pct >= 0 },
-      prevClose: dayStats!.prevClose != null ? fmtPx(dayStats!.prevClose) : '—',
-      todayOpen: dayStats!.todayOpen != null ? fmtPx(dayStats!.todayOpen) : fmtPx(dailyOpenPrice),
-      high: t ? fmtPx(t.high24h) : '—',
-      low: t ? fmtPx(t.low24h) : '—',
-      baseLabel: chartBase,
-      quoteLabel: EXCHANGES[chartSel.exchange].quote,
-      baseVol: t ? fmtVol(t.baseVolume) : '—',
-      quoteVol: t ? fmtVol(t.quoteVolume) : '—',
-      cap: marketCap!.cap != null ? '$' + fmtVol(marketCap!.cap) : '—',
-    };
-  }
-  const H = headRef.current;
+  // ── 헤더 정보·통합 스냅샷(H) — useHeaderSnapshot ──
+  const { H, fmtVol } = useHeaderSnapshot({
+    symbol: CHART_SYMBOL, exchange: chartSel.exchange, isFutures: chartIsFutures, base: chartBase,
+    loadCandles, livePrice, dailyOpenPrice, loadedSymbol, fmtPx,
+  });
 
   // ── 마켓 — 모바일 거래탭 종목 시트 디자인 그대로(MarketPanel이 자체 데이터/필터 관리) ──
   const marketActive = section === 'market' && sidebarOpen;

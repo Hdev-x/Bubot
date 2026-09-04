@@ -35,11 +35,11 @@ deliveries:
   - id: wp-06-d02-shell
     title: "셸 영역 컴포넌트 — DesktopHeader · IconRail · Sidebar(InvestSection 포함)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-06-d01-helpers]
     branch: refactor/dapp-d02-shell
-    pull_requests: []
+    pull_requests: [46]
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,529 → 1,216줄(삭제 331 + 호출 21줄 + import). 새 파일: panels/DesktopHeader(73, props 8)·IconRail(35, props 4)·Sidebar(59, props 7 + invest 묶음)·InvestSection(272, 묶음 5개: main 9·spot 6·currency 5·view 9·actions 2), lib/sections(10: Section·SECTIONS·INVEST_TABS·InvestTab — IconRail과 Sidebar가 같이 써서 Sidebar 대신 lib로). JSX 본문·핸들러·effect 내용 변경 0, menuRef는 바깥 클릭 effect가 써서 부모 소유 유지"
@@ -52,12 +52,20 @@ deliveries:
   - id: wp-06-d03-hooks
     title: "데이터 훅 — useHeaderSnapshot · useOrderbookSnapshot · useDesktopCandles"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-06-d02-shell]
     branch: refactor/dapp-d03-hooks
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "DesktopApp.tsx 1,216 → 1,035줄(삭제 197 + 훅 호출 16줄). hooks/useDesktopCandles(36)·useOrderbookSnapshot(95)·useHeaderSnapshot(116). 승인 표 그대로, 추가로 funding을 호가 훅 반환값에 넣음(JSX가 OB 없을 때 폴백으로 씀). 상태·effect·의존성 배열 내용 변경 0. 훅 호출 순서는 캔들 → 호가(원래 호가 블록이 앞)로 바뀜 — 두 블록은 독립 구독이라 영향 없음"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "tsc ok · lint 0(불필요 import 14개 제거) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭에서 Desktop 로드: 종목 헤더 H 스냅샷(전날 종가·당일 시가·24h 고저·거래량) 표시, 호가 12행, 제목 현재가 갱신, 콘솔 오류는 로그인 전 ws-coin뿐. computed style 325 요소 중 14 diff는 실시간 값뿐"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-06-d04-chart
     title: "차트 영역 — ChartToolbar · ChartStage · SymbolHeader, 드로잉 상태 훅"
     kind: git
