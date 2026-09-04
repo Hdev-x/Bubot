@@ -1,6 +1,6 @@
 # 현재 상태
 
-- 마지막 갱신: 2026-09-04 (wp-05 완료)
+- 마지막 갱신: 2026-09-04 (wp-06 PLAN 작성)
 
 > 이 문서는 다음 세션을 위한 상태판이다. 이력을 쌓지 않고 덮어쓴다.
 > Branch·Commit·작업 트리는 Git에서, 완료 작업의 상세·증거는 PLAN과 Git History에서 확인한다.
@@ -15,13 +15,15 @@
 - `apps/web` 폴더 구조 재편 완료(2026-09-03, `wp-03-web-structure`, PR #24~#30): `app/{mobile,desktop}` · `chart` · `hooks/{market,account,ui}` · `api/{client,server,exchange}` · `shared`. 의존 방향 규칙은 `docs/PROJECT.md`.
 - `apps/web` CSS 정리 완료(2026-09-04, `wp-04-css-cleanup`, PR #32~#37): 미사용 242 규칙 삭제, labs 전용 148 규칙 `labs/trading/web/src/styles/`로 보존, 컴포넌트 옆 CSS 13개 파일. `mobile.css` 6,389→1,661줄, `desktop.css` 2,361→544줄.
 - `web → desktop` 이름 통일 완료(2026-09-04, `wp-05-desktop-naming`, PR #39~#42): `DesktopApp`·`desktop.html`·`vite.config.desktop.js`·`build:desktop`·`dist-desktop`. URL `/web`·`static/web`은 T-05 배포에서 결정.
-- 프로젝트가 지금 달성하려는 결과: 다음 WP 선택 대기. 후보는 큰 파일 분해(T-04d: `DesktopApp.tsx` 1,811·`MarketChart.tsx` 1,585·`useAutoPatterns.ts` 990·`OrderPage.tsx` 910, 첫 로직 리팩터링이라 항목별로 함께)와 Beta 배포 준비(T-05, 도메인·DB 위치 결정 필요). 사용자와 항목 단위로 진행.
+- 프로젝트가 지금 달성하려는 결과: `DesktopApp.tsx` 1,812줄 분해(`wp-06-desktop-app-split`) — 영역 컴포넌트 8개 + 데이터 훅 + 조립 컴포넌트. 첫 로직 리팩터링이라 Delivery마다 props 표를 확정하고 사용자 육안 확인을 merge 조건으로 둔다. 이후 `MarketChart`·`useAutoPatterns`·`OrderPage`는 별도 WP.
+- 완료 기준: Milestone `desktop-app-split-done` (DesktopApp 400줄 이하, 새 파일 400줄 이하, Gate 유지, 전 영역 육안 확인).
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. 다음 WP 결정(큰 파일 분해 vs 배포 준비) 후 PLAN 작성
+1. `wp-06-d01-helpers` (상수·순수 함수·소형 컴포넌트 분리, 기계적)
+2. `wp-06-d02-shell` (헤더·레일·사이드바 — props 표 확정 후)
 
 ## Deferred
 
@@ -32,7 +34,7 @@
 
 ## 활성 Work Package
 
-- 없음.
+- [refactor/wp-06-desktop-app-split](work/refactor/wp-06-desktop-app-split/PLAN.md) — d01부터
 
 ## 완료된 Work Package (링크만)
 
