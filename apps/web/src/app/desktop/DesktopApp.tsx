@@ -6,7 +6,6 @@ import { WatchlistPanel } from './panels/WatchlistPanel';
 import StrategyComingSoon from '../mobile/components/StrategyComingSoon';
 import botzMark from '../../assets/botz-mark.svg';
 import { EXCHANGES } from '../../shared/constants/exchanges';
-import { getOfficialLogo } from '../../shared/utils/coinFormatters';
 import { type BitgetTicker } from '../../api/exchange/bitget/bitgetTicker';
 import { fetchHeaderTicker } from '../../api/exchange/headerTicker';
 import { krwDecimals } from '../../api/exchange/krw/krwTickers';
@@ -22,14 +21,10 @@ import { useCoinCandles } from '../../chart/hooks/useCoinCandles';
 import { useChartTheme } from '../../chart/hooks/useChartTheme';
 import { useDelayedReady } from '../../hooks/ui/useDelayedReady';
 import { PRESET_THEMES } from '../../chart/settings/ChartSettingsSheet';
-import type { ChartTheme } from '../../chart/settings/ChartSettingsSheet';
 
-// 웹 기본/비로그인 고정 테마 = '다크'(id:dark). 없으면 첫 프리셋 폴백.
-const DARK_THEME = PRESET_THEMES.find((t) => t.id === 'dark') ?? PRESET_THEMES[0];
 import MarketChart from '../../chart/MarketChart';
 import type { MarketChartRef } from '../../chart/MarketChart';
 import type { TrackerState } from '../../shared/types/bot';
-import type { DrawingManager } from '../../chart/drawing';
 import { DrawingFloatBar, DrawingSettings } from './panels/DrawingToolbar';
 import { RsiSettingsPanel } from './panels/RsiSettingsPanel';
 import { DEFAULT_RSI_SETTINGS } from '../../shared/utils/rsiCandles';
@@ -53,110 +48,20 @@ import type { DepthPrecision } from '../../api/exchange/bitget/bitgetMergeDepth'
 import type { MainPosition } from '../../api/server/mainTradeApi';
 import type { SpotHolding } from '../../api/server/spotTradeApi';
 import type { Candle } from '../../shared/types/market';
+import { WEB_TIMEFRAMES, getIntervalSeconds, getBucketTime, CHART_FALLBACK, TF, UNSUPPORTED_TF } from './lib/timeframes';
+import { depthLabelFor, aggregateLevels } from './lib/orderbook';
+import { fmtAsset, logoClass, calcRoe } from './lib/format';
+import { WEB_DRAW_TOOLS } from './lib/drawTools';
+import { DARK_THEME, INDICATORS_OFF, MA_OFF, pivotOff } from './lib/indicatorDefaults';
+import { ObjectTree } from './panels/ObjectTree';
+import { MiniCandles } from './panels/MiniCandles';
+import { SidebarAssetSkeleton, HeaderLogo, HdSk, Chevron } from './panels/SidebarBits';
 import './DesktopApp.css';
-
-// ── 차트 — 타임프레임 맵(버튼 라벨 → granularity/channel) ──
-type Tf = { label: string; value: string; granularity: string; channel: string; category: 'min' | 'hour' | 'day' | 'week' | 'month' };
-const WEB_TIMEFRAMES: Record<string, Tf> = {
-  '1m': { label: '1m', value: '1m', granularity: '1min', channel: 'candle1m', category: 'min' },
-  '3m': { label: '3m', value: '3m', granularity: '3min', channel: 'candle3m', category: 'min' },
-  '5m': { label: '5m', value: '5m', granularity: '5min', channel: 'candle5m', category: 'min' },
-  '15m': { label: '15m', value: '15m', granularity: '15min', channel: 'candle15m', category: 'min' },
-  '30m': { label: '30m', value: '30m', granularity: '30min', channel: 'candle30m', category: 'min' },
-  '1H': { label: '1H', value: '1h', granularity: '1h', channel: 'candle1H', category: 'hour' },
-  '4H': { label: '4H', value: '4h', granularity: '4h', channel: 'candle4H', category: 'hour' },
-  '6H': { label: '6H', value: '6h', granularity: '6Hutc', channel: 'candle6Hutc', category: 'hour' },
-  '12H': { label: '12H', value: '12h', granularity: '12Hutc', channel: 'candle12Hutc', category: 'hour' },
-  '1D': { label: '1D', value: '1d', granularity: '1Dutc', channel: 'candle1Dutc', category: 'day' },
-  '3D': { label: '3D', value: '3d', granularity: '3Dutc', channel: 'candle3Dutc', category: 'day' },
-  '1W': { label: '1W', value: '1w', granularity: '1Wutc', channel: 'candle1Wutc', category: 'week' },
-  '1M': { label: '1M', value: '1mo', granularity: '1Mutc', channel: 'candle1Mutc', category: 'month' },
-};
-function getIntervalSeconds(granularity: string): number {
-  const map: Record<string, number> = {
-    '1min': 60, '3min': 180, '5min': 300, '15min': 900, '30min': 1800, '30m': 1800,
-    '1h': 3600, '4h': 14400, '6Hutc': 21600, '12Hutc': 43200,
-    '1Dutc': 86400, '3Dutc': 259200, '1Wutc': 604800, '1Mutc': 2592000,
-  };
-  return map[granularity] ?? 60;
-}
-function getBucketTime(timestamp: number, granularity: string): number {
-  const s = timestamp;
-  switch (granularity) {
-    case '1min': return Math.floor(s / 60) * 60;
-    case '3min': return Math.floor(s / 180) * 180;
-    case '5min': return Math.floor(s / 300) * 300;
-    case '15min': return Math.floor(s / 900) * 900;
-    case '30min': return Math.floor(s / 1800) * 1800;
-    case '1h': return Math.floor(s / 3600) * 3600;
-    case '4h': return Math.floor(s / 14400) * 14400;
-    case '6Hutc': return Math.floor(s / 21600) * 21600;
-    case '12Hutc': return Math.floor(s / 43200) * 43200;
-    case '1Dutc': return Math.floor(s / 86400) * 86400;
-    case '3Dutc': return Math.floor(s / 259200) * 259200;
-    case '1Wutc': {
-      const d = new Date(s * 1000);
-      const day = d.getUTCDay();
-      const diff = d.getUTCDate() - day + (day === 0 ? -6 : 1);
-      return Math.floor(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), diff) / 1000);
-    }
-    case '1Mutc': {
-      // 월봉 — 케이스 누락 시 default(1분 버킷)로 떨어져 KRW 월봉 차트에 분 단위 봉이 자라남
-      const d = new Date(s * 1000);
-      return Math.floor(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1) / 1000);
-    }
-    default: return Math.floor(s / 60) * 60;
-  }
-}
-const CHART_FALLBACK: Candle[] = [];
-
-// 호가 단위 라벨 (OrderPage.depthLabelFor 동일)
-function depthLabelFor(scaleIndex: number, symbolDecimals: number): string {
-  const dec = Math.max(0, symbolDecimals - scaleIndex);
-  const value = Math.pow(10, scaleIndex - symbolDecimals);
-  return value.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-}
-
-// 호가 묶음(aggregate) — Bitget은 API가 precision으로 묶어주지만, Binance/업비트/빗썸은 고정 틱만 줘서
-// 프론트에서 step 단위로 직접 묶는다. 매도=올림(ceil), 매수=내림(floor)으로 중앙 겹침 없이 사다리 유지.
-function aggregateLevels(levels: { price: number; size: number }[], step: number, side: 'ask' | 'bid') {
-  if (!levels.length || !(step > 0)) return levels;
-  const map = new Map<number, number>();
-  for (const l of levels) {
-    const idx = side === 'ask' ? Math.ceil(l.price / step - 1e-9) : Math.floor(l.price / step + 1e-9);
-    map.set(idx, (map.get(idx) ?? 0) + l.size);
-  }
-  const out = [...map.entries()].map(([idx, size]) => ({ price: idx * step, size }));
-  out.sort((a, b) => (side === 'ask' ? a.price - b.price : b.price - a.price));
-  return out;
-}
 
 // ── 데스크톱 웹 — 모바일 훅/컴포넌트를 그대로 재사용해 같은 데이터를 다룸(화면만 다름) ──
 // 실데이터: 내 투자(선물=useMainTrade, 현물=useSpotTrade) · 호가(useOrderbook) · 차트(useCoinCandles)
 //           · 마켓 리스트(useMarketTickers, BITGET 현물).
 // 목업: 커뮤니티 채팅 / 헤더 검색(요청상 보류).
-
-// 자산 표기 — 1 미만 4자리, 그 외 1자리 (모바일 fmtAsset 동일)
-function fmtAsset(n: number): string {
-  if (!Number.isFinite(n)) return '—';
-  return n.toLocaleString(undefined, {
-    minimumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-    maximumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-  });
-}
-// base 심볼 → 로고 클래스(색) 대략 매핑
-function logoClass(base: string): string {
-  if (base === 'BTC') return 'btc';
-  if (base === 'ETH') return 'eth';
-  if (base === 'SOL') return 'sol';
-  return 'btc';
-}
-// 포지션 ROE(증거금 기준 근사) = 가격변화율 × 레버리지 × 방향
-function calcRoe(p: MainPosition): number {
-  if (p.entryPrice <= 0) return 0;
-  return ((p.markPrice - p.entryPrice) / p.entryPrice) * 100 * p.leverage * (p.direction === 'long' ? 1 : -1);
-}
-
 
 type Section = 'invest' | 'market' | 'strategy';
 const SECTIONS: { id: Section; title: string }[] = [
@@ -176,193 +81,6 @@ const CHATS = [
   { av: 'D', bg: '#3a3a5a', nick: 'delta_', time: '12:40', body: 'FOMC 다음주라 변동성 주의' },
   { av: 'R', bg: '#5a4a2a', nick: 'ronin', time: '12:41', body: '차트 + 호가 + 채팅 한 화면 만족' },
 ] as const;
-
-// ── 그리기 도구(자체 드로잉 엔진) — 타입 문자열은 모바일 DrawingSheet와 동일 ──
-const WEB_DRAW_TOOLS: { type: string; name: string; icon: React.ReactNode }[] = [
-  {
-    type: 'horizontal-line', name: '수평선',
-    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="2" y1="12" x2="22" y2="12" /><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none" /></svg>,
-  },
-  {
-    type: 'horizontal-ray', name: '수평 레이',
-    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="7" y1="12" x2="22" y2="12" /><circle cx="5" cy="12" r="2.4" fill="currentColor" stroke="none" /></svg>,
-  },
-  {
-    type: 'trend-line', name: '추세선',
-    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="5" y1="19" x2="19" y2="5" /><circle cx="5" cy="19" r="2.2" fill="currentColor" stroke="none" /><circle cx="19" cy="5" r="2.2" fill="currentColor" stroke="none" /></svg>,
-  },
-  {
-    type: 'parallel-channel', name: '평행 채널',
-    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="3" y1="21" x2="17" y2="7" /><line x1="7" y1="17" x2="21" y2="3" opacity="0.55" /></svg>,
-  },
-  {
-    type: 'rectangle', name: '직사각형',
-    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="4" y="7" width="16" height="10" rx="1" /></svg>,
-  },
-  {
-    type: 'price-range', name: '가격 범위',
-    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="12" y1="4" x2="12" y2="20" /><polyline points="8.5 7.5 12 4 15.5 7.5" /><polyline points="8.5 16.5 12 20 15.5 16.5" /></svg>,
-  },
-  {
-    type: 'fib-retracement', name: '피보나치 되돌림',
-    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="3" y1="5" x2="21" y2="5" /><line x1="3" y1="12" x2="21" y2="12" opacity="0.65" /><line x1="3" y1="19" x2="21" y2="19" /></svg>,
-  },
-];
-
-// 웹 오브젝트 트리 — 드로잉 목록(보이기/잠금/삭제/선택). manager는 ref라 폴링으로 동기화(모바일 시트와 동일 방식).
-function ObjectTree({ getManager, onSelect }: { getManager: () => DrawingManager | null | undefined; onSelect: (id: string) => void }) {
-  const [items, setItems] = useState<{ id: string; type: string; visible: boolean; locked: boolean }[]>([]);
-  useEffect(() => {
-    const update = () => {
-      const m = getManager();
-      setItems(m ? m.getAllDrawings().map((d) => ({
-        id: d.id, type: d.type,
-        visible: d.options.visible !== false,
-        locked: d.options.locked === true,
-      })) : []);
-    };
-    update();
-    const t = setInterval(update, 500);
-    return () => clearInterval(t);
-  }, [getManager]);
-
-  const nameOf = (type: string) => WEB_DRAW_TOOLS.find((t) => t.type === type)?.name ?? type;
-
-  if (!items.length) return <div className="draw-obj-empty">작도 객체 없음</div>;
-  return (
-    <div className="draw-obj-list">
-      {[...items].reverse().map((d) => (
-        <div key={d.id} className={`draw-obj-row${d.visible ? '' : ' dimmed'}`} onClick={() => onSelect(d.id)}>
-          <span className="draw-obj-name">{nameOf(d.type)}</span>
-          <button
-            className="draw-obj-btn" title={d.visible ? '감추기' : '보이기'}
-            onClick={(e) => { e.stopPropagation(); getManager()?.getDrawing(d.id)?.updateOptions({ visible: !d.visible }); }}
-          >
-            {d.visible ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-            )}
-          </button>
-          <button
-            className={`draw-obj-btn${d.locked ? ' locked' : ''}`} title={d.locked ? '잠금 해제' : '잠금'}
-            onClick={(e) => { e.stopPropagation(); getManager()?.getDrawing(d.id)?.updateOptions({ locked: !d.locked }); }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="11" width="18" height="11" rx="2" /><path d={d.locked ? 'M7 11V7a5 5 0 0 1 10 0v4' : 'M7 11V7a5 5 0 0 1 9.9-1'} /></svg>
-          </button>
-          <button
-            className="draw-obj-btn danger" title="삭제"
-            onClick={(e) => { e.stopPropagation(); getManager()?.removeDrawing(d.id); }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const TF = ['1m', '3m', '5m', '15m', '30m', '1H', '4H', '6H', '12H', '1D', '3D', '1W', '1M'];
-// 거래소별 미지원 타임프레임(공개 캔들 API에 없음) — 버튼 숨김(누르면 빈 차트라).
-const UNSUPPORTED_TF: Record<string, string[]> = {
-  UPBIT: ['6H', '12H', '3D'],
-  BITHUMB: ['3D'], // v1 API 전환으로 15m·4H·6H·12H·주·월 지원(3D만 미지원)
-};
-
-// 테마 프리셋 카드 미리보기 캔들 (모바일 ChartSettingsSheet의 MiniCandles 복사)
-function MiniCandles({ upColor, downColor, bgColor }: Pick<ChartTheme, 'upColor' | 'downColor' | 'bgColor'>) {
-  const candles = [
-    { bull: true, y: 3, h: 14 }, { bull: false, y: 5, h: 12 }, { bull: true, y: 2, h: 16 },
-    { bull: false, y: 6, h: 10 }, { bull: true, y: 1, h: 15 },
-  ];
-  return (
-    <div className="mini-candles-wrap" style={{ background: bgColor }}>
-      {candles.map((c, i) => (
-        <svg key={i} width="5" height="24" viewBox="0 0 5 24">
-          <line x1="2.5" y1="0" x2="2.5" y2={c.y} stroke={c.bull ? upColor : downColor} strokeWidth="1" />
-          <rect x="0.5" y={c.y} width="4" height={c.h} fill={c.bull ? upColor : downColor} rx="0.5" />
-          <line x1="2.5" y1={c.y + c.h} x2="2.5" y2="24" stroke={c.bull ? upColor : downColor} strokeWidth="1" />
-        </svg>
-      ))}
-    </div>
-  );
-}
-
-// 사이드바 자산(선물/현물) 로드 스켈레톤 — 모바일 TradeAccountSummary 패턴
-function SidebarAssetSkeleton() {
-  return (
-    <div className="assets-scroll">
-      <div className="tas-hero">
-        <span className="tas-hero-label">총자산</span>
-        <div className="tas-hero-row">
-          <span className="tas-hero-val tas-hero-skeleton skeleton-shimmer" aria-label="불러오는 중" />
-        </div>
-        <span className="tas-hero-approx tas-hero-approx-skeleton skeleton-shimmer" aria-hidden />
-      </div>
-      <div className="view-group">
-        <div className="tas-divider" />
-        <div className="tas-mkt-list">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="tas-mkt-row tas-mkt-skel">
-              <span className="tas-mkt-logo skeleton-shimmer" />
-              <span className="sk-bar sk-sym skeleton-shimmer" />
-              <span className="sk-bar sk-amt skeleton-shimmer" />
-              <span className="sk-bar sk-roe skeleton-shimmer" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// 차트 헤더 코인 로고 — 신뢰도 높은 소스(공식 → 백엔드 gecko맵)만 사용. 없으면 바로 글자(2글자).
-// 404로 엑박 깜빡이던 CDN 후보는 제거. 드물게 url이 죽으면 onError로 글자 폴백.
-function HeaderLogo({ base, logoUrl }: { base: string; logoUrl?: string }) {
-  const url = getOfficialLogo(base) || logoUrl;
-  const [failed, setFailed] = useState(false);
-  useEffect(() => { setFailed(false); }, [url]);
-  return (
-    <span className="sh-coin-logo">
-      {url && !failed
-        ? <img src={url} alt={base} onError={() => setFailed(true)} />
-        : <span className="sh-coin-logo-fallback">{base.slice(0, 2)}</span>}
-    </span>
-  );
-}
-
-// 차트 헤더 정보 스켈레톤 바 (값 도착 전, skeleton-shimmer 재사용)
-function HdSk({ w = 56, h = 13 }: { w?: number; h?: number }) {
-  return <span className="hd-sk skeleton-shimmer" style={{ width: w, height: h }} />;
-}
-
-// 드롭다운 접힘 그룹 헤더의 셰브론
-function Chevron({ open }: { open: boolean }) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
-}
-
-// 비로그인 시 차트에 표시할 "모두 꺼짐" 지표 설정(저장값은 그대로, 표시만 차단)
-const INDICATORS_OFF: IndicatorSettings = {
-  '1M': { showOB: false, showOBBox: false, showFVG: false, showCE: false, showEQ: false },
-  '1W': { showOB: false, showOBBox: false, showFVG: false, showCE: false, showEQ: false },
-  '3D': { showOB: false, showOBBox: false, showFVG: false, showCE: false, showEQ: false },
-  '1D': { showOB: false, showOBBox: false, showFVG: false, showCE: false, showEQ: false },
-};
-const MA_OFF: MASetting[] = [];
-function pivotOff(p: PivotSetting): PivotSetting {
-  return {
-    ...p, show: false, showWave: false, showHarmonic: false, showHarmonicScanning: false,
-    showHarmonicSignal: false, showHarmonicCompleted: false, showHarmonicStoploss: false,
-    showHarmonicPrediction: false, showHarmonicLines: false, showHarmonicFill: false,
-    showElliottWave: false, showAbcWave: false, showAbcCompleted: false, showAbcPrediction: false,
-    showAbcText: false, showAbcLines: false, showTpLine: false, showTpLabel: false,
-    showSlLine: false, showSlLabel: false,
-  };
-}
 
 export default function DesktopApp({ user, onLoginClick, onLogout }: { user: AuthUser | null; onLoginClick: () => void; onLogout: () => void }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -858,7 +576,6 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   // 사이드바 자산 스켈레톤 표시 여부
   const mainSkeleton = section === 'invest' && sidebarOpen && !mainReady && investTab === '선물';
   const spotSkeleton = spotActive && !spotReady;
-
 
   // 아이콘 클릭 → 섹션 선택 + 패널 열기
   // 로그인 필요한 섹션 — 내투자/전략/관심. (실시간 마켓은 공개) 섹션은 열리되 오버레이로 막는다.

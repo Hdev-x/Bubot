@@ -18,12 +18,20 @@ deliveries:
   - id: wp-06-d01-helpers
     title: "맨 위 340줄 분리 — 상수·순수 함수 → lib/, 소형 컴포넌트 6개 → panels/ (기계적)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: []
     branch: refactor/dapp-d01-helpers
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "DesktopApp.tsx 1,812 → 1,529줄. 새 파일 8개 298줄: lib/timeframes(63)·orderbook(20)·format(22)·drawTools(33)·indicatorDefaults(25), panels/ObjectTree(56)·MiniCandles(20)·SidebarBits(59). DesktopApp 변경은 삭제 288줄 + import 8줄, 본문 변경 0. 옮긴 코드는 export 추가·React.ReactNode→ReactNode 외 동일. SECTIONS·INVEST_TABS·CHATS·CHART_FALLBACK 위치: CHART_FALLBACK은 timeframes로, 나머지는 d02까지 잔류"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "tsc ok · lint 0(불필요해진 import 4개 제거 후) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. Desktop dev 서버 렌더링, computed style 대조 325 요소 중 14 diff는 OHLC·호가 게이지·클래스 없는 span(실시간)뿐"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-06-d02-shell
     title: "셸 영역 컴포넌트 — DesktopHeader · IconRail · Sidebar(InvestSection 포함)"
     kind: git
