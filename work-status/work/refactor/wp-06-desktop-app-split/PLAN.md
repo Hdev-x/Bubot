@@ -86,11 +86,11 @@ deliveries:
   - id: wp-06-d04b-chart
     title: "차트 영역 컴포넌트 — SymbolHeader · ChartStage · ChartToolbar (묶음 props)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-06-d04a-chart-hooks]
     branch: refactor/dapp-d04b-chart
-    pull_requests: []
+    pull_requests: [49]
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,002 → 539줄(삭제 485 + 묶음 객체 5개·컴포넌트 호출 27줄). panels/SymbolHeader(65, props 6)·ChartToolbar(364, 묶음 6 + 개별 6)·ChartStage(153, 묶음 8 + 개별 6)·chartProps.ts(38, 묶음 타입). JSX 본문·핸들러 변경 0. 표와 다른 점: 툴바에 onLoginClick 추가(지표·설정 버튼이 비로그인 시 호출), 무대 data 묶음에 obOptions 추가, 개별로 잡혔던 trade·section·spot은 className 문자열 오탐이라 제외. d04a의 구조 분해는 바깥 클릭 effect·useMtfCandles·TF 폴백이 쓰는 9개만 남김"
@@ -103,12 +103,20 @@ deliveries:
   - id: wp-06-d05-middle
     title: "가운데 영역 — OrderbookPanel · RightPanel, 문서 갱신"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-06-d04b-chart]
     branch: refactor/dapp-d05-middle
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "DesktopApp.tsx 539 → 451줄. panels/OrderbookPanel(54, props: ob 훅 객체·depthOpen·setDepthOpen·exchange)·RightPanel(63, props: user, CHATS 목업 상수 동반 이동). JSX·핸들러 변경 0. useOrderbookSnapshot 반환은 객체 ob로 받고 krwDec·getTickDecimals만 풀어 씀. STRUCTURE.md 트리 갱신"
+        revision: working-tree
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "tsc ok · lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop: 호가 12행·오른쪽 패널 채팅 6개·비로그인 입력 잠금, 콘솔 오류는 로그인 전 ws-coin뿐. 잔여: DesktopApp 451줄로 AC-001 목표 400줄을 51줄 초과(solo 포커스·dock 애니메이션·바깥 클릭 effect·캡쳐 핸들러 잔류). 기존 panels/DrawingToolbar.tsx 641줄은 이 WP 범위 밖"
+        revision: working-tree
+        observed_at: 2026-09-05
 milestones:
   - id: desktop-app-split-done
     title: "DesktopApp 분해 완료"
