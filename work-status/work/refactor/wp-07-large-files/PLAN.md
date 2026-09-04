@@ -35,11 +35,11 @@ deliveries:
   - id: wp-07-d02-auto-patterns
     title: "useAutoPatterns(990) → 순수 헬퍼 300줄을 chart/analysis/harmonicShapes.ts로 (공용, 기계적)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-07-d01-drawing-toolbar]
     branch: refactor/lf-d02-auto-patterns
-    pull_requests: []
+    pull_requests: [55]
     evidence:
       - kind: parity-check
         locator: "useAutoPatterns.ts 990 → 695줄, 새 파일 chart/hooks/harmonicShapes.ts 304줄(순수 함수 8개). 옛 파일에 없던 줄은 export 8·주석 2·import뿐. 위치를 PLAN의 chart/analysis/가 아니라 chart/hooks/로 바꿈 — AutoShape 타입이 overlays에 있어 analysis→overlays 역방향 import가 생기기 때문(AC-005)"
@@ -52,12 +52,20 @@ deliveries:
   - id: wp-07-d03-order-page
     title: "OrderPage(911) → PositionsPanel · TradeHistoryDrawer · TradeTabBar 컴포넌트 + 호가 폴링 훅 (Mobile 전용)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-07-d02-auto-patterns]
     branch: refactor/lf-d03-order-page
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "OrderPage.tsx 911 → 417줄(삭제 513 + 호출 19줄). components/trade/TradeTabBar(43, props 6)·PositionsPanel(258, 묶음 trade 8·view 5·actions 4)·TradeHistoryDrawer(189, props 7, fmt·ago·outcomeLabel 동반)·app/mobile/hooks/useMobileOrderbook(118, 입력 10·반환 12, depthLabelFor 동반). 옛 파일에 없던 줄은 props 타입 선언·export·주석뿐. 표와 다른 점: 훅 위치를 hooks/account/가 아니라 app/mobile/hooks/로(Bitget 거래 뷰 전용 로직이라 앱 소유), 현물 보유·원가 수정 줄은 OrderPage 잔류"
+        revision: working-tree
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "tsc ok · lint 0(경고 237, 불필요 import 6줄 정리) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Mobile 로그인 화면 로드(스타일시트 12). 거래 탭은 로그인 후 사용자 확인. 콘솔의 Binance 418은 거래소 IP 차단(PR #56 참고), 무관"
+        revision: working-tree
+        observed_at: 2026-09-05
   - id: wp-07-d04-market-chart
     title: "MarketChart(1,585) → RSI 페인·랭킹 선·자석/키보드·값 오버레이 effect를 훅으로 (공용, 양 앱 확인)"
     kind: git
@@ -116,7 +124,7 @@ useAutoPatterns의 650줄 effect와 MarketChart의 초기화·데이터 effect�
 - 37~330의 순수 함수(`getHarmonicPatternColor`·`normalizeHarmonicPatternName`·`harmonicPatternKey`·`focusHarmonicPatternKey`·`buildHarmonicLabelStack`·`buildHarmonicTpSlLines`·`buildCompletedEmergingShapes`·`buildTrackerFocusShapes`)를 `chart/hooks/harmonicShapes.ts`로(실행 시 변경: `AutoShape` 타입이 overlays에 있어 analysis/에 두면 역방향 import). React·차트 인스턴스에 의존하지 않는 것만 옮기고, effect 본문은 그대로.
 
 ### wp-07-d03-order-page
-- 컴포넌트: `components/trade/PositionsPanel.tsx`(482~694), `TradeHistoryDrawer.tsx`(696~852), `TradeTabBar.tsx`(367~395). 훅: `hooks/account/useMobileOrderbook.ts`(255~364 호가 폴링·원자 커밋).
+- 컴포넌트: `components/trade/PositionsPanel.tsx`(482~694), `TradeHistoryDrawer.tsx`(696~852), `TradeTabBar.tsx`(367~395). 훅: `app/mobile/hooks/useMobileOrderbook.ts`(255~364 호가 폴링·원자 커밋; 실행 시 hooks/account/ 대신 앱 폴더로 — Bitget 거래 뷰 전용).
 - Mobile 로그인 후 거래 탭·포지션·거래내역·호가 묶음 확인.
 
 ### wp-07-d04-market-chart
