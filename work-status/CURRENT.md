@@ -14,15 +14,14 @@
 - 배포 전 품질 정리 완료(2026-09-03): README, CI lint(error 0·warning baseline 320), API test(H2 test 프로필), Ruleset `main-protection`.
 - `apps/web` 폴더 구조 재편 완료(2026-09-03, `wp-03-web-structure`, PR #24~#30): `app/{mobile,desktop}` · `chart` · `hooks/{market,account,ui}` · `api/{client,server,exchange}` · `shared`. 의존 방향 규칙은 `docs/PROJECT.md`.
 - `apps/web` CSS 정리 완료(2026-09-04, `wp-04-css-cleanup`, PR #32~#37): 미사용 242 규칙 삭제, labs 전용 148 규칙 `labs/trading/web/src/styles/`로 보존, 컴포넌트 옆 CSS 13개 파일. `mobile.css` 6,389→1,661줄, `desktop.css` 2,361→544줄.
-- 프로젝트가 지금 달성하려는 결과: `web → desktop` 이름 통일(`wp-05-desktop-naming`) — 파일·식별자·빌드 이름. URL `/web`은 T-05 배포에서. 그 다음 큰 파일 분해(T-04d, `WebApp.tsx`→`DesktopApp.tsx`부터). 사용자와 Delivery 단위로 진행.
+- 프로젝트가 지금 달성하려는 결과: `web → desktop` 이름 통일(`wp-05-desktop-naming`) — 파일·식별자·빌드 이름. URL `/web`은 T-05 배포에서. 그 다음 큰 파일 분해(T-04d, `DesktopApp.tsx`부터). 사용자와 Delivery 단위로 진행.
 - 완료 기준: Milestone `desktop-naming-done` (잔여 `web` grep이 예외 4종뿐, Gate 유지, 문서 일치, 화면 확인).
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. `wp-05-d01-source` (PLAN 이름 규칙 표 확정 후 rename)
-2. `wp-05-d02-build` (진입점·빌드·CI·ops 이름)
+1. Milestone `desktop-naming-done` — 사용자 Desktop 화면 확인 후 wp-05 닫기
 
 ## Deferred
 

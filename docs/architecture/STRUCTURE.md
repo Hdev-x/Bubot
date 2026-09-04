@@ -19,11 +19,11 @@ Bubot/
 │   │       └── */*Mapper.xml      MyBatis 매퍼
 │   └── web/                       React 19 · TypeScript · Vite · Vitest
 │       ├── vite.config.js         Mobile 진입점 (/mobile, PWA)
-│       ├── vite.config.web.js     Desktop 진입점 (/web)
+│       ├── vite.config.desktop.js Desktop 진입점 (desktop.html, URL /web)
 │       └── src/                   계층 우선: app → chart/hooks → api → shared
 │           ├── app/
-│           │   ├── mobile/        main·App, pages/ 5, components/(sheets·coin-list·trade), styles/mobile.css
-│           │   └── desktop/       main·WebApp·WebLogin·WebSignup, panels/ 7, styles/desktop.css
+│           │   ├── mobile/        main·App, pages/ 5(+css), components/(sheets·coin-list·trade, 각 폴더 css), styles/mobile.css
+│           │   └── desktop/       main·DesktopApp·DesktopLogin·DesktopSignup(+css), panels/ 7(+panels.css), styles/desktop.css
 │           ├── chart/             MarketChart, overlays/ hooks/ indicators/ settings/ drawing/ analysis/(루트 shared 재수출)
 │           ├── hooks/             market/(시세·호가·정밀도) account/(계좌·관심) ui/(persist·scroll·poll)
 │           ├── api/               client.ts(fetch·토큰), server/(Spring 컨트롤러 1:1), exchange/(bitget·binance·krw 직접 호출)

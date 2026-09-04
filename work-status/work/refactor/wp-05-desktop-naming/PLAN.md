@@ -34,11 +34,11 @@ deliveries:
   - id: wp-05-d02-build
     title: "진입점·빌드 이름 — web.html, vite.config.web.js, build:web, dist-web, CI·ops 스크립트"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-05-d01-source]
     branch: refactor/naming-d02-build
-    pull_requests: []
+    pull_requests: [41]
     evidence:
       - kind: parity-check
         locator: "git mv web.html→desktop.html, vite.config.web.js→vite.config.desktop.js. package.json(bubot-web, dev:desktop, build:desktop), eslint ignores·.gitignore(dist-desktop·.vite-desktop), ci.yml(build:desktop), ops/front-end.sh(config·문구), ops/deploy.sh(build:desktop·dist-desktop·desktop.html→index.html, static/web 경로 유지). base '/web/'·URL 유지. dev 리라이트를 쿼리스트링 포함 경로로 확장"
@@ -51,12 +51,20 @@ deliveries:
   - id: wp-05-d03-docs
     title: "문서 갱신, web-mockup.html 처리, 잔여 'web' 목록 확정"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-05-d02-build]
     branch: docs/naming-d03
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: document
+        locator: "COMMANDS·README·GIT-WORKFLOW·STRUCTURE 트리·ROADMAP·CURRENT 갱신. web-mockup.html → docs/design/desktop-mockup.html(사용자 결정: 이동), DESIGN.md에 항목"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "잔여 grep(git grep -niE '\\bweb\\b|web[-.]|Web[A-Z]' apps/web ops .github, WebSocket·apps/web 경로·URL /web·labs 제외) = ops/deploy.sh의 Tomcat WEBAPPS 변수 4줄뿐(서버 경로, 무관). AC-001 충족"
+        revision: working-tree
+        observed_at: 2026-09-04
 milestones:
   - id: desktop-naming-done
     title: "이름 통일 완료"
@@ -104,7 +112,7 @@ extensions: {}
 | `dev:web` / `build:web` | `dev:desktop` / `build:desktop` | CI·ops·문서 동시 갱신 |
 | `dist-web` / `.vite-web` | `dist-desktop` / `.vite-desktop` | eslint ignores·.gitignore·deploy.sh 동시 갱신 |
 | `bullum-web` (package name) | `bubot-web` | OQ-10 Bullum 문구의 일부. `web`은 프론트엔드 뜻이라 유지 |
-| `web-mockup.html` | 삭제 또는 `docs/design/`으로 이동 | 디자인 시안 파일. d03에서 사용자 결정 |
+| `web-mockup.html` | `docs/design/desktop-mockup.html`로 이동 | 디자인 시안 파일. 2026-09-04 사용자 결정 |
 
 ## 진행 방식
 

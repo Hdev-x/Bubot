@@ -48,13 +48,13 @@ cd apps/api && ./gradlew bootRun
 
 # Web — Mobile 5175, Desktop 5174
 cd apps/web && npm ci && npm run dev        # Mobile
-cd apps/web && npm run dev:web              # Desktop
+cd apps/web && npm run dev:desktop          # Desktop
 ```
 
 검증 명령과 프로필 옵션은 [docs/COMMANDS.md](docs/COMMANDS.md)에 있다.
 
 ```bash
-cd apps/web && npm test && npm run build && npm run build:web
+cd apps/web && npm test && npm run build && npm run build:desktop
 cd apps/api && ./gradlew compileJava bootWar -x test
 ```
 
