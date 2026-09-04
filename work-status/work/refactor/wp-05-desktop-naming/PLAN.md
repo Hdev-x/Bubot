@@ -17,11 +17,11 @@ deliveries:
   - id: wp-05-d01-source
     title: "app/desktop 파일·컴포넌트 이름 — Web* → Desktop* 또는 접두어 제거"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: []
     branch: refactor/naming-d01-source
-    pull_requests: []
+    pull_requests: [40]
     evidence:
       - kind: parity-check
         locator: "git mv 10개(DesktopApp·DesktopLogin·DesktopSignup +css, panels/MarketPanel·WatchlistPanel·FavoritesPanel·DrawingToolbar·RsiSettingsPanel), 식별자 12종 단어 경계 치환 13 파일 47줄, labs 변경 0(snapFloat 경로 유지). app/desktop에 Web* 식별자 0. 표와 다른 점: Watchlist·RsiSettings는 기존 타입 이름과 충돌해 *Panel 접미어"
@@ -34,12 +34,20 @@ deliveries:
   - id: wp-05-d02-build
     title: "진입점·빌드 이름 — web.html, vite.config.web.js, build:web, dist-web, CI·ops 스크립트"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-05-d01-source]
     branch: refactor/naming-d02-build
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "git mv web.html→desktop.html, vite.config.web.js→vite.config.desktop.js. package.json(bubot-web, dev:desktop, build:desktop), eslint ignores·.gitignore(dist-desktop·.vite-desktop), ci.yml(build:desktop), ops/front-end.sh(config·문구), ops/deploy.sh(build:desktop·dist-desktop·desktop.html→index.html, static/web 경로 유지). base '/web/'·URL 유지. dev 리라이트를 쿼리스트링 포함 경로로 확장"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "lint 0 · tests 22 · build · build:desktop(dist-desktop/desktop.html) · 번들 문자열 0 · labs tsc. Desktop dev 서버를 vite.config.desktop.js로 재기동: /web/ 와 /web/?r=2 모두 desktop.html(main.tsx desktop) 서빙, 차트 렌더링. Mobile 5175 200"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-05-d03-docs
     title: "문서 갱신, web-mockup.html 처리, 잔여 'web' 목록 확정"
     kind: git
