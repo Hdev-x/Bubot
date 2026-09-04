@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-07-large-files
 title: 큰 파일 분해 나머지 — DrawingToolbar · useAutoPatterns · OrderPage · MarketChart
 workstream: refactor
-state: active
+state: completed
 updated: 2026-09-05
 depends_on: [wp-06-desktop-app-split]
 supersedes: []
@@ -69,11 +69,11 @@ deliveries:
   - id: wp-07-d04-market-chart
     title: "MarketChart(1,585) → RSI 페인·랭킹 선·자석/키보드·값 오버레이 effect를 훅으로 (공용, 양 앱 확인)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-07-d03-order-page]
     branch: refactor/lf-d04-market-chart
-    pull_requests: []
+    pull_requests: [58]
     evidence:
       - kind: parity-check
         locator: "MarketChart.tsx 1,585 → 1,332줄(삭제 266 + 훅 호출 13줄). chart/hooks/useDrawingMagnet(70, 반환 magnetRef·snapPriceRef)·useRsiPane(135, 반환 ensureRsiSeries — 차트 초기화 effect가 씀)·useValueOverlay(89)·useRankLines(44, RANK_TIERS·RankLine 동반). 옛 파일에 없던 줄은 훅 시그니처·타입·return뿐. effect 본문·의존성 배열 변경 0. 순서 변화: 키보드 effect가 차트 초기화 effect보다 앞으로, RSI 데이터 effect가 거래량 effect보다 앞으로(독립 대상이라 영향 없음). exhaustive-deps 경고 +12(ref props)"
@@ -86,13 +86,21 @@ deliveries:
 milestones:
   - id: large-files-split-done
     title: "큰 파일 분해 완료"
-    state: pending
+    state: passed
     depends_on: [wp-07-d04-market-chart]
     acceptance:
       - "GATE-AC-001: AC-001·AC-003·AC-005 자동 검사(줄 수 표, Gate, import 방향 grep)."
       - "GATE-AC-002: 사용자가 Desktop·Mobile 로그인 후 차트(지표·RSI·드로잉·자석·신뢰선), Mobile 거래 탭(포지션·거래내역·호가 묶음), Desktop 드로잉 설정 다이얼로그를 육안 확인."
     unlocks: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "GATE-AC-001: main 05180b2 — DrawingToolbar 641→삭제(133·147·373·3), useAutoPatterns 990→695(+304), OrderPage 911→417(+43·258·189·118), MarketChart 1,585→1,332(+70·135·89·44). 새 파일 15개 모두 400줄 이하. 각 PR tsc·lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success. import 방향 역방향 grep 0"
+        revision: 05180b2
+        observed_at: 2026-09-05
+      - kind: manual-check
+        locator: "GATE-AC-002: 사용자가 Delivery마다 확인(2026-09-05) — Desktop 드로잉 플로팅바·설정(d01), 양 앱 하모닉·ABC 패턴(d02), Mobile 거래 탭·호가·포지션·거래내역(d03), 양 앱 RSI·신뢰선·자석·현재가 태그(d04)"
+        revision: 05180b2
+        observed_at: 2026-09-05
 extensions: {}
 ---
 
