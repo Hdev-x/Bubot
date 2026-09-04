@@ -18,11 +18,11 @@ deliveries:
   - id: wp-07-d01-drawing-toolbar
     title: "DrawingToolbar(641) → ColorPicker · DrawingFloatBar · DrawingSettings 3파일 (Desktop 전용, 기계적)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: []
     branch: refactor/lf-d01-drawing-toolbar
-    pull_requests: []
+    pull_requests: [54]
     evidence:
       - kind: parity-check
         locator: "DrawingToolbar.tsx(641) 삭제 → panels/drawing/ColorPicker(133)·DrawingFloatBar(147)·DrawingSettings(373)·types(3). 옛 파일에 없던 줄은 export 추가 5줄·주석 3줄·GetManager 타입 재선언 1줄뿐. ChartStage import 경로 2줄 변경"
@@ -35,12 +35,20 @@ deliveries:
   - id: wp-07-d02-auto-patterns
     title: "useAutoPatterns(990) → 순수 헬퍼 300줄을 chart/analysis/harmonicShapes.ts로 (공용, 기계적)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-07-d01-drawing-toolbar]
     branch: refactor/lf-d02-auto-patterns
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "useAutoPatterns.ts 990 → 695줄, 새 파일 chart/hooks/harmonicShapes.ts 304줄(순수 함수 8개). 옛 파일에 없던 줄은 export 8·주석 2·import뿐. 위치를 PLAN의 chart/analysis/가 아니라 chart/hooks/로 바꿈 — AutoShape 타입이 overlays에 있어 analysis→overlays 역방향 import가 생기기 때문(AC-005)"
+        revision: working-tree
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "tsc ok · lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop 차트 렌더링·Mobile 로그인 화면 로드, 콘솔 오류는 로그인 전 ws-coin과 Binance REST 418(거래소 측 rate limit, 무관)뿐. 하모닉 패턴 표시는 관리자 로그인 후 양 앱 사용자 확인"
+        revision: working-tree
+        observed_at: 2026-09-05
   - id: wp-07-d03-order-page
     title: "OrderPage(911) → PositionsPanel · TradeHistoryDrawer · TradeTabBar 컴포넌트 + 호가 폴링 훅 (Mobile 전용)"
     kind: git
@@ -105,7 +113,7 @@ useAutoPatterns의 650줄 effect와 MarketChart의 초기화·데이터 effect�
 - `panels/drawing/ColorPicker.tsx`(색 유틸 + `ColorPicker`·`ColorSwatch`·`LinePreview`·`PALETTE`), `panels/drawing/DrawingFloatBar.tsx`, `panels/drawing/DrawingSettings.tsx`. `ChartStage`의 import 경로만 바뀐다.
 
 ### wp-07-d02-auto-patterns
-- 37~330의 순수 함수(`getHarmonicPatternColor`·`normalizeHarmonicPatternName`·`harmonicPatternKey`·`focusHarmonicPatternKey`·`buildHarmonicLabelStack`·`buildHarmonicTpSlLines`·`buildCompletedEmergingShapes`·`buildTrackerFocusShapes`)를 `chart/analysis/harmonicShapes.ts`로. React·차트 인스턴스에 의존하지 않는 것만 옮기고, effect 본문은 그대로.
+- 37~330의 순수 함수(`getHarmonicPatternColor`·`normalizeHarmonicPatternName`·`harmonicPatternKey`·`focusHarmonicPatternKey`·`buildHarmonicLabelStack`·`buildHarmonicTpSlLines`·`buildCompletedEmergingShapes`·`buildTrackerFocusShapes`)를 `chart/hooks/harmonicShapes.ts`로(실행 시 변경: `AutoShape` 타입이 overlays에 있어 analysis/에 두면 역방향 import). React·차트 인스턴스에 의존하지 않는 것만 옮기고, effect 본문은 그대로.
 
 ### wp-07-d03-order-page
 - 컴포넌트: `components/trade/PositionsPanel.tsx`(482~694), `TradeHistoryDrawer.tsx`(696~852), `TradeTabBar.tsx`(367~395). 훅: `hooks/account/useMobileOrderbook.ts`(255~364 호가 폴링·원자 커밋).
