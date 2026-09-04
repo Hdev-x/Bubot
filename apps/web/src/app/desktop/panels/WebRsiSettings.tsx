@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { RsiSettings, RsiGuideLine } from '../../../shared/utils/rsiCandles';
+import './panels.css';
 
 // 색 유틸 — rgba/hex 문자열 ↔ {hex, alpha}
 function parseColor(color: string): { hex: string; alpha: number } {

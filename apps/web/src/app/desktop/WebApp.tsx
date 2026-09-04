@@ -53,6 +53,7 @@ import type { DepthPrecision } from '../../api/exchange/bitget/bitgetMergeDepth'
 import type { MainPosition } from '../../api/server/mainTradeApi';
 import type { SpotHolding } from '../../api/server/spotTradeApi';
 import type { Candle } from '../../shared/types/market';
+import './WebApp.css';
 
 // ── 차트 — 타임프레임 맵(버튼 라벨 → granularity/channel) ──
 type Tf = { label: string; value: string; granularity: string; channel: string; category: 'min' | 'hour' | 'day' | 'week' | 'month' };

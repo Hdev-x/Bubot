@@ -65,11 +65,11 @@ deliveries:
   - id: wp-04-d03-mobile
     title: "Mobile 컴포넌트별 CSS 분리 — pages·trade·coin-list·sheets, mobile.css는 셸·토큰만"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-04-d02-chart]
     branch: refactor/css-d03-mobile
-    pull_requests: []
+    pull_requests: [36]
     evidence:
       - kind: parity-check
         locator: "767 규칙 → mobile.css 338 + 8개 파일 429 (coin-list 97·trade 90·AssetsPage 54·OrderPage 49·sheets 45·components 43·CoinChartPage 42·CoinListPage 9), 합계 767 보존, 새 줄 0. 목적지는 '클래스를 쓰는 컴포넌트 폴더'로 결정, 여러 폴더가 쓰는 규칙·요소 선택자·LoginPage(WebLogin과 공유)는 셸 잔류"
@@ -86,12 +86,20 @@ deliveries:
   - id: wp-04-d04-desktop
     title: "Desktop 컴포넌트별 CSS 분리 — panels·WebApp 셸·로그인, desktop.css는 셸·토큰만"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-04-d03-mobile]
     branch: refactor/css-d04-desktop
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "550 규칙 → desktop.css 156 + WebApp.css 195 + panels/panels.css 174 + WebLogin.css 2 = 527, 삭제 23은 trade.css·components.css(Desktop이 이미 로드)에 동일 규칙이 있는 복사본. 새 줄 0. 범용 상태 클래스(사용 파일 6개 이상)는 소유자 판정에서 제외"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "정적 안전 검사: 같은 선택자 분리 0, 순서 뒤집힘 후보 1(속성 선택자 오탐, 셸 잔류로 처리). lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. computed style 대조: Desktop 325 중 12 diff는 호가 게이지(실시간)뿐(스타일시트 9개), Mobile 55 요소 해시 기준선과 동일"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-04-d05-tokens
     title: ":root 토큰 비교 후 공통 토큰 처리 (사용자 결정 후 진행, 생략 가능)"
     kind: git

@@ -7,6 +7,7 @@ import type { ExchangeId } from '../../../shared/constants/exchanges';
 import { WebFavoritesPanel } from './WebFavoritesPanel';
 import { snapFloat } from './snapFloat';
 import { useWebFavorites, type Market } from './marketShared';
+import './panels.css';
 
 type Mode = 'float' | 'dock';
 

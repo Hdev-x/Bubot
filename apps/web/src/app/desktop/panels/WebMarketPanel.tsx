@@ -13,6 +13,7 @@ import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
 import type { CoinTicker } from '../../../shared/types/market';
 import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../shared/constants/exchanges';
 import { SortIcon, WebSymbolRow, loadExchangeTickers, useWebFavorites, useCoinLogos, type Market } from './marketShared';
+import './panels.css';
 
 type Filter = 'spot' | 'futures';
 type SortKey = 'name' | 'volume' | 'price' | 'change';
