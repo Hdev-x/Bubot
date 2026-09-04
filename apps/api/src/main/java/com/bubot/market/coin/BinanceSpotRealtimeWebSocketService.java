@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
+import java.time.Duration;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -34,13 +35,16 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final ObjectMapper objectMapper;
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
     private final StringBuilder messageBuffer = new StringBuilder();
     private final AtomicBoolean firstTickerLogged = new AtomicBoolean(false);
     private final Map<String, Map<String, Object>> latestTickers = new ConcurrentHashMap<>();
 
     private volatile WebSocket webSocket;
-    private volatile boolean reconnecting;
+    private final ReconnectPolicy reconnect = new ReconnectPolicy(3_000, 60_000);
     private volatile long lastTickerReceivedAt;
 
     @Value("${app.coin.websocket.enabled:true}")
@@ -65,11 +69,10 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
 
     private synchronized void connect() {
         try {
-            webSocket = httpClient.newWebSocketBuilder()
-                    .buildAsync(BINANCE_SPOT_WS, this)
-                    .join();
+            webSocket = WsConnect.open(httpClient, BINANCE_SPOT_WS, this);
         } catch (Exception e) {
-            log.warn("Binance Spot WS 연결 실패: {}", e.getMessage());
+            reconnect.fail();
+            log.warn("Binance Spot WS 연결 실패({}회째): {}", reconnect.attempts(), e.getMessage());
             scheduleReconnect();
         }
     }
@@ -77,7 +80,7 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
     @Override
     public void onOpen(WebSocket webSocket) {
         webSocket.request(1);
-        reconnecting = false;
+        reconnect.success();
         lastTickerReceivedAt = System.currentTimeMillis();
         subscribeDailyKlines(webSocket);
         log.info("Binance Spot UTC 일봉 WebSocket 연결 완료");
@@ -174,7 +177,7 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
     @Scheduled(fixedDelay = 10_000)
     public void reconnectIfNeeded() {
         WebSocket socket = webSocket;
-        if (!enabled || reconnecting) {
+        if (!enabled || reconnect.isPending()) {
             return;
         }
         if (socket == null || socket.isInputClosed() || socket.isOutputClosed()) {
@@ -191,13 +194,12 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
     }
 
     private void scheduleReconnect() {
-        if (reconnecting) {
-            return;
-        }
-        reconnecting = true;
+        long delay = reconnect.begin();
+        if (delay < 0) return;
+        log.info("Binance Spot WS 재연결 예약({}회째, {}ms 후)", reconnect.attempts(), delay);
         Thread.ofVirtual().start(() -> {
             try {
-                Thread.sleep(3_000);
+                Thread.sleep(delay);
                 connect();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
