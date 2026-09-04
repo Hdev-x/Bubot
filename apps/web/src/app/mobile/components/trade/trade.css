@@ -1,0 +1,671 @@
+/* trade — mobile.css에서 이 컴포넌트가 쓰는 규칙만 옮김 (wp-04 d03). 클래스 이름·값은 그대로. */
+
+/* 검색창(맨 위) + 비트겟 뱃지(오른쪽) 한 줄 — 검색·필터는 고정, 아래 리스트만 스크롤 */
+.trade-symbol-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 8px;
+  flex-shrink: 0;
+}
+
+/* Spot/Futures 마켓 필터 (시트 안 텍스트 탭) */
+.trade-symbol-market-tabs {
+  display: flex;
+  gap: 22px;
+  padding: 4px 18px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.trade-symbol-market-tabs button {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #8a8c90;
+  cursor: pointer;
+  position: relative;
+}
+
+/* 종목명 + per-row 마켓 뱃지 */
+.symbol-row-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* .symbol-row-info span(font-size:12px)보다 specificity 높게 — 부모 클래스로 스코프 */
+.symbol-row-name .trade-row-market-badge {
+  flex: 0 0 auto;
+  padding: 0 3px;
+  border: 1px solid #2b2f36;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #8a8c90;
+  line-height: 1.6;
+  position: relative;
+  top: 1px;
+}
+
+.trade-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  color: #8a8c90;
+  pointer-events: none;
+}
+
+.symbol-row-star {
+  flex-shrink: 0;
+  margin-left: 8px;
+  padding: 4px 0 4px 4px;
+  background: none;
+  border: none;
+  line-height: 1;
+  color: #54565c;       /* 미등록 = 필터색보다 어둡게 */
+  cursor: pointer;
+}
+
+.symbol-row-star svg { display: block; }
+
+.trade-symbol-empty {
+  text-align: center;
+  color: #6b7280;
+  font-size: 13px;
+  padding: 34px 0;
+}
+
+/* 컬럼 헤더 정렬 (Bitget식) */
+.trade-symbol-colhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 6px 18px 8px;
+}
+
+.trade-symbol-colhead .colhead-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trade-symbol-colhead .colhead-group button {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8a8c90;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.trade-symbol-colhead .colhead-arrow { font-size: 9px; opacity: 0.7; }
+
+.trade-symbol-colhead .colhead-sep { color: #3a3f47; font-size: 12px; }
+
+.dropdown-arrow {
+  color: #848e9c;
+  font-size: 14px;
+}
+
+.perpetual-label {
+  font-size: 11px;
+  color: #848e9c;
+  margin: 2px 0 0 0;
+}
+
+.down-pct {
+  color: #f6465d;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.trade-symbol-actions {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+
+.gauge-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.gauge-icon {
+  display: inline-flex;
+  align-items: center;
+  width: 14px;
+  height: 14px;
+  /* 게이지 그림이 위로 쏠려(아래 갭) 떠 보여서 광학적으로 1px 내림 */
+  transform: translateY(1px);
+}
+
+.gauge-text {
+  color: #09d2d5;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.action-icon-btn {
+  color: #f2f3f5;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.more-action-btn {
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.action-icon-btn:hover {
+  color: #ffffff;
+}
+
+/* 좌측: 조회 전용 현황 패널 (주문 티켓 대체 — 비트겟 뷰어) */
+.trade-account-summary {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* 내용 컨테이너 — absolute로 띄워 행 높이에 영향 안 줌(패널=호가창 높이) */
+.tas-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 총자산 가격+통화 묶음 버튼 — 가격 영역도 탭으로 통화 전환되도록 wrapping */
+.tas-hero-toggle {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 리스트 + 스크롤 표시를 담는 영역 */
+.tas-pos-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tas-pos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* 포지션 많으면 패널을 키우지 말고 이 영역 안에서만 스크롤 */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* 스크롤 표시 — 더 있는 쪽 가장자리에. 위로 더 있으면 상단 ▲, 아래로 더 있으면 하단 ▼ */
+.tas-scroll-ind {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(30, 33, 40, 0.85);
+  color: #b7bdc6;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  /* 페이드 + 슬라이드 — 가장자리에서 12px 밀려 나오며 등장/퇴장 */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease, transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 화살표 회전(맨아래 도달 시 시계방향 180°) — 슬라이드(버튼)와 분리해 충돌 없음 */
+.tas-scroll-ind svg {
+  transition: transform 0.3s ease;
+}
+
+.tas-empty {
+  padding: 22px 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #58606c;
+  background: #14161b;
+  border-radius: 8px;
+}
+
+.arrow-down {
+  color: #848e9c;
+  font-size: 10px;
+}
+
+.funding-value {
+  color: #eaecef;
+  font-weight: 600;
+}
+
+.orderbook-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #848e9c;
+  margin-bottom: 6px;
+}
+
+.book-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.book-row span,
+.book-row strong {
+  z-index: 2;
+  font-size: 10px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+  transform: scaleX(0.95); /* 글자 가로 폭 95% (자간 아님, 글리프 자체를 가로 축소) */
+}
+
+.price-red {
+  color: #f6465d;
+  transform-origin: left;
+}
+
+.price-green {
+  color: #0ecb81;
+  transform-origin: left;
+}
+
+.qty-val {
+  color: #b7bdc6; /* Bitget — 수량은 흰색 아닌 muted 회색 */
+  text-align: right;
+  transform-origin: right;
+}
+
+/* 호가 로딩 스켈레톤 행 — .book-row(height:20px)를 그대로 써 높이 동일, 점프 없음 */
+.book-row-skel {
+  justify-content: space-between;
+}
+
+.bk-skel-price,
+.bk-skel-qty {
+  height: 9px;
+  border-radius: 3px;
+}
+
+.bk-skel-price { width: 44px; }
+
+.bk-skel-qty { width: 52px; }
+
+.gauge-red {
+  background: #f6465d;
+}
+
+.gauge-green {
+  background: #0ecb81;
+}
+
+/* 현재가 / 시장가 영역 */
+.mark-price {
+  padding: 6px 0;
+  display: flex;
+  flex-direction: column;
+  margin: 5px 0;
+}
+
+.price-arrow-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 가격 좌 / 화살표 우 */
+}
+
+.arrow-next {
+  color: #848e9c;
+  font-size: 12px;
+}
+
+/* 강도 비율 바 */
+.book-ratio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  margin-top: 8px;
+}
+
+.ratio-bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 99px;
+  display: flex;
+  overflow: hidden;
+  margin: 0 6px;
+}
+
+.bar-buy {
+  background: #0ecb81;
+  height: 100%;
+}
+
+.bar-sell {
+  background: #f6465d;
+  height: 100%;
+}
+
+.ob-filter-btn {
+  color: #848e9c;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  /* 아이콘을 호가창 왼쪽 라인(가격 텍스트)에 맞춤 */
+  justify-content: flex-start;
+  /* svg 내부 path 여백(viewBox 4/24) 보정 */
+  margin-left: -2px;
+}
+
+.ob-decimals-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #202126;
+  color: #eaecef;
+  border: 0;
+  border-radius: 4px;
+  min-width: 112px;
+  height: 20px;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 호가 단위(묶음) 선택 바텀시트 */
+.ob-depth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: ob-depth-fade 0.15s ease-out;
+}
+
+.ob-depth-sheet {
+  background: #141517; /* Bitget 시트 색에 맞춤(프레임 샘플) */
+  border-radius: 16px 16px 0 0;
+  padding: 8px 0 max(12px, env(safe-area-inset-bottom));
+  animation: ob-depth-slide 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ob-depth-title {
+  margin: 0;
+  padding: 14px 20px 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #eaecef;
+}
+
+.ob-depth-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: 0;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #b7bdc6;
+  cursor: pointer;
+}
+
+/* 포지션 카드 (Bitget 정합) */
+.position-card {
+  /* 가로 패딩 0 — 페이지 거터(16px)에 내용 정렬. 좌우 테두리 없어 붙음 문제 없음 */
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.poscard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.poscard-symbol {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #eaecef;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.poscard-symbol .chev {
+  color: #5e6673;
+  font-size: 16px;
+}
+
+.poscard-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.pc-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #848e9c;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.ordcard-time {
+  font-size: 12px;
+  color: #5e6673;
+}
+
+.poscard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 8px;
+  margin-bottom: 12px;
+}
+
+.pc-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pc-cell.span2 {
+  grid-column: span 2;
+}
+
+.pc-cell.nudge {
+  padding-left: 14px;
+}
+
+/* 매수평균가 직접 입력 — 값/프롬프트 오른쪽에 펜슬 아이콘 */
+.pc-cost-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pc-cost-prompt {
+  color: #6a7280;
+}
+
+.pc-edit-ico {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #848e9c;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pc-edit-ico:active {
+  color: #eaecef;
+}
+
+/* 매수평균가 입력 바텀시트 본문 (.ob-depth-overlay/sheet 위에 얹음) */
+.spot-cost-body {
+  padding: 2px 20px 8px;
+}
+
+.spot-cost-hint {
+  margin: 0 0 16px;
+  font-size: 12px;
+  color: #848e9c;
+  line-height: 1.55;
+}
+
+.spot-cost-hint b {
+  color: #eaecef;
+  font-weight: 700;
+}
+
+.spot-cost-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.spot-cost-field > span {
+  font-size: 12px;
+  color: #848e9c;
+}
+
+.spot-cost-field input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #1b1e24;
+  border: 1px solid #3a424c;
+  border-radius: 8px;
+  color: #eaecef;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 14px;
+}
+
+.spot-cost-field input:focus {
+  outline: none;
+  border-color: #ffffff;
+}
+
+.spot-cost-field input::-webkit-outer-spin-button,
+.spot-cost-field input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.spot-cost-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.spot-cost-save {
+  flex: 1;
+  background: #ffffff;
+  color: #14161a;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.spot-cost-save:disabled {
+  opacity: 0.45;
+}
+
+.spot-cost-del {
+  background: none;
+  border: 1px solid #2b3139;
+  color: #f6465d;
+  border-radius: 8px;
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.spot-cost-del:disabled {
+  opacity: 0.45;
+}
+
+.poscard-sub {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.poscard-sub .sub-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.poscard-sub .tpsl-sep { color: #5e6673; margin: 0 2px; }

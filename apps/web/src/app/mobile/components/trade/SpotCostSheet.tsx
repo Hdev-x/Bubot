@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { SpotHolding } from '../../../../api/server/spotTradeApi';
 import { saveSpotManualCost, deleteSpotManualCost } from '../../../../api/server/spotTradeApi';
+import './trade.css';
 
 function fmtPrice(n: number): string {
   if (!Number.isFinite(n) || n <= 0) return '—';

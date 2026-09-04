@@ -1,0 +1,299 @@
+/* CoinChartPage — mobile.css에서 이 컴포넌트가 쓰는 규칙만 옮김 (wp-04 d03). 클래스 이름·값은 그대로. */
+
+.coin-chart-page {
+  color: var(--chart-text-main, #111);
+  background: var(--chart-bg, #fff);
+  height: 100vh;       /* 폴백: lvh 미지원 구형 기기 */
+  height: 100lvh;      /* iOS PWA: 항상 최대(꽉 찬) 높이로 고정 → 첫 실행 탭바 뜸 방지 */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding-top: max(18px, env(safe-area-inset-top));
+  padding-bottom: calc(52px + env(safe-area-inset-bottom) + 48px);
+}
+
+.chart-symbol-bar {
+  height: 60px;
+  padding: 0 16px;
+  background: var(--chart-bg, #fff);
+  border-bottom: 1px solid var(--chart-border, #e8e8e8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.chart-symbol-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.chart-symbol-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chart-coin-logo {
+  width: 22px;
+  height: 22px;
+  margin-right: 3px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.chart-coin-logo img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+}
+
+.chart-coin-logo-fallback {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chart-symbol-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--chart-text-main, #111);
+}
+
+/* 거래소 뱃지 — 트레이드 페이지와 동일 느낌(로고 + 브랜드색 + 옅은 틴트, 테두리 없음) */
+.chart-exchange-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 5px;
+  padding: 2px 5px 2px 3px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.chart-exchange-logo {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+}
+
+.chart-exchange-name {
+  position: relative;
+  top: -1px;
+}
+
+.chart-exchange-badge.is-bitget {
+  background: rgba(0, 240, 255, 0.08);
+  color: #00f0ff; /* Bitget 브랜드 시안 */
+}
+
+.chart-exchange-badge.is-binance {
+  background: rgba(240, 185, 11, 0.1);
+  color: #f0b90b; /* Binance 브랜드 골드 */
+}
+
+.chart-symbol-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.chart-live-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--chart-text-main, #111);
+  line-height: 1.2;
+}
+
+.chart-change-info {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.chart-only-surface {
+  flex: 1;
+  background: var(--chart-bg, #fff);
+  min-height: 0;
+}
+
+.full-chart {
+  height: 100%;
+}
+
+.chart-tool-strip {
+  left: 0;
+  right: 0;
+  bottom: calc(52px + env(safe-area-inset-bottom));
+  z-index: 16;
+  background: #000;
+  border-top: 1px solid #252525;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  overflow: hidden;
+}
+
+.tool-fixed-area {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.tool-icons-wrapper {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.tool-icons-wrapper::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  /* 시작 부분을 솔리드로 잠깐 유지 → 구분선 바로 뒤 틈으로 스크롤 내용이 비치지 않게 */
+  background: linear-gradient(to right, #000 0, #000 35%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tool-icons-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  background: linear-gradient(to left, #000, transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tool-scroll-container {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  /* 왼쪽 패딩으로 첫 아이콘(그리기)을 좌측 페이드(::before 28px) 밖으로 밀어냄 */
+  padding: 0 12px 0 12px;
+}
+
+.tool-scroll-container::-webkit-scrollbar { display: none; }
+
+.tool-group.symbol-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 0 12px;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+.tool-group.symbol-time strong {
+  max-width: 113px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
+  mask-image: linear-gradient(to right, black 80%, transparent 100%);
+}
+
+.chart-tool-strip strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.chart-tool-strip span {
+  font-size: 13px;
+  font-weight: 400;
+  color: #9a9a9a;
+  white-space: nowrap;
+}
+
+.tool-divider {
+  width: 1px;
+  height: 12px;
+  background: #333;
+  flex-shrink: 0;
+  margin: 0 4px;
+}
+
+/* 스크롤 영역 페이드와 딱 붙는 구분선 — 오른쪽 마진 제거 */
+.tool-divider--flush {
+  margin-right: 0;
+}
+
+.tool-btn {
+  color: #c8c8c8;
+  background: transparent;
+  border: none;
+  min-width: 44px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 0;
+}
+
+.history-tool-btn:disabled {
+  color: #666;
+  cursor: default;
+}
+
+@media (max-width: 410px) {
+    /* 차트 페이지 모바일 최적화 */
+    .chart-symbol-bar {
+      height: 50px;
+      padding: 0 12px;
+    }
+    .chart-symbol-name {
+      font-size: 16px;
+    }
+    .chart-live-price {
+      font-size: 16px;
+    }
+    .chart-change-info {
+      font-size: 11px;
+    }
+    .chart-tool-strip {
+      height: 52px; /* 툴바 높이 축소 */
+    }
+    .tool-btn {
+      min-width: 44px;
+      height: 38px;
+    }
+    .tool-group.symbol-time strong {
+      font-size: 16px;
+    }
+    .tool-group.symbol-time span {
+      font-size: 16px;
+    }
+    .chart-only-surface {
+      height: calc(100dvh - 50px - 48px - 52px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+    }
+}

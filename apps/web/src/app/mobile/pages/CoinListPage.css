@@ -1,0 +1,66 @@
+/* CoinListPage — mobile.css에서 이 컴포넌트가 쓰는 규칙만 옮김 (wp-04 d03). 클래스 이름·값은 그대로. */
+
+.tv-list-header {
+  height: calc(60px + env(safe-area-inset-top));
+  padding: max(0px, env(safe-area-inset-top)) 20px 8px;
+  grid-template-columns: 48px 1fr 48px;
+  align-items: end;
+  display: grid;
+}
+
+.tv-list-header button {
+  color: #e8eaee;
+  background: 0 0;
+  border: 0;
+  font-size: 30px;
+}
+
+.tv-list-header strong {
+  letter-spacing: 0;
+  justify-self: center;
+  font-size: 30px;
+}
+
+.market-asset-summary {
+  /* 자산 탭 총자산 영역과 동일한 상하 여백(위 16/아래 24) */
+  padding: 16px 20px 24px;
+  background: #000;
+}
+
+.market-asset-summary p {
+  margin: 7px 0 0;
+  color: #8b95a1;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.botz-brand {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  justify-self: center;
+}
+
+.at-brand-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+  background-color: #000;
+  border-radius: 50%;
+}
+
+/* Sticky Header Section */
+.sticky-top-section {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #000;
+}
+
+.sticky-tabs-section {
+  position: sticky;
+  top: calc(60px + env(safe-area-inset-top));
+  z-index: 90;
+  background: #000;
+}

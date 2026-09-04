@@ -22,6 +22,7 @@ import type { Candle } from '../../../shared/types/market';
 import type { TrackerState } from '../../../shared/types/bot';
 import binanceLogo from '../../../assets/exchanges/binance.svg';
 import bitgetLogo from '../../../assets/exchanges/bitget.svg';
+import './CoinChartPage.css';
 
 type Props = {
   active?: boolean; // 차트 화면이 떠 있을 때만 실시간 캔들 구독·카운트다운 타이머 작동

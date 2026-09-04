@@ -25,6 +25,7 @@ import { useRealtimePrices } from '../../../hooks/market/useRealtimePrices';
 import { useFundingRate } from '../../../hooks/market/useFundingRate';
 import type { DepthPrecision } from '../../../api/exchange/bitget/bitgetMergeDepth';
 import type { TradeLog } from '../../../shared/types/bot';
+import './OrderPage.css';
 
 // 호가 단위(묶음) 라벨 — 심볼 최소 틱(소수점)을 1번으로, ×10씩. scale0=최소틱 … scale3=틱×1000.
 // 예: BTC(소수1자리) → 0.1/1/10/100, ETH(소수2자리) → 0.01/0.1/1/10

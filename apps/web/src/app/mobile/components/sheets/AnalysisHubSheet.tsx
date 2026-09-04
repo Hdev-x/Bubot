@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
+import './sheets.css';
 
 type Props = {
   isOpen: boolean;

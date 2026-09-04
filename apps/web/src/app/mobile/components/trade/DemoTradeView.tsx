@@ -6,6 +6,7 @@ import { fetchBinanceSpotTickers, fetchBinanceFuturesTickers } from '../../../..
 import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../../../api/exchange/krw/krwTickers';
 import { EXCHANGES, type ExchangeId } from '../../../../shared/constants/exchanges';
 import type { CoinTicker } from '../../../../shared/types/market';
+import './trade.css';
 
 type Market = 'spot' | 'futures';
 type Level = { price: number; size: number };

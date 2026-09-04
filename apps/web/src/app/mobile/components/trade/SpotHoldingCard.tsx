@@ -4,6 +4,7 @@
 import type { SpotHolding } from '../../../../api/server/spotTradeApi';
 import { useSettings, currencyLabel } from '../../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
+import './trade.css';
 
 function fmtPrice(n: number): string {
   if (!Number.isFinite(n)) return '—';

@@ -1,4 +1,5 @@
 import botzMark from '../../../assets/botz-mark.svg';
+import './components.css';
 
 export type AppRoute = '/' | '/chart' | '/orders' | '/strategy' | '/assets';
 

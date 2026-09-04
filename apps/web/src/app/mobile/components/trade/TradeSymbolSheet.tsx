@@ -10,6 +10,7 @@ import { usePricePrecision } from '../../../../hooks/market/usePricePrecision';
 import { formatPriceWithDecimals } from '../../../../shared/utils/coinFormatters';
 import type { CoinTicker } from '../../../../shared/types/market';
 import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../../shared/constants/exchanges';
+import './trade.css';
 
 type Market = 'spot' | 'futures';
 type Filter = 'favorites' | 'spot' | 'futures';

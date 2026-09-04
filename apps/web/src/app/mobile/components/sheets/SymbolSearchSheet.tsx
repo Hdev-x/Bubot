@@ -11,6 +11,7 @@ import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatt
 import { CoinLogo } from '../coin-list/CoinLogo';
 import binanceLogo from '../../../../assets/exchanges/binance.svg';
 import bitgetLogo from '../../../../assets/exchanges/bitget.svg';
+import './sheets.css';
 
 type Props = {
   isOpen: boolean;
