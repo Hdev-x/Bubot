@@ -47,6 +47,12 @@ Bubot/
 └── AGENTS.md  CLAUDE.md           AI 작업 규칙
 ```
 
+## `apps/web/src/app`이 둘로 나뉜 이유
+
+Mobile(탭 앱)과 Desktop(패널 배치)은 화면이 다르지만 차트·훅·API 68개 파일을 같은 동작으로 쓴다. 정석대로면 `apps/web-mobile`·`apps/web-desktop`과 `packages/{chart,hooks,api}`로 쪼개지만,
+혼자 관리하는 Beta에서는 워크스페이스·의존성 중복·CI 2배·배포 2벌의 비용이 이득보다 크다. 그래서 Vite 프로젝트 하나에 진입점 둘을 두고 `app/{mobile,desktop}`로 앱 전용 코드만 가르고
+나머지는 `src/` 바로 아래 계층(`chart/`·`hooks/`·`api/`·`shared/`)에 한 벌로 둔다. 나중에 쪼갤 때는 이 계층 폴더가 그대로 `packages/`가 된다. CSS는 쓰는 컴포넌트 옆에 둔다(D-20260904-01).
+
 ## 의존 방향
 
 - `apps/web → shared`, `labs/trading/worker → shared`, `ops/verify → labs/trading/worker · shared`

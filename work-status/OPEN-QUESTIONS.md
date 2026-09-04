@@ -15,8 +15,6 @@
 
 ## 막지는 않음
 
-- 질문: OQ-20260903-12 지표 시트(`IndicatorSheet`)·OHLC 오버레이 CSS가 Mobile·Desktop에 서로 다른 복사본으로 있다(33% 차이). 공통부 추출 + 앱별 override로 통합할지, 앱별로 그대로 둘지 | `wp-03-web-structure` d03 노트
-
 - 질문: OQ-20260903-11 lint warning baseline 320개(`no-explicit-any` 145, `react-hooks/refs` 82, `set-state-in-effect` 44, `no-useless-assignment` 8 등)를 어느 WP에서 줄이고 언제 `error`로 올릴지 | `apps/web/eslint.config.js`
 
 - 질문: OQ-20260903-10 코드·문구에 남은 "Bullum"(`apps/web/package.json` name, `document.title`, 푸터)을 Bubot으로 통일할지 | D-20260903-06

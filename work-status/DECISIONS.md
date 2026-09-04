@@ -36,6 +36,8 @@ YYYY-MM-DD | D-YYYYMMDD-NN | kind | 결정 | 이유 | 영향 범위
 
 - 2026-09-03 | D-20260903-09 | durable | `apps/web` 폴더 구조를 계층 우선으로 재편한다 — `app/{mobile,desktop}`(진입점·화면·앱별 CSS), `chart/`(공용 차트 스택), `api/{client,server,exchange}`(누구를 부르는가 기준), `hooks/{market,account,ui}`, `shared/`(types·constants·contexts·utils·tokens.css). 전역 `components/`는 두지 않고 공용 UI는 `chart/` 또는 `shared/ui/`. CSS는 쓰는 코드 옆, 클래스 이름은 유지 | 기능이 3개뿐이라 기능 우선(features/)보다 백엔드 계층과 같은 감각의 계층 우선이 단순하고 이동량이 작다. api는 서버 컨트롤러와 1:1 대조가 되도록 server/exchange로 나눈다 | `docs/architecture/WEB-STRUCTURE-REVIEW.md` 4절, `wp-03-web-structure`
 - 2026-09-03 | D-20260903-10 | durable | `apps/web/src/chart/analysis/` 재수출 4개(chartIndicators·harmonicPattern·elliottWavePattern·pivots)는 유지한다. 루트 `shared/` 계산 엔진은 이 폴더를 통해서만 가져온다 | 5~10줄짜리지만 `../../../../../shared/...` 경로가 화면 코드에 퍼지는 것을 막는 단일 통로다. importer 8곳이 이미 이 경로를 쓴다 | `docs/PROJECT.md` 의존 방향, PR #30
+- 2026-09-04 | D-20260904-01 | durable | CSS는 쓰는 컴포넌트 옆에 둔다(co-location). 앱 `styles/`에는 `:root` 토큰·reset·앱 셸만 남기고, 페이지·컴포넌트·공용 차트 규칙은 각 `.tsx` 옆 `.css`로 옮겨 그 컴포넌트가 import한다. 지표 시트처럼 두 앱이 같은 값으로 쓰는 규칙만 `chart/` 옆으로 모으고, 앱마다 다른 값(OHLC 숫자 폭·삭제 버튼 위치 등 5개)은 앱 CSS에 남긴다(OQ-20260903-12 종결) | React 관행이고, 컴포넌트를 지우면 CSS도 같이 사라져 미사용 규칙이 다시 쌓이지 않는다. `styles/`에 몰아두는 방식(A)으로 바꾸는 것은 `git mv`+import 경로 수정뿐이라 되돌리기 쉽다 | `wp-04-css-cleanup` d02~d04, `docs/architecture/WEB-CSS-REVIEW.md`
+- 2026-09-04 | D-20260904-02 | durable | labs 전용 CSS(자동매매·Paper·Backtest 화면만 쓰는 규칙)는 삭제하지 않고 `labs/trading/web/src/styles/`로 옮겨 보존한다 | 모의투자 단계에서 화면을 되살릴 계획이라 코드와 CSS를 같은 곳에 둔다 | PR #34
 
 ## 대체된 결정
 
