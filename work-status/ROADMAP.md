@@ -24,7 +24,7 @@
 - [x] T-04b `apps/web` 폴더 구조 재편(계층 우선 + 앱별 분리 + CSS 동반) | `plan:refactor/wp-03-web-structure`
 - [x] T-04c `apps/web` CSS 정리(미사용 규칙 삭제·컴포넌트별 분리·OQ-12) | `plan:refactor/wp-04-css-cleanup`
 - [ ] T-04d 큰 파일 분해(`WebApp`·`MarketChart`·`useAutoPatterns`·`OrderPage`) — PLAN 대기
-- [ ] T-04e `web→desktop` 이름 통일(`web.html`·`vite.config.web.js`·`build:web`·`dist-web`·`WebApp`·`Web*Panel`, URL `/web`은 배포 경로와 함께) — T-05와 순서 결정
+- [ ] T-04e `web→desktop` 이름 통일(파일·식별자·빌드 이름; URL `/web`은 T-05에서) | `plan:refactor/wp-05-desktop-naming`
 
 ## Beta Track
 
