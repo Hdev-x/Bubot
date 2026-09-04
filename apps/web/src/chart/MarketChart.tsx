@@ -1,6 +1,10 @@
 import { useAutoPatterns } from "./hooks/useAutoPatterns";
 
 import { useIndicators } from './hooks/useIndicators';
+import { useDrawingMagnet } from './hooks/useDrawingMagnet';
+import { useRsiPane } from './hooks/useRsiPane';
+import { useValueOverlay } from './hooks/useValueOverlay';
+import { useRankLines } from './hooks/useRankLines';
 
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react';
 import { CandlestickSeries, LineSeries, HistogramSeries, ColorType, createChart, CrosshairMode } from 'lightweight-charts';
@@ -8,7 +12,7 @@ import type { IChartApi, ISeriesApi, Time, UTCTimestamp, LineData } from 'lightw
 import { DrawingManager, getToolRegistry, SnapDot, getFibLogScaleDefault } from './drawing';
 import type { IDrawing, SerializedDrawing } from './drawing';
 import type { Candle } from '../shared/types/market';
-import { computeRsiCandles, DEFAULT_RSI_SETTINGS } from '../shared/utils/rsiCandles';
+import { DEFAULT_RSI_SETTINGS } from '../shared/utils/rsiCandles';
 import type { RsiSettings } from '../shared/utils/rsiCandles';
 import { computeMA } from '../shared/utils/movingAverages';
 import type { ChartTheme } from './settings/ChartSettingsSheet';
@@ -72,10 +76,6 @@ type Props = {
   rankTiersOn?: Record<string, boolean>; // 신뢰도 랭킹 선 체급별 토글 (baseline_rank_{symbol}.json 필요)
 };
 
-// ── 신뢰도 랭킹 선(임시 오버레이) — baseline_rank_{symbol}.json이 있을 때만 노출 ──
-const RANK_TIERS = ['1M', '1W', '3D', '1d'] as const;
-type RankLine = { price?: number; priceLo?: number; priceHi?: number; count?: number; score: number; from?: number };
-
 // 거래량 막대 색(반투명 상승/하락)
 const VOL_UP_COLOR = 'rgba(14, 203, 129, 0.20)';
 const VOL_DOWN_COLOR = 'rgba(246, 70, 93, 0.20)';
@@ -114,7 +114,6 @@ function toChartTime(time: string | number): Time {
   if (typeof time === 'string' && time.includes(' ')) return (Math.floor(new Date(time.replace(' ', 'T')).getTime() / 1000) + offsetSeconds) as UTCTimestamp;
   return time as Time;
 }
-
 
 const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
   candles,
@@ -415,135 +414,11 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
   const candlesRef = useRef<Candle[]>([]);
   useEffect(() => { candlesRef.current = candles; }, [candles]);
 
-  // ── 드로잉 자석(약자석) — 해당 봉의 O/H/L/C 중 픽셀 거리 8px 이내 최근접 값으로 스냅 ──
-  const magnetRef = useRef(magnet);
-  useEffect(() => { magnetRef.current = magnet; }, [magnet]);
-  const MAGNET_PX = 8;
-  const snapPrice = useCallback((chartTime: Time, price: number): number => {
-    if (!magnetRef.current || !seriesRef.current) return price;
-    const cs = candlesRef.current;
-    if (!cs.length || typeof chartTime !== 'number') return price;
-    // 차트 Time(로컬 오프셋 시프트) → 캔들 원시 unix
-    const raw = (chartTime as number) + new Date().getTimezoneOffset() * 60;
-    const candle = cs.find(c => Number(c.time) === raw);
-    if (!candle) return price;
-    const y = seriesRef.current.priceToCoordinate(price);
-    if (y == null) return price;
-    let best = price;
-    let bestDist = MAGNET_PX;
-    for (const v of [candle.open, candle.high, candle.low, candle.close]) {
-      const vy = seriesRef.current.priceToCoordinate(v);
-      if (vy == null) continue;
-      const d = Math.abs(vy - y);
-      if (d < bestDist) { bestDist = d; best = v; }
-    }
-    return best;
-  }, []);
-  const snapPriceRef = useRef(snapPrice);
-  useEffect(() => { snapPriceRef.current = snapPrice; }, [snapPrice]);
+  // ── 드로잉 자석 + 키보드 — useDrawingMagnet (wp-07 d04) ──
+  const { magnetRef, snapPriceRef } = useDrawingMagnet({ magnet, seriesRef, candlesRef, drawingManagerRef, previewDrawingRef, pendingAnchorsRef, selectedDrawingIdRef, setSelectedDrawingId });
 
-  // ── RSI 캔들(하단 페인1) ── 색·기간·기준선은 rsiSettings로 제어. toChartTime으로 시간축 공유.
-  useEffect(() => { rsiSettingsRef.current = rsiSettings; }, [rsiSettings]);
-
-  // 기준선(70/50/30) 재적용 — 기존 라인 제거 후 설정대로 재생성
-  const applyRsiLines = useCallback((s: ISeriesApi<'Candlestick'>) => {
-    for (const pl of rsiPriceLinesRef.current) { try { s.removePriceLine(pl); } catch { /* 무시 */ } }
-    rsiPriceLinesRef.current = [];
-    for (const ln of rsiSettingsRef.current.lines) {
-      if (!ln.visible) continue;
-      rsiPriceLinesRef.current.push(s.createPriceLine({
-        price: ln.value, color: ln.color, lineWidth: Math.max(1, Math.min(4, ln.width)) as 1 | 2 | 3 | 4,
-        lineStyle: ln.style, axisLabelVisible: true, title: '',
-      }));
-    }
-  }, []);
-
-  const rsiCandleColorOpts = () => {
-    const { upColor: up, downColor: down } = rsiSettingsRef.current;
-    return { upColor: up, downColor: down, borderUpColor: up, borderDownColor: down, wickUpColor: up, wickDownColor: down };
-  };
-
-  // RSI 시리즈 생성(페인1). 이미 있으면 그대로 반환. 기준선 포함.
-  const ensureRsiSeries = useCallback((): ISeriesApi<'Candlestick'> | null => {
-    const chart = chartRef.current;
-    if (!chart) return null;
-    if (rsiSeriesRef.current) return rsiSeriesRef.current;
-    const s = chart.addSeries(CandlestickSeries, {
-      ...rsiCandleColorOpts(),
-      priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
-      lastValueVisible: true, priceLineVisible: false,
-    }, 1); // paneIndex 1 = 하단 별도 페인(시간축 공유)
-    rsiSeriesRef.current = s;
-    applyRsiLines(s);
-    try { s.priceScale().applyOptions({ mode: rsiSettingsRef.current.logScale ? 1 : 0 }); } catch { /* 무시 */ }
-    try { chart.panes()[1]?.setHeight(130); } catch { /* 페인 크기 실패 무시 */ }
-    return s;
-  }, [applyRsiLines]);
-
-  const destroyRsiSeries = useCallback(() => {
-    const chart = chartRef.current;
-    if (chart && rsiSeriesRef.current) {
-      try { chart.removeSeries(rsiSeriesRef.current); } catch { /* 이미 제거됨 */ }
-    }
-    rsiSeriesRef.current = null;
-    rsiPriceLinesRef.current = [];
-    rsiLastCountRef.current = 0;
-    rsiLastTimeRef.current = null;
-  }, []);
-
-  // RSI 데이터 그리기 — 거래량 히스토그램과 동일한 전체 setData / 마지막봉 update 분기.
-  const drawRsi = useCallback((cs: Candle[]) => {
-    const s = rsiSeriesRef.current;
-    if (!s) return;
-    const rsi = computeRsiCandles(cs, rsiSettingsRef.current.period);
-    if (!rsi.length) {
-      s.setData([]);
-      rsiLastCountRef.current = 0;
-      rsiLastTimeRef.current = null;
-      return;
-    }
-    const toBar = (r: (typeof rsi)[number]) => ({ time: toChartTime(r.time), open: r.open, high: r.high, low: r.low, close: r.close });
-    const newCount = rsi.length;
-    const prevCount = rsiLastCountRef.current;
-    const addedCount = newCount - prevCount;
-    const lastTime = toChartTime(rsi[newCount - 1].time);
-    const isAppendingSingle = addedCount === 1 && (newCount < 2 || toChartTime(rsi[newCount - 2].time) === rsiLastTimeRef.current);
-    const isUpdatingLast = addedCount === 0 && lastTime === rsiLastTimeRef.current;
-    if (prevCount > 0 && (isAppendingSingle || isUpdatingLast)) {
-      // ref-시리즈 불일치 시 update가 throw → 전체 setData 폴백(거래량과 동일)
-      try { s.update(toBar(rsi[newCount - 1])); }
-      catch { s.setData(rsi.map(toBar)); }
-    } else {
-      s.setData(rsi.map(toBar));
-    }
-    rsiLastCountRef.current = newCount;
-    rsiLastTimeRef.current = lastTime;
-  }, []);
-
-  // RSI 토글 — 런타임에 페인 시리즈 추가/제거(차트 재생성 없이). 켤 때 즉시 그린다.
-  useEffect(() => {
-    showRsiCandlesRef.current = showRsiCandles;
-    if (!chartRef.current) return;
-    if (showRsiCandles) {
-      ensureRsiSeries();
-      drawRsi(candlesRef.current);
-    } else {
-      destroyRsiSeries();
-    }
-  }, [showRsiCandles, ensureRsiSeries, destroyRsiSeries, drawRsi]);
-
-  // RSI 설정 변경(색/기간/기준선) — 시리즈 있으면 색·기준선 갱신 + 전체 재계산(기간 반영).
-  useEffect(() => {
-    const s = rsiSeriesRef.current;
-    if (!s) return;
-    s.applyOptions(rsiCandleColorOpts());
-    applyRsiLines(s);
-    try { s.priceScale().applyOptions({ mode: rsiSettings.logScale ? 1 : 0 }); } catch { /* 무시 */ }
-    rsiLastCountRef.current = 0; // 기간이 바뀌면 봉 개수가 달라짐 → 전체 setData 강제
-    rsiLastTimeRef.current = null;
-    drawRsi(candlesRef.current);
-     
-  }, [rsiSettings, applyRsiLines, drawRsi]);
+  // ── RSI 캔들(하단 페인1) — useRsiPane (wp-07 d04) ──
+  const { ensureRsiSeries } = useRsiPane({ chartRef, candlesRef, candles, rsiSettings, showRsiCandles, toChartTime, rsiSeriesRef, rsiPriceLinesRef, rsiSettingsRef, showRsiCandlesRef, rsiLastCountRef, rsiLastTimeRef });
 
   // 모니터링 카드 focus 대상(시간 창). 인덱스가 아니라 "시간"을 저장하고 적용할 때마다
   // 현재 캔들에서 인덱스를 다시 계산한다 → 캔들 길이(loadMore/새로고침)가 바뀌어도 안 깨짐.
@@ -649,29 +524,6 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
       bbSeriesRef.current.overlay.update([], 'rgba(0,0,0,0)');
     }
   }, [symbol, period, marketKey, keepDataOnSymbolChange]);
-
-  // 키보드: Delete = 선택 드로잉 삭제, Escape = 배치 취소
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        pendingAnchorsRef.current = [];
-        if (previewDrawingRef.current) {
-          previewDrawingRef.current.detach();
-          previewDrawingRef.current = null;
-        }
-      }
-      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedDrawingIdRef.current) {
-        const manager = drawingManagerRef.current;
-        if (manager) {
-          manager.removeDrawing(selectedDrawingIdRef.current);
-          selectedDrawingIdRef.current = null;
-          setSelectedDrawingId(null);
-        }
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   // 차트 초기화
   useEffect(() => {
@@ -823,7 +675,6 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
     activeSeries.attachPrimitive(autoPatternOverlay);
     autoPatternOverlay.update([]);
     autoPatternOverlayRef.current = autoPatternOverlay;
-
 
     // 가격/카운트다운 라벨: 차트 페인트 시점에 위치 동기화(튐 방지)
     const priceTag = new PriceTagOverlay(
@@ -1405,13 +1256,6 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
     volLastTimeRef.current = lastTime;
   }, [candles, chartTheme]);
 
-  // RSI 캔들 데이터 — candles 변경마다 그림(시리즈 있을 때만). 실시간은 마지막 봉만 update.
-  useEffect(() => {
-    if (!rsiSeriesRef.current) return;
-    drawRsi(candles);
-  }, [candles, drawRsi]);
-
-
   useAutoPatterns({
     candles,
     pivotSetting,
@@ -1432,108 +1276,11 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
     soloDimAll,
   });
 
+  // 가격/카운트다운 라벨 — useValueOverlay (wp-07 d04)
+  useValueOverlay({ active, currentTfSeconds, chartTheme, chartType, candles, candlesRef, tickDecimalsRef, priceTagRef, priceTagStateRef, countdownRef });
 
-  // 가격/카운트다운 라벨 상태 갱신.
-  // 위치 계산은 PriceTagOverlay(차트 페인트와 동기)가 하므로 여기선 표시할
-  // "값"(가격·색·카운트다운 텍스트)만 주기적으로 만들어 넣고 리페인트를 유도한다.
-  useEffect(() => {
-    const setInvalid = () => {
-      priceTagStateRef.current = null;
-      priceTagRef.current?.refresh();
-      if (countdownRef.current) countdownRef.current.style.display = 'none';
-    };
-    if (!active || !currentTfSeconds || !candles.length) { setInvalid(); return; } // 화면 밖이면 타이머 정지
-
-    const countdownText = () => {
-      const currentSec = Math.floor(Date.now() / 1000);
-      let nextBoundary = 0;
-      if (currentTfSeconds === 2592000) { // 1M — 달력 길이가 가변이라 다음달 1일로
-        const d = new Date();
-        nextBoundary = Math.floor(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1)).getTime() / 1000);
-      } else {
-        // 거래소마다 주봉·3일봉 등 anchor가 달라(예: Binance 3d=06-25 vs Bitget 3d=06-24, 빗썸=KST 자정)
-        // epoch 격자로 계산하면 어긋난다 → 실제 마지막 캔들 시각 + TF로 마감을 잡아 각 거래소 경계를 그대로 따른다.
-        const lastTime = Number(candlesRef.current[candlesRef.current.length - 1]?.time) || 0;
-        nextBoundary = lastTime + currentTfSeconds;
-        while (nextBoundary <= currentSec) nextBoundary += currentTfSeconds; // 캔들 롤오버 직전/직후 보호
-      }
-      const diff = nextBoundary - currentSec;
-      const d = Math.floor(diff / 86400);
-      const h = Math.floor((diff % 86400) / 3600);
-      const m = Math.floor((diff % 3600) / 60);
-      const s = diff % 60;
-      if (d > 0) return `${d}d ${h}h`;
-      if (h > 0) return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    };
-
-    const tick = () => {
-      const cs = candlesRef.current;
-      if (!cs.length) { setInvalid(); return; }
-      const last = cs[cs.length - 1];
-
-      let bgColor = chartTheme?.upColor || '#3182f6';
-      if (chartType === 'candle') {
-        const isUp = last.close >= last.open;
-        bgColor = isUp ? (chartTheme?.upColor || '#0ecb81') : (chartTheme?.downColor || '#f6465d');
-      }
-
-      let textColor = '#ffffff';
-      if (bgColor.startsWith('#')) {
-        const hex = bgColor.replace('#', '');
-        const r = parseInt(hex.substring(0, 2), 16) || 0;
-        const g = parseInt(hex.substring(2, 4), 16) || 0;
-        const b = parseInt(hex.substring(4, 6), 16) || 0;
-        const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-        textColor = yiq >= 128 ? '#000000' : '#ffffff';
-      }
-
-      const decimals = tickDecimalsRef.current || 2;
-      priceTagStateRef.current = {
-        lastPrice: last.close,
-        bgColor,
-        textColor,
-        priceStr: last.close.toFixed(decimals),
-        countdownText: countdownText(),
-      };
-      priceTagRef.current?.refresh();
-    };
-
-    tick();
-    const id = window.setInterval(tick, 250);
-    return () => window.clearInterval(id);
-  }, [active, currentTfSeconds, chartTheme, chartType, candles.length]);
-
-  // ── 신뢰도 랭킹 선 (임시) — 스캐너 산출 JSON을 읽어 체급별 priceLine 토글 ──
-  const [rankData, setRankData] = useState<Record<string, RankLine[]> | null>(null);
-  const rankOn = rankTiersOn ?? {};
-
-  useEffect(() => {
-    let alive = true;
-    setRankData(null);
-    if (!symbol) return;
-    fetch(`${import.meta.env.BASE_URL}baseline_rank_${symbol}.json`)
-      .then(r => (r.ok ? r.json() : null))
-      .then(j => { if (alive && j?.tiers) setRankData(j.tiers); })
-      .catch(() => {});
-    return () => { alive = false; };
-  }, [symbol]);
-
-  useEffect(() => {
-    // 신뢰선 — SMC 오버레이 캔버스(ChartOverlay)에 위임. 좌표계·시작점 스냅·우측 라벨 전부 SMC와 동일.
-    const ov = overlayRef.current;
-    if (!ov) return;
-    const key = JSON.stringify(rankOn) + (rankData ? '1' : '0');
-    if ((ov as any).__rankKey === key) return;
-    (ov as any).__rankKey = key;
-    const list = !rankData
-      ? []
-      : (RANK_TIERS as readonly string[]).flatMap(tier =>
-          rankOn[tier]
-            ? (rankData[tier] ?? []).map(l => ({ tier: tier as any, price: l.price, priceLo: (l as any).priceLo, priceHi: (l as any).priceHi, count: (l as any).count, score: l.score, from: Number(l.from ?? 0) }))
-            : []);
-    ov.updateRankLines(list);
-  });
+  // ── 신뢰도 랭킹 선 — useRankLines (wp-07 d04) ──
+  useRankLines({ overlayRef, rankTiersOn, symbol });
 
   return (
     <div className={`chart-container-relative ${className}`} style={{ width: '100%', height: '100%', position: 'relative' }}>
