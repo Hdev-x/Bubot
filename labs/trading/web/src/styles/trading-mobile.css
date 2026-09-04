@@ -1,0 +1,494 @@
+/* mobile: Beta에서 labs/trading/web으로 분리된 자동매매·Paper·Backtest 화면 전용 규칙.
+   wp-04 d01에서 apps/web/src/app/mobile/styles/mobile.css에서 옮겨왔다. 현재 어떤 진입점도 import하지 않는다. */
+/* 좌측: 주문 티켓 */
+.futures-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.trade-pills {
+  display: grid;
+  grid-template-columns: 1fr 1fr 40px;
+  gap: 6px;
+}
+
+.pill-btn {
+  background: #202126;
+  color: #eaecef;
+  border: 0;
+  border-radius: 6px;
+  height: 24px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pill-btn.shrink-s {
+  font-size: 11px;
+}
+
+.open-close-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #181a20;
+  padding: 2px;
+  border-radius: 6px;
+}
+
+.open-close-toggle button {
+  background: none;
+  border: 0;
+  color: #848e9c;
+  height: 28px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.trade-select {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #202126;
+  color: #eaecef;
+  border: 0;
+  border-radius: 6px;
+  height: 30px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bbo-button {
+  background: #181a20;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.82);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 입력 필드 */
+.trade-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #202126;
+  border-radius: 6px;
+  height: 42px;
+  padding: 0 10px;
+  gap: 6px;
+}
+
+.input-label {
+  color: #848e9c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.val-input {
+  flex: 1;
+  background: none;
+  border: 0;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+  width: 100%;
+  text-align: left;
+}
+
+.val-input::placeholder {
+  color: #5e6673;
+}
+
+.currency-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 0;
+  color: #eaecef;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 비율 버튼 */
+.percent-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  /* 이 아래(%~Open short)를 폼 바닥으로 밀어 호가창 바닥과 정렬 */
+  margin-top: auto;
+}
+
+.pct-btn {
+  background: #202126;
+  color: #eaecef;
+  border: 0;
+  border-radius: 6px;
+  height: 22px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pct-btn:hover {
+  background: #2b2f36;
+}
+
+/* 체크박스 */
+.trade-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 1px;
+  cursor: pointer;
+}
+
+.custom-checkbox {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid #474f59;
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.custom-checkbox:checked {
+  background: #f0b90b;
+  border-color: #f0b90b;
+}
+
+.custom-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  color: #000000;
+  font-size: 10px;
+  font-weight: 900;
+  top: -1px;
+  left: 2px;
+}
+
+.checkbox-text {
+  color: #848e9c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 잔고 및 한도 라인 */
+.balance-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 3px 0;
+}
+
+.balance-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+/* 진입 버튼 */
+.long-button,
+.short-button {
+  border: 0;
+  border-radius: 6px;
+  height: 40px;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease;
+}
+
+.long-button:hover,
+.short-button:hover {
+  opacity: 0.9;
+}
+
+.long-button {
+  background: #2dd48e; /* Bitget 초록 */
+}
+
+.short-button {
+  background: #eb4568; /* Bitget 레드 */
+}
+
+.long-button strong,
+.short-button strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.long-button span,
+.short-button span {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+.live-page {
+  color: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - max(60px, max(18px, env(safe-area-inset-top)) + 32px));
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.live-header {
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  display: flex;
+  padding: 0; /* OrderPage's header will cover safety padding, keep it clean */
+}
+
+.live-header h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.live-dot.green {
+  background: #0ecb81;
+}
+
+.live-dot.muted {
+  background: #828791;
+}
+
+.live-card-label {
+  color: #8e929a;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.live-no-pos {
+  color: #8e929a;
+  padding: 8px 0;
+  font-size: 15px;
+}
+
+.live-page .green {
+  color: #0ecb81;
+}
+
+.live-page .red {
+  color: #f6465d;
+}
+
+.live-ob-chip {
+  color: #8b95a1;
+  background: #16181d;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px; /* 세련된 알약 모양 */
+  padding: 5px 12px;
+  font-size: 12px; /* 콤팩트 12px */
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.live-ob-chip:hover {
+  background: #20222a;
+  color: #edf1f7;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.live-trades {
+  display: grid;
+}
+
+.live-trade-row {
+  border-top: 1px solid #1c1e23;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 10px;
+  padding: 12px 0;
+  display: grid;
+}
+
+.live-trade-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.live-trade-row:last-child {
+  padding-bottom: 0;
+}
+
+.live-trade-pnl {
+  justify-self: end;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.subaccount-card-status-dot.green {
+  background: #0ecb81;
+}
+
+.subaccount-card-status-dot.muted {
+  background: #777c85;
+}
+
+/* ── 프리미엄 드롭다운 스타일 (겉에 통합계정 및 기타 드롭다운용) ── */
+.premium-select-wrapper {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.premium-select {
+  width: auto;
+  min-width: 90px;
+  height: 32px;
+  background-color: transparent;
+  color: #edf1f7;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0 22px 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.premium-select:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.premium-select:focus {
+  border-color: #3182f6;
+  box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.2);
+  background-color: transparent;
+}
+
+.premium-select-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #8e929a;
+  pointer-events: none;
+  transition: border-top-color 0.2s ease;
+}
+
+.premium-select-wrapper:hover::after {
+  border-top-color: #edf1f7;
+}
+
+.premium-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.premium-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.premium-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: .3s;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.premium-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #8b96a8;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.premium-switch input:checked + .premium-switch-slider {
+  background-color: #3182f6;
+  border-color: #3182f6;
+}
+
+.premium-switch input:checked + .premium-switch-slider:before {
+  transform: translateX(20px);
+  background-color: #fff;
+}
+
+.premium-switch.success input:checked + .premium-switch-slider {
+  background-color: #0ecb81;
+  border-color: #0ecb81;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dashboard-stat-card {
+  background: rgba(13, 16, 23, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-stat-label {
+  font-size: 11px;
+  color: #8b96a8;
+  font-weight: 600;
+}
+
+.dashboard-stat-value {
+  font-size: 18px;
+  color: #fff;
+  font-weight: 800;
+}
+
