@@ -7,6 +7,7 @@ import { fetchUpbitSpotTickers, fetchBithumbSpotTickers } from '../../../api/exc
 import { getOfficialLogo, formatPriceWithDecimals } from '../../../shared/utils/coinFormatters';
 import type { CoinTicker } from '../../../shared/types/market';
 import type { ExchangeId } from '../../../shared/constants/exchanges';
+import './panels.css';
 
 export type Market = 'spot' | 'futures';
 
