@@ -10,7 +10,8 @@ import type { DrawingState } from '../hooks/useDrawingState';
 import type { IndicatorState } from '../hooks/useIndicatorState';
 import type { ChartViewState } from '../hooks/useChartViewState';
 import type { ChartRef, ChartSel, RankGroup, RsiGroup, SoloGroup } from './chartProps';
-import { DrawingFloatBar, DrawingSettings } from './DrawingToolbar';
+import { DrawingFloatBar } from './drawing/DrawingFloatBar';
+import { DrawingSettings } from './drawing/DrawingSettings';
 import { RsiSettingsPanel } from './RsiSettingsPanel';
 
 export type ChartDataGroup = {
