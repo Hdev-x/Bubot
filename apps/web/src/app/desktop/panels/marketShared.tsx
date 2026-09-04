@@ -150,7 +150,7 @@ function RowLogo({ base, logoUrl }: { base: string; logoUrl?: string }) {
 
 /** 종목 1행 — 로고 + (이름/거래대금) + (현재가/등락%) + 별표. 마켓·관심 공용.
  *  editMode: 좌측 드래그 핸들(≡) + 우측 별표→✕(제거), 행 draggable(dragProps). 기본 off=마켓 패널 보존. */
-export function WebSymbolRow({
+export function SymbolRow({
   ticker, market, decimals, faved, onToggleFav, onClick, logoUrl, editMode, onRemove, dragProps, hideStar,
 }: {
   ticker: CoinTicker;

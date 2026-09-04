@@ -1,5 +1,5 @@
 // 데스크톱 웹 마켓 패널 — 모바일 거래탭 종목 시트(TradeSymbolSheet) 복붙·각색 + 로고 컬럼.
-// Favorites는 사이드바 '관심' 섹션(WebFavoritesPanel)으로 분리 — 여기선 Spot/Futures만.
+// Favorites는 사이드바 '관심' 섹션(FavoritesPanel)으로 분리 — 여기선 Spot/Futures만.
 // 데이터/유틸은 공유 계층만 사용. 행/정렬/즐겨찾기/로더는 marketShared.
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import {
@@ -12,14 +12,14 @@ import { usePricePrecision } from '../../../hooks/market/usePricePrecision';
 import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
 import type { CoinTicker } from '../../../shared/types/market';
 import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../shared/constants/exchanges';
-import { SortIcon, WebSymbolRow, loadExchangeTickers, useWebFavorites, useCoinLogos, type Market } from './marketShared';
+import { SortIcon, SymbolRow, loadExchangeTickers, useWebFavorites, useCoinLogos, type Market } from './marketShared';
 import './panels.css';
 
 type Filter = 'spot' | 'futures';
 type SortKey = 'name' | 'volume' | 'price' | 'change';
 type Entry = { t: CoinTicker; market: Market };
 
-export function WebMarketPanel({ active, onSelect }: { active: boolean; onSelect?: (symbol: string, market: Market, exchange: ExchangeId) => void }) {
+export function MarketPanel({ active, onSelect }: { active: boolean; onSelect?: (symbol: string, market: Market, exchange: ExchangeId) => void }) {
   const [exchange, setExchange] = useState<ExchangeId>('BINANCE');
   const [filter, setFilter] = useState<Filter>('futures');
   const [spotTickers, setSpotTickers] = useState<CoinTicker[]>([]);
@@ -185,7 +185,7 @@ export function WebMarketPanel({ active, onSelect }: { active: boolean; onSelect
               // 거래대금은 REST(24h, 5초 폴링) 값 유지. WS volume은 kline UTC누적치라 24h와 충돌 → 가격·등락만 실시간 갱신.
               const view: CoinTicker = live ? { ...t, last: live.price ?? t.last, changeRate: live.changeRate ?? t.changeRate } : t;
               return (
-                <WebSymbolRow
+                <SymbolRow
                   key={`${market}|${t.symbol}`}
                   ticker={view}
                   market={market}

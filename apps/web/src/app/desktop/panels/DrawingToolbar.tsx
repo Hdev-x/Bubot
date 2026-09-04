@@ -146,7 +146,7 @@ function loadBarPos(): { x: number; y: number } {
   return { x: 0, y: 0 };
 }
 
-export function WebDrawingFloatBar({ getManager, selectedId, onOpenSettings }: {
+export function DrawingFloatBar({ getManager, selectedId, onOpenSettings }: {
   getManager: GetManager;
   selectedId: string;
   onOpenSettings: () => void;
@@ -291,7 +291,7 @@ function inputToTime(v: string): number | null {
   return Number.isFinite(ms) ? Math.floor(ms / 1000) : null;
 }
 
-export function WebDrawingSettings({ getManager, drawingId, onClose }: {
+export function DrawingSettings({ getManager, drawingId, onClose }: {
   getManager: GetManager;
   drawingId: string;
   onClose: () => void;

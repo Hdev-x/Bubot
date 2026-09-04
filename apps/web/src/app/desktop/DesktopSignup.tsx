@@ -2,10 +2,10 @@ import { useState, type FormEvent, type CSSProperties } from 'react';
 import { signup } from '../../api/server/authApi';
 import type { AuthUser } from '../../api/server/authApi';
 import botzMark from '../../assets/botz-mark.svg';
-import './WebLogin.css';
+import './DesktopLogin.css';
 
 // 데스크톱 웹 자체 회원가입 — POST /api/auth/register. 로그인 ID = 이메일. 성공 시 자동 로그인.
-export default function WebSignup({ onSignup, onBackToLogin, onClose }: { onSignup: (user: AuthUser) => void; onBackToLogin: () => void; onClose?: () => void }) {
+export default function DesktopSignup({ onSignup, onBackToLogin, onClose }: { onSignup: (user: AuthUser) => void; onBackToLogin: () => void; onClose?: () => void }) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');

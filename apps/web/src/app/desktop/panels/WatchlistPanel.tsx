@@ -1,10 +1,10 @@
-// 플로팅/도킹 미니 시세창 — 관심탭(WebFavoritesPanel) 미러. 본 화면(내투자 등)을 보면서 관심 종목 시세를
-// 동시에 관찰한다. 목록 디자인·데이터는 실시간/관심 패널과 동일하게 WebFavoritesPanel을 그대로 임베드.
+// 플로팅/도킹 미니 시세창 — 관심탭(FavoritesPanel) 미러. 본 화면(내투자 등)을 보면서 관심 종목 시세를
+// 동시에 관찰한다. 목록 디자인·데이터는 실시간/관심 패널과 동일하게 FavoritesPanel을 그대로 임베드.
 // float(드래그 떠있는 창, 딱 10행 고정+스크롤) ↔ dock(왼쪽 컬럼, 전체 높이) 전환.
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { usePersistentState } from '../../../hooks/ui/usePersistentState';
 import type { ExchangeId } from '../../../shared/constants/exchanges';
-import { WebFavoritesPanel } from './WebFavoritesPanel';
+import { FavoritesPanel } from './FavoritesPanel';
 import { snapFloat } from './snapFloat';
 import { useWebFavorites, type Market } from './marketShared';
 import './panels.css';
@@ -18,7 +18,7 @@ const MIN_ROWS = 5, MAX_ROWS = 15; // 플로팅 세로 리사이즈 범위(행 �
 const RAIL_W = 45;   // 우측 레일 기준 — 우측 끝을 레일쪽으로 1px 더 붙임(레일 폭 46 - 1)
 const FOOTER_H = 27; // 하단 푸터 높이(26+보더) — 플로팅이 이 영역 침범 금지
 
-export function WebWatchlist({ mode, onSelect, onClose, onToggleDock }: {
+export function WatchlistPanel({ mode, onSelect, onClose, onToggleDock }: {
   mode: Mode;
   onSelect: (symbol: string, market: Market, exchange: ExchangeId) => void;
   onClose: () => void;
@@ -170,7 +170,7 @@ export function WebWatchlist({ mode, onSelect, onClose, onToggleDock }: {
         </div>
       </div>
       <div className="watch-body" ref={bodyRef} style={mode === 'float' ? { height: bodyPx } : undefined}>
-        <WebFavoritesPanel active onSelect={onSelect} editMode={editMode} />
+        <FavoritesPanel active onSelect={onSelect} editMode={editMode} />
         {canDown && (
           <button type="button" className="watch-scroll-down" title="아래로" onClick={scrollDown}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
@@ -181,7 +181,7 @@ export function WebWatchlist({ mode, onSelect, onClose, onToggleDock }: {
   );
 
   if (mode === 'dock') {
-    // 바깥 <aside.watch-dock>(WebApp)이 width 애니메이션 담당. 여기선 고정 폭 내용만.
+    // 바깥 <aside.watch-dock>(DesktopApp)이 width 애니메이션 담당. 여기선 고정 폭 내용만.
     return <div className="watch-dock-inner">{body}</div>;
   }
   // 저장된 위치가 레일/푸터 영역을 넘으면 렌더 시에도 보정(이전 버전에서 저장된 좌표 대비).

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AuthUser } from '../../api/server/authApi';
-import { WebMarketPanel } from './panels/WebMarketPanel';
+import { MarketPanel } from './panels/MarketPanel';
 import { useCoinLogos } from './panels/marketShared';
-import { WebWatchlist } from './panels/WebWatchlist';
+import { WatchlistPanel } from './panels/WatchlistPanel';
 import StrategyComingSoon from '../mobile/components/StrategyComingSoon';
 import botzMark from '../../assets/botz-mark.svg';
 import { EXCHANGES } from '../../shared/constants/exchanges';
@@ -30,8 +30,8 @@ import MarketChart from '../../chart/MarketChart';
 import type { MarketChartRef } from '../../chart/MarketChart';
 import type { TrackerState } from '../../shared/types/bot';
 import type { DrawingManager } from '../../chart/drawing';
-import { WebDrawingFloatBar, WebDrawingSettings } from './panels/WebDrawingToolbar';
-import { WebRsiSettings } from './panels/WebRsiSettings';
+import { DrawingFloatBar, DrawingSettings } from './panels/DrawingToolbar';
+import { RsiSettingsPanel } from './panels/RsiSettingsPanel';
 import { DEFAULT_RSI_SETTINGS } from '../../shared/utils/rsiCandles';
 import type { RsiSettings } from '../../shared/utils/rsiCandles';
 import { usePersistentState } from '../../hooks/ui/usePersistentState';
@@ -53,7 +53,7 @@ import type { DepthPrecision } from '../../api/exchange/bitget/bitgetMergeDepth'
 import type { MainPosition } from '../../api/server/mainTradeApi';
 import type { SpotHolding } from '../../api/server/spotTradeApi';
 import type { Candle } from '../../shared/types/market';
-import './WebApp.css';
+import './DesktopApp.css';
 
 // ── 차트 — 타임프레임 맵(버튼 라벨 → granularity/channel) ──
 type Tf = { label: string; value: string; granularity: string; channel: string; category: 'min' | 'hour' | 'day' | 'week' | 'month' };
@@ -210,7 +210,7 @@ const WEB_DRAW_TOOLS: { type: string; name: string; icon: React.ReactNode }[] = 
 ];
 
 // 웹 오브젝트 트리 — 드로잉 목록(보이기/잠금/삭제/선택). manager는 ref라 폴링으로 동기화(모바일 시트와 동일 방식).
-function WebObjectTree({ getManager, onSelect }: { getManager: () => DrawingManager | null | undefined; onSelect: (id: string) => void }) {
+function ObjectTree({ getManager, onSelect }: { getManager: () => DrawingManager | null | undefined; onSelect: (id: string) => void }) {
   const [items, setItems] = useState<{ id: string; type: string; visible: boolean; locked: boolean }[]>([]);
   useEffect(() => {
     const update = () => {
@@ -364,7 +364,7 @@ function pivotOff(p: PivotSetting): PivotSetting {
   };
 }
 
-export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUser | null; onLoginClick: () => void; onLogout: () => void }) {
+export default function DesktopApp({ user, onLoginClick, onLogout }: { user: AuthUser | null; onLoginClick: () => void; onLogout: () => void }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const mountOpenRaf = useRef(0);
   // 새로고침 시 닫힌 상태로 1프레임 그린 뒤 열어 width 트랜지션(열림 모션)을 재생
@@ -837,7 +837,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
   }
   const H = headRef.current;
 
-  // ── 마켓 — 모바일 거래탭 종목 시트 디자인 그대로(WebMarketPanel이 자체 데이터/필터 관리) ──
+  // ── 마켓 — 모바일 거래탭 종목 시트 디자인 그대로(MarketPanel이 자체 데이터/필터 관리) ──
   const marketActive = section === 'market' && sidebarOpen;
 
   // ── 실데이터 — 현물 보유자산 (투자탭 '현물' 선택 시) ──
@@ -943,7 +943,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
           <div className="app-body-row">
           {dockRender && (
             <aside className={`watch-dock${dockExpanded ? ' open' : ''}`}>
-              <WebWatchlist
+              <WatchlistPanel
                 mode="dock"
                 onSelect={handleSelectChart}
                 onClose={() => setWatchMode('hidden')}
@@ -1149,7 +1149,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
                             </div>
                             <div className="draw-sep" />
                             <div className="draw-section-title">오브젝트 트리</div>
-                            <WebObjectTree
+                            <ObjectTree
                               getManager={() => webChartRef.current?.getDrawingManager()}
                               onSelect={(id) => webChartRef.current?.selectDrawing(id)}
                             />
@@ -1329,21 +1329,21 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
                 <div className="chart-stage">
                   {/* 드로잉 플로팅 툴바 + 설정 다이얼로그 — 도형 선택 시 */}
                   {selDrawId && (
-                    <WebDrawingFloatBar
+                    <DrawingFloatBar
                       getManager={() => webChartRef.current?.getDrawingManager()}
                       selectedId={selDrawId}
                       onOpenSettings={() => setDrawSettingsOpen(true)}
                     />
                   )}
                   {selDrawId && drawSettingsOpen && (
-                    <WebDrawingSettings
+                    <DrawingSettings
                       getManager={() => webChartRef.current?.getDrawingManager()}
                       drawingId={selDrawId}
                       onClose={() => setDrawSettingsOpen(false)}
                     />
                   )}
                   {rsiSettingsOpen && (
-                    <WebRsiSettings
+                    <RsiSettingsPanel
                       settings={rsiSettings}
                       onChange={setRsiSettings}
                       onClose={() => setRsiSettingsOpen(false)}
@@ -1758,7 +1758,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
 
           {section === 'market' && (
             <div className="sidebar-section web-market">
-              <WebMarketPanel active={marketActive} onSelect={handleSelectChart} />
+              <MarketPanel active={marketActive} onSelect={handleSelectChart} />
             </div>
           )}
           {section === 'strategy' && (
@@ -1800,7 +1800,7 @@ export default function WebApp({ user, onLoginClick, onLogout }: { user: AuthUse
 
       {/* 관심 미니 시세창 — float 모드: 화면 위에 떠있는 드래그 창 */}
       {effWatchMode === 'float' && (
-        <WebWatchlist
+        <WatchlistPanel
           mode="float"
           onSelect={handleSelectChart}
           onClose={() => setWatchMode('hidden')}

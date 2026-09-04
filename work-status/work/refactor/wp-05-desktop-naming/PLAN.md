@@ -17,12 +17,20 @@ deliveries:
   - id: wp-05-d01-source
     title: "app/desktop 파일·컴포넌트 이름 — Web* → Desktop* 또는 접두어 제거"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: []
     branch: refactor/naming-d01-source
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "git mv 10개(DesktopApp·DesktopLogin·DesktopSignup +css, panels/MarketPanel·WatchlistPanel·FavoritesPanel·DrawingToolbar·RsiSettingsPanel), 식별자 12종 단어 경계 치환 13 파일 47줄, labs 변경 0(snapFloat 경로 유지). app/desktop에 Web* 식별자 0. 표와 다른 점: Watchlist·RsiSettings는 기존 타입 이름과 충돌해 *Panel 접미어"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. dev 서버 Desktop /web/ 새 모듈 이름으로 렌더링(차트·패널 5), Mobile 200. 조사 중 5174 서버에서 Mobile 진입점을 열면 virtual:pwa-register 500이 나는 것은 Desktop config에 PWA 플러그인이 없는 기존 동작(d02에서 리라이트 정리)"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-05-d02-build
     title: "진입점·빌드 이름 — web.html, vite.config.web.js, build:web, dist-web, CI·ops 스크립트"
     kind: git
@@ -81,7 +89,7 @@ extensions: {}
 |---|---|---|
 | `WebApp.tsx` / `.css` | `DesktopApp.tsx` / `.css` | Mobile의 `App.tsx`와 구분. 진입 컴포넌트는 앱 이름을 남김 |
 | `WebLogin` / `WebSignup` | `DesktopLogin` / `DesktopSignup` | Mobile `LoginPage`와 구분 |
-| `panels/WebMarketPanel` 등 5개 | `panels/MarketPanel`·`Watchlist`·`FavoritesPanel`·`DrawingToolbar`·`RsiSettings` | `app/desktop/panels/` 경로가 이미 Desktop을 말하므로 접두어 제거. `chart/`·Mobile에 같은 이름 없음(확인) |
+| `panels/WebMarketPanel` 등 5개 | `panels/MarketPanel`·`WatchlistPanel`·`FavoritesPanel`·`DrawingToolbar`·`RsiSettingsPanel` | `app/desktop/panels/` 경로가 이미 Desktop을 말하므로 접두어 제거. `Watchlist`·`RsiSettings`는 기존 타입 이름과 충돌해 `Panel` 접미어(d01 실행 시 확인) |
 | 파일 안 `WebSymbolRow`·`WebDrawingSettings`·`WebDrawingFloatBar`·`WebObjectTree` | 접두어 제거 | 위와 같음 |
 | `web.html` | `desktop.html` | 진입 HTML. Mobile `index.html`은 유지 |
 | `vite.config.web.js` | `vite.config.desktop.js` | |
