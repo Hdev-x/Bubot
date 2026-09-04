@@ -3,8 +3,8 @@ schema: ai-workflow/work-package@1
 id: wp-06-desktop-app-split
 title: DesktopApp.tsx 분해 (1,812줄 → 조립 컴포넌트 + 영역 컴포넌트 + 데이터 훅)
 workstream: refactor
-state: active
-updated: 2026-09-04
+state: completed
+updated: 2026-09-05
 depends_on: [wp-05-desktop-naming]
 supersedes: []
 outcome: "DesktopApp.tsx가 상태를 조립해 영역 컴포넌트에 넘기는 300줄 안팎의 파일이 되고, 화면 8개 영역은 각자 컴포넌트, 데이터 흐름 5개는 각자 훅으로 나뉜다. 동작·화면은 분해 전과 동일하다."
@@ -103,11 +103,11 @@ deliveries:
   - id: wp-06-d05-middle
     title: "가운데 영역 — OrderbookPanel · RightPanel, 문서 갱신"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-06-d04b-chart]
     branch: refactor/dapp-d05-middle
-    pull_requests: []
+    pull_requests: [50]
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 539 → 451줄. panels/OrderbookPanel(54, props: ob 훅 객체·depthOpen·setDepthOpen·exchange)·RightPanel(63, props: user, CHATS 목업 상수 동반 이동). JSX·핸들러 변경 0. useOrderbookSnapshot 반환은 객체 ob로 받고 krwDec·getTickDecimals만 풀어 씀. STRUCTURE.md 트리 갱신"
@@ -120,13 +120,21 @@ deliveries:
 milestones:
   - id: desktop-app-split-done
     title: "DesktopApp 분해 완료"
-    state: pending
+    state: passed
     depends_on: [wp-06-d05-middle]
     acceptance:
       - "GATE-AC-001: AC-001·AC-003·AC-005 자동 검사(줄 수, Gate, import 방향 grep)."
       - "GATE-AC-002: 사용자가 로그인 후 Desktop 전 영역(헤더 검색·메뉴, 사이드바 탭·필터, 툴바 전 버튼, 차트 드로잉, 호가 묶음, 관심창 float/dock)을 육안 확인."
     unlocks: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "GATE-AC-001: main 기준 DesktopApp.tsx 451줄(AC-001 목표 400 초과 51줄 — 2026-09-05 사용자 결정으로 451에서 닫음, 잔여는 solo 포커스·dock 애니메이션·바깥 클릭 effect·캡쳐 핸들러), 새 파일 21개 모두 400줄 이하(최대 ChartToolbar 364), import 방향 app→chart/hooks/api/shared만(역방향 grep 0). 각 PR tsc·lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success"
+        revision: main
+        observed_at: 2026-09-05
+      - kind: manual-check
+        locator: "GATE-AC-002: 사용자가 Delivery마다 로그인 후 해당 영역 상호작용을 확인(d01~d05, 2026-09-04~05): 프로필 메뉴·관심창·사이드바 탭·토글, 종목 전환 시 헤더·호가, 툴바 드롭다운·드로잉·RSI·신뢰선·캡쳐, 호가 묶음 드롭다운·채팅 입력"
+        revision: main
+        observed_at: 2026-09-05
 extensions: {}
 ---
 
