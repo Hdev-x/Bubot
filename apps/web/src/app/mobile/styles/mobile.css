@@ -1257,8 +1257,7 @@ button {
   }
   .coin-list-page,
   .coin-chart-page,
-  .coin-detail-panel,
-  .chart-tool-strip {
+  .coin-detail-panel {
     width: 100%;
   }
 }
