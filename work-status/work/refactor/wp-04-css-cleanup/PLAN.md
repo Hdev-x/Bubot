@@ -3,8 +3,8 @@ schema: ai-workflow/work-package@1
 id: wp-04-css-cleanup
 title: apps/web CSS 정리 (미사용 규칙 삭제 + 컴포넌트별 분리)
 workstream: refactor
-state: active
-updated: 2026-09-03
+state: completed
+updated: 2026-09-04
 depends_on: [wp-03-web-structure]
 supersedes: []
 outcome: "mobile.css(6,388줄)·desktop.css(2,360줄)가 앱 셸·토큰만 남는 얇은 파일이 되고, 나머지 규칙은 쓰는 컴포넌트 옆 CSS 파일로 옮겨지며, 어느 곳에서도 안 쓰는 규칙은 사라진다. 화면은 정리 전과 동일하다."
@@ -86,11 +86,11 @@ deliveries:
   - id: wp-04-d04-desktop
     title: "Desktop 컴포넌트별 CSS 분리 — panels·WebApp 셸·로그인, desktop.css는 셸·토큰만"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-04-d03-mobile]
     branch: refactor/css-d04-desktop
-    pull_requests: []
+    pull_requests: [37]
     evidence:
       - kind: parity-check
         locator: "550 규칙 → desktop.css 156 + WebApp.css 195 + panels/panels.css 174 + WebLogin.css 2 = 527, 삭제 23은 trade.css·components.css(Desktop이 이미 로드)에 동일 규칙이 있는 복사본. 새 줄 0. 범용 상태 클래스(사용 파일 6개 이상)는 소유자 판정에서 제외"
@@ -103,22 +103,34 @@ deliveries:
   - id: wp-04-d05-tokens
     title: ":root 토큰 비교 후 공통 토큰 처리 (사용자 결정 후 진행, 생략 가능)"
     kind: git
-    state: planned
+    state: cancelled
     repository: .
     depends_on: [wp-04-d04-desktop]
     branch: refactor/css-d05-tokens
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: decision
+        locator: "2026-09-04 사용자 결정: 생략. 공통 토큰 6개 중 값이 같은 것이 --up·--down 2개뿐(WEB-CSS-REVIEW 6절)"
+        revision: 0ac0d46
+        observed_at: 2026-09-04
 milestones:
   - id: css-clean
     title: "CSS 정리 완료"
-    state: pending
+    state: passed
     depends_on: [wp-04-d04-desktop]
     acceptance:
       - "GATE-AC-001: AC-001~AC-004 자동 검사 통과 (중복 선택자 0, 미참조 클래스 0, Gate, computed style 대조)."
       - "GATE-AC-002: 사용자가 로컬 기동에서 로그인 후 Mobile·Desktop 핵심 화면(마켓·차트·거래·자산, Desktop 사이드바·패널)을 육안 확인."
     unlocks: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "GATE-AC-001: main 0ac0d46 — CSS 15개 파일(앱 셸 2 + 컴포넌트 옆 13), mobile.css 6,389→1,661줄·desktop.css 2,361→544줄, 미참조 클래스 0(d01), 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·computed style 대조 통과. 잔여: 두 앱 셸에 같은 선택자 90개(Desktop이 Mobile 호가창 규칙을 다른 값으로 덮는 override + 양 앱 공용 규칙) — AC-001 부분 충족, OQ-20260904-01"
+        revision: 0ac0d46
+        observed_at: 2026-09-04
+      - kind: manual-check
+        locator: "GATE-AC-002: 사용자가 로컬 기동에서 로그인 후 Mobile·Desktop 화면을 육안 확인(2026-09-04, d04 merge 전 상태)"
+        revision: 0ac0d46
+        observed_at: 2026-09-04
 extensions: {}
 ---
 

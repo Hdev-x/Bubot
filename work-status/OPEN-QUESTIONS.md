@@ -15,6 +15,8 @@
 
 ## 막지는 않음
 
+- 질문: OQ-20260904-01 `mobile.css`·`desktop.css` 셸에 같은 선택자 90개가 남아 있다. 대부분 Desktop이 Mobile 호가창(`TradeOrderbook`) 규칙을 다른 값으로 덮는 override(`book-row`·`funding-rate-countdown`·`gauge-*` 등 10개 계열)와 `.up/.down` 같은 양 앱 공용 규칙이다. Desktop override를 `WebApp.css`로 옮겨 명시할지, 값을 통일할지(디자인 판단) | `wp-04-css-cleanup` Milestone 잔여
+
 - 질문: OQ-20260903-11 lint warning baseline 320개(`no-explicit-any` 145, `react-hooks/refs` 82, `set-state-in-effect` 44, `no-useless-assignment` 8 등)를 어느 WP에서 줄이고 언제 `error`로 올릴지 | `apps/web/eslint.config.js`
 
 - 질문: OQ-20260903-10 코드·문구에 남은 "Bullum"(`apps/web/package.json` name, `document.title`, 푸터)을 Bubot으로 통일할지 | D-20260903-06
