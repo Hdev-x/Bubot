@@ -27,6 +27,10 @@ public class BinanceMarketService extends AbstractMarketService {
     private final WebClient binanceFuturesClient;
     private final BinanceSpotRealtimeWebSocketService binanceSpotRealtimeService;
     private final BinanceFuturesRealtimeWebSocketService binanceFuturesRealtimeService;
+    // 호가·캔들 프록시 보호막: 짧은 캐시로 클라이언트 폴링을 묶고 429/418이면 상류 요청을 멈춘다 (2026-09-05).
+    private final BinanceRestGuard guard = new BinanceRestGuard();
+    private static final long DEPTH_TTL_MS = 400;
+    private static final long CANDLES_TTL_MS = 1_000;
 
     public BinanceMarketService(
             BinanceSpotRealtimeWebSocketService binanceSpotRealtimeService,
@@ -126,7 +130,7 @@ public class BinanceMarketService extends AbstractMarketService {
     public Object getBinanceFuturesCandles(String symbol, String interval, String limit, String endTime) {
         String apiSymbol = toBinanceFuturesSymbol(symbol);
         try {
-            return binanceFuturesClient.get()
+            return guard.get("fut-klines|" + apiSymbol + "|" + interval + "|" + limit + "|" + endTime, CANDLES_TTL_MS, () -> binanceFuturesClient.get()
                     .uri(uriBuilder -> {
                         var builder = uriBuilder.path("/fapi/v1/klines")
                                 .queryParam("symbol", apiSymbol)
@@ -139,7 +143,7 @@ public class BinanceMarketService extends AbstractMarketService {
                     })
                     .retrieve()
                     .bodyToMono(Object.class)
-                    .block(Duration.ofSeconds(10));
+                    .block(Duration.ofSeconds(10)), Collections.emptyList());
         } catch (Exception e) {
             log.error("❌ Binance Futures Candles 조회 실패: symbol={}({}), error={}", symbol, apiSymbol, e.getMessage());
             return Collections.emptyList();
@@ -153,7 +157,7 @@ public class BinanceMarketService extends AbstractMarketService {
 
     public Object getBinanceSpotCandles(String symbol, String interval, String limit, String endTime) {
         try {
-            return binanceSpotClient.get()
+            return guard.get("spot-klines|" + symbol + "|" + interval + "|" + limit + "|" + endTime, CANDLES_TTL_MS, () -> binanceSpotClient.get()
                     .uri(uriBuilder -> {
                         var builder = uriBuilder.path("/api/v3/klines")
                                 .queryParam("symbol", symbol)
@@ -166,7 +170,7 @@ public class BinanceMarketService extends AbstractMarketService {
                     })
                     .retrieve()
                     .bodyToMono(Object.class)
-                    .block(Duration.ofSeconds(10));
+                    .block(Duration.ofSeconds(10)), Collections.emptyList());
         } catch (Exception e) {
             log.error("❌ Binance Spot Candles 조회 실패: symbol={}, error={}", symbol, e.getMessage());
             return Collections.emptyList();
@@ -177,14 +181,14 @@ public class BinanceMarketService extends AbstractMarketService {
     public Object getBinanceFuturesDepth(String symbol, String limit) {
         String apiSymbol = toBinanceFuturesSymbol(symbol);
         try {
-            return binanceFuturesClient.get()
+            return guard.get("fut-depth|" + apiSymbol + "|" + limit, DEPTH_TTL_MS, () -> binanceFuturesClient.get()
                     .uri(uriBuilder -> uriBuilder.path("/fapi/v1/depth")
                             .queryParam("symbol", apiSymbol)
                             .queryParam("limit", limit)
                             .build())
                     .retrieve()
                     .bodyToMono(Object.class)
-                    .block(Duration.ofSeconds(5));
+                    .block(Duration.ofSeconds(5)), Collections.emptyMap());
         } catch (Exception e) {
             log.error("❌ Binance Futures Depth 조회 실패: symbol={}({}), error={}", symbol, apiSymbol, e.getMessage());
             return Collections.emptyMap();
@@ -194,14 +198,14 @@ public class BinanceMarketService extends AbstractMarketService {
     /** Binance 현물 호가(depth) 프록시. */
     public Object getBinanceSpotDepth(String symbol, String limit) {
         try {
-            return binanceSpotClient.get()
+            return guard.get("spot-depth|" + symbol + "|" + limit, DEPTH_TTL_MS, () -> binanceSpotClient.get()
                     .uri(uriBuilder -> uriBuilder.path("/api/v3/depth")
                             .queryParam("symbol", symbol)
                             .queryParam("limit", limit)
                             .build())
                     .retrieve()
                     .bodyToMono(Object.class)
-                    .block(Duration.ofSeconds(5));
+                    .block(Duration.ofSeconds(5)), Collections.emptyMap());
         } catch (Exception e) {
             log.error("❌ Binance Spot Depth 조회 실패: symbol={}, error={}", symbol, e.getMessage());
             return Collections.emptyMap();
