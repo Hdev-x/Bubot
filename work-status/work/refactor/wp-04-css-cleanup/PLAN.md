@@ -18,11 +18,11 @@ deliveries:
   - id: wp-04-d00-survey
     title: "CSS 구역 지도·미사용 후보·labs 전용·중복 선택자 조사 (문서만)"
     kind: git
-    state: planned
+    state: completed
     repository: .
     depends_on: []
     branch: docs/css-d00-survey
-    pull_requests: []
+    pull_requests: [33]
     evidence:
       - kind: document
         locator: "docs/architecture/WEB-CSS-REVIEW.md — 요약, owner 폴더별 구역 지도, 중복 선택자 172(본문 동일 105·상이 67), 미사용 후보 mobile 129+동적의심 2 / desktop 51+3, labs 전용 46/66, :root 토큰 차이표, 착수 순서"
@@ -31,12 +31,20 @@ deliveries:
   - id: wp-04-d01-unused
     title: "미사용 규칙 삭제, labs 전용 규칙 처리 (Mobile·Desktop)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-04-d00-survey]
     branch: refactor/css-d01-unused
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "규칙 단위 처리(선택자 목록은 편집하지 않음). mobile 1,004 → 763 (삭제 177·labs 이동 64, 6,389 → 4,757줄), desktop 713 → 564 (삭제 65·labs 이동 84, 2,361 → 1,956줄). 남은 파일에 새 줄 0(HEAD에 없던 줄 없음), 사용 중 클래스 제거 0, 중괄호 균형"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. computed style 대조: Mobile 로그인 화면 55 요소 해시 동일(diff 0). Desktop 325 요소 중 23 diff — 전부 실시간 값(sh-chg 등락 부호, OHLC 오버레이, 호가 게이지, 클래스 없는 span/a/svg)이며 삭제·이동된 클래스를 가진 요소 0. 삭제 전 3초 간격 재측정에서도 11 요소가 달라지는 잡음 수준"
+        revision: working-tree
+        observed_at: 2026-09-04
   - id: wp-04-d02-chart
     title: "chart/ 공용 CSS 분리 — MarketChart·overlays·indicators (OQ-12 결정 반영)"
     kind: git

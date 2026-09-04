@@ -1,0 +1,191 @@
+/* desktop: Beta에서 labs/trading/web으로 분리된 자동매매·Paper·Backtest 화면 전용 규칙.
+   wp-04 d01에서 apps/web/src/app/desktop/styles/desktop.css에서 옮겨왔다. 현재 어떤 진입점도 import하지 않는다. */
+.paper-order-head {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 38px; padding: 0 8px 0 12px; cursor: move; user-select: none;
+  background: #070707; /* 워치리스트 헤더(.watch-head)와 동일 */
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.paper-order-title { font-size: 13px; font-weight: 700; color: #eaecef; }
+
+.paper-order-body { padding: 8px 12px 18px; }
+
+/* 종목 헤더(타이틀 아래, 한 줄) — 로고·종목·Perp(.wm-badge)·거래소 */
+.po-symhead { display: flex; align-items: center; gap: 6px; padding: 11px 12px 6px; }
+
+.po-logo { width: 20px; height: 20px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #000; display: inline-flex; align-items: center; justify-content: center; }
+
+.po-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+.po-logo-fb { font-size: 9px; font-weight: 800; color: #fff; }
+
+.po-sym { font-size: 13px; font-weight: 700; color: #eaecef; line-height: 20px; }
+
+.po-ex { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; line-height: 20px; }
+
+.po-ex img { width: 11px; height: 11px; }
+
+.paper-order-err { font-size: 11.5px; color: var(--down, #f6465d); }
+
+/* styles.css(.futures-ticket)에서 복사 — 모바일 styles.css는 import 안 하므로 필요한 것만 web.css에 둠 */
+.futures-ticket { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.trade-pills { display: grid; grid-template-columns: 1fr 1fr 40px; gap: 6px; }
+
+.open-close-toggle { display: grid; grid-template-columns: 1fr 1fr; background: #181a20; padding: 2px; border-radius: 6px; }
+
+.open-close-toggle button { background: none; border: 0; color: #848e9c; height: 29px; border-radius: 4px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.15s ease; }
+
+.pill-btn { background: #202126; color: #eaecef; border: 0; border-radius: 6px; height: 26px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+.pill-btn:hover { background: #2b2f36; }
+
+.pill-btn.shrink-s { font-size: 11px; }
+
+.trade-select { display: flex; justify-content: space-between; align-items: center; background: #202126; color: #eaecef; border: 0; border-radius: 6px; height: 31px; padding: 0 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+/* 가격 입력 박스 왼쪽 별도 시장가 토글 */
+.price-line { display: flex; align-items: stretch; gap: 6px; }
+
+.price-line .trade-input-wrapper { flex: 1; min-width: 0; }
+
+.price-line .bbo-button { height: auto; }
+
+/* 테두리는 항상 1.5px(투명) → hover/활성 시 색만 나타나 레이아웃 안 흔들림 */
+.bbo-button { flex-shrink: 0; height: 30px; padding: 0 16px; background: #181a20; color: #8a8c90; border: 1.5px solid transparent; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: color 0.15s, background 0.15s, border-color 0.15s; }
+
+.bbo-button:hover { background: #262a31; }
+
+.trade-checkbox-label { display: flex; align-items: center; gap: 7px; margin-top: 1px; cursor: pointer; }
+
+.custom-checkbox { appearance: none; width: 13px; height: 13px; border: 1.5px solid #474f59; border-radius: 3px; background: none; cursor: pointer; position: relative; }
+
+.custom-checkbox:checked { background: #f0b90b; border-color: #f0b90b; }
+
+.custom-checkbox:checked::after { content: '✓'; position: absolute; color: #000; font-size: 10px; font-weight: 900; top: -1px; left: 2px; }
+
+.checkbox-text { color: #848e9c; font-size: 13px; font-weight: 600; }
+
+.trade-input-wrapper { display: flex; align-items: center; background: #202126; border-radius: 6px; height: 37px; padding: 0 10px; gap: 6px; }
+
+.input-label { color: #848e9c; font-size: 13px; font-weight: 600; }
+
+.val-input { flex: 1; background: none; border: 0; color: #fff; font-size: 13px; font-weight: 700; outline: none; width: 100%; text-align: left; }
+
+.val-input::placeholder { color: #5e6673; }
+
+.currency-selector { display: flex; align-items: center; gap: 4px; background: none; border: 0; color: #eaecef; font-size: 13px; font-weight: 700; }
+
+.percent-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+
+.pct-btn { background: #202126; color: #eaecef; border: 0; border-radius: 6px; height: 24px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+.pct-btn:hover { background: #2b2f36; }
+
+.balance-lines { display: flex; flex-direction: column; gap: 4px; margin: 2px 0; }
+
+.balance-line { display: flex; justify-content: space-between; font-size: 12px; }
+
+.long-button, .short-button {
+  border: 0; border-radius: 6px; height: 40px; color: #fff; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.15s ease;
+}
+
+.long-button:hover, .short-button:hover { opacity: 0.9; }
+
+.long-button { background: var(--up, #0ecb81); }
+
+.short-button { background: var(--down, #f6465d); }
+
+.long-button strong, .short-button strong { font-size: 13px; font-weight: 700; }
+
+.long-button span, .short-button span { font-size: 10px; opacity: 0.8; }
+
+.long-button:disabled, .short-button:disabled { opacity: 0.6; cursor: default; }
+
+/* 미체결 지정가 목록(주문 티켓 하단) */
+.paper-open-orders { margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 8px; }
+
+.paper-oo-title { font-size: 11px; color: #848e9c; font-weight: 600; margin-bottom: 6px; }
+
+.paper-oo-row { display: flex; align-items: center; gap: 6px; padding: 4px 0; font-size: 12px; }
+
+.paper-oo-dir { font-weight: 700; }
+
+.paper-oo-sym { font-weight: 700; color: #eaecef; }
+
+.paper-oo-px { color: #b6b9be; margin-left: auto; font-variant-numeric: tabular-nums; }
+
+.paper-oo-cancel { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; background: transparent; border: none; border-radius: 5px; color: #8a8c90; cursor: pointer; }
+
+.paper-oo-cancel:hover { background: rgba(255,255,255,0.08); color: #f6465d; }
+
+/* ── 전략 섹션: H-R50 페이퍼 실증 현황 (WebPaperStatus) ───────── */
+.wps-panel { padding: 12px 14px; overflow-y: auto; height: 100%; font-size: 12px; }
+
+.wps-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+
+.wps-title { font-size: 14px; font-weight: 700; color: var(--text); }
+
+.wps-updated { font-size: 10px; color: var(--text3); }
+
+.wps-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+
+.wps-stat { background: var(--surface2); border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; }
+
+.wps-stat-k { font-size: 10px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+
+.wps-stat-v { font-size: 13px; font-weight: 700; color: var(--text); }
+
+.wps-dd { font-size: 10px; font-weight: 400; color: var(--text3); font-style: normal; }
+
+.wps-badge { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; font-style: normal; }
+
+.wps-badge-ok { background: rgba(14, 203, 129, 0.15); color: var(--up); }
+
+.wps-badge-warn { background: rgba(246, 176, 26, 0.18); color: #f6b01a; }
+
+.wps-badge-kill { background: rgba(246, 70, 93, 0.18); color: var(--down); }
+
+.wps-sec-title { font-size: 11px; font-weight: 700; color: var(--text3); margin: 12px 0 6px; }
+
+.wps-empty { font-size: 11px; color: var(--text3); padding: 10px 2px; }
+
+.wps-row { display: flex; align-items: center; gap: 7px; padding: 6px 2px; }
+
+.wps-dir { width: 16px; height: 16px; border-radius: 4px; font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+
+.wps-sym { font-weight: 700; color: var(--text); }
+
+.wps-cell { color: var(--text3); }
+
+.wps-right { margin-left: auto; font-weight: 600; }
+
+.wps-outcome { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; }
+
+.wps-trade { border-bottom: 1px solid var(--surface2); padding-bottom: 4px; margin-bottom: 2px; }
+
+.wps-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 10px; color: var(--text3); padding: 0 2px 4px 25px; }
+
+.wps-sym-link { background: none; border: none; padding: 0; font: inherit; color: var(--text); font-weight: 700; cursor: pointer; }
+
+.wps-sym-link:hover { color: var(--blue, #3182f6); text-decoration: underline; }
+
+/* ── 웹 모니터링 패널 (모바일 LiveMonitoringTab 이식) ── */
+.web-monitoring .live-no-pos { color: #8e929a; padding: 8px 0; font-size: 15px; }
+
+.web-monitoring .live-ob-chip {
+  color: #8b95a1; background: #16181d; border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s ease; user-select: none; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+.web-monitoring .live-ob-chip:hover { background: #20222a; color: #edf1f7; border-color: rgba(255, 255, 255, 0.08); }
+
+/* ── 웹 모니터링 스크롤: 필터 고정 + 목록만 스크롤 (부모 .sidebar-section overflow:hidden) ── */
+.web-monitoring { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+.web-monitoring-list { flex: 1; min-height: 0; overflow-y: auto; }
+
