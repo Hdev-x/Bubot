@@ -25,6 +25,8 @@ final class WsConnect {
             return future.get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
+            // cancel이 실제 연결을 막지 못해 늦게 열리면(유령 소켓) 바로 닫는다 — 같은 listener가 두 소켓을 받지 않게.
+            future.thenAccept(ws -> { try { ws.abort(); } catch (Exception ignore) { /* 무시 */ } });
             throw new IOException("연결 " + TIMEOUT_SECONDS + "초 타임아웃: " + uri.getHost());
         } catch (ExecutionException e) {
             Throwable cause = e.getCause();

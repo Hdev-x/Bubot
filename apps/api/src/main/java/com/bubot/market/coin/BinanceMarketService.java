@@ -27,14 +27,17 @@ public class BinanceMarketService extends AbstractMarketService {
     private final WebClient binanceFuturesClient;
     private final BinanceSpotRealtimeWebSocketService binanceSpotRealtimeService;
     private final BinanceFuturesRealtimeWebSocketService binanceFuturesRealtimeService;
-    // 호가·캔들 프록시 보호막: 짧은 캐시로 클라이언트 폴링을 묶고 429/418이면 상류 요청을 멈춘다 (2026-09-05).
-    private final BinanceRestGuard guard = new BinanceRestGuard();
+    // Binance REST 보호막(singleton 공유): 짧은 캐시로 클라이언트 폴링을 묶고 429/418이면 상류 요청을 멈춘다 (2026-09-05).
+    private final BinanceRestGuard guard;
+    private static final long TICKERS_TTL_MS = 10_000;
     private static final long DEPTH_TTL_MS = 400;
     private static final long CANDLES_TTL_MS = 1_000;
 
     public BinanceMarketService(
             BinanceSpotRealtimeWebSocketService binanceSpotRealtimeService,
-            BinanceFuturesRealtimeWebSocketService binanceFuturesRealtimeService) {
+            BinanceFuturesRealtimeWebSocketService binanceFuturesRealtimeService,
+            BinanceRestGuard guard) {
+        this.guard = guard;
         this.binanceSpotRealtimeService = binanceSpotRealtimeService;
         this.binanceFuturesRealtimeService = binanceFuturesRealtimeService;
         
@@ -53,51 +56,35 @@ public class BinanceMarketService extends AbstractMarketService {
     }
 
     public Object getBinanceSpotTickers() {
-        String cacheKey = "binance_spot_tickers";
-        if (isCacheValid(cacheKey)) {
-            return cache.get(cacheKey);
-        }
-
-        try {
-            Object data = binanceSpotClient.get()
-                    .uri("/api/v3/ticker/24hr")
-                    .retrieve()
-                    .bodyToMono(Object.class)
-                    .block(Duration.ofSeconds(5));
-
-            if (data != null) {
-                data = applyBinanceUtcSnapshots(data, binanceSpotRealtimeService.getLatestTickers());
-                putCache(cacheKey, data, 10);
-                return data;
-            }
-        } catch (Exception e) {
-            log.error("❌ Binance Spot Tickers 조회 실패: {}", e.getMessage());
-        }
-        return Collections.emptyList();
+        return tickers("binance_spot_tickers", "spot-tickers", binanceSpotClient, "/api/v3/ticker/24hr", binanceSpotRealtimeService.getLatestTickers(), "Binance Spot");
     }
 
     public Object getBinanceFuturesTickers() {
-        String cacheKey = "binance_futures_tickers";
+        return tickers("binance_futures_tickers", "fut-tickers", binanceFuturesClient, "/fapi/v1/ticker/24hr", binanceFuturesRealtimeService.getLatestTickers(), "Binance Futures");
+    }
+
+    /** 24h 티커 — guard 캐시(10초)로 상류를 묶고, 실패·차단 시엔 마지막 성공 값을 돌려준다(관심종목 목록이 비지 않게, 리뷰 P1 #6). */
+    private Object tickers(String cacheKey, String guardKey, WebClient client, String path,
+                           Map<String, Map<String, Object>> snapshots, String label) {
         if (isCacheValid(cacheKey)) {
             return cache.get(cacheKey);
         }
-
         try {
-            Object data = binanceFuturesClient.get()
-                    .uri("/fapi/v1/ticker/24hr")
+            Object data = guard.get(guardKey, TICKERS_TTL_MS, () -> client.get()
+                    .uri(path)
                     .retrieve()
                     .bodyToMono(Object.class)
-                    .block(Duration.ofSeconds(5));
-
+                    .block(Duration.ofSeconds(5)), null);
             if (data != null) {
-                data = applyBinanceUtcSnapshots(data, binanceFuturesRealtimeService.getLatestTickers());
+                data = applyBinanceUtcSnapshots(data, snapshots);
                 putCache(cacheKey, data, 10);
                 return data;
             }
         } catch (Exception e) {
-            log.error("❌ Binance Futures Tickers 조회 실패: {}", e.getMessage());
+            log.error("❌ {} Tickers 조회 실패: {}", label, e.getMessage());
         }
-        return Collections.emptyList();
+        Object stale = guard.staleOr(guardKey, null);
+        return stale != null ? applyBinanceUtcSnapshots(stale, snapshots) : Collections.emptyList();
     }
 
     @SuppressWarnings("unchecked")
@@ -129,8 +116,9 @@ public class BinanceMarketService extends AbstractMarketService {
 
     public Object getBinanceFuturesCandles(String symbol, String interval, String limit, String endTime) {
         String apiSymbol = toBinanceFuturesSymbol(symbol);
+        String key = "fut-klines|" + apiSymbol + "|" + interval + "|" + limit + "|" + endTime;
         try {
-            return guard.get("fut-klines|" + apiSymbol + "|" + interval + "|" + limit + "|" + endTime, CANDLES_TTL_MS, () -> binanceFuturesClient.get()
+            return guard.get(key, CANDLES_TTL_MS, () -> binanceFuturesClient.get()
                     .uri(uriBuilder -> {
                         var builder = uriBuilder.path("/fapi/v1/klines")
                                 .queryParam("symbol", apiSymbol)
@@ -146,7 +134,7 @@ public class BinanceMarketService extends AbstractMarketService {
                     .block(Duration.ofSeconds(10)), Collections.emptyList());
         } catch (Exception e) {
             log.error("❌ Binance Futures Candles 조회 실패: symbol={}({}), error={}", symbol, apiSymbol, e.getMessage());
-            return Collections.emptyList();
+            return guard.staleOr(key, Collections.emptyList());
         }
     }
 
@@ -156,8 +144,9 @@ public class BinanceMarketService extends AbstractMarketService {
     }
 
     public Object getBinanceSpotCandles(String symbol, String interval, String limit, String endTime) {
+        String key = "spot-klines|" + symbol + "|" + interval + "|" + limit + "|" + endTime;
         try {
-            return guard.get("spot-klines|" + symbol + "|" + interval + "|" + limit + "|" + endTime, CANDLES_TTL_MS, () -> binanceSpotClient.get()
+            return guard.get(key, CANDLES_TTL_MS, () -> binanceSpotClient.get()
                     .uri(uriBuilder -> {
                         var builder = uriBuilder.path("/api/v3/klines")
                                 .queryParam("symbol", symbol)
@@ -173,15 +162,16 @@ public class BinanceMarketService extends AbstractMarketService {
                     .block(Duration.ofSeconds(10)), Collections.emptyList());
         } catch (Exception e) {
             log.error("❌ Binance Spot Candles 조회 실패: symbol={}, error={}", symbol, e.getMessage());
-            return Collections.emptyList();
+            return guard.staleOr(key, Collections.emptyList());
         }
     }
     
     /** Binance 선물 호가(depth) 프록시 — 브라우저 직결 차단(지역제한) 회피용. 원본 JSON({bids,asks}) 그대로 반환. */
     public Object getBinanceFuturesDepth(String symbol, String limit) {
         String apiSymbol = toBinanceFuturesSymbol(symbol);
+        String key = "fut-depth|" + apiSymbol + "|" + limit;
         try {
-            return guard.get("fut-depth|" + apiSymbol + "|" + limit, DEPTH_TTL_MS, () -> binanceFuturesClient.get()
+            return guard.get(key, DEPTH_TTL_MS, () -> binanceFuturesClient.get()
                     .uri(uriBuilder -> uriBuilder.path("/fapi/v1/depth")
                             .queryParam("symbol", apiSymbol)
                             .queryParam("limit", limit)
@@ -191,14 +181,15 @@ public class BinanceMarketService extends AbstractMarketService {
                     .block(Duration.ofSeconds(5)), Collections.emptyMap());
         } catch (Exception e) {
             log.error("❌ Binance Futures Depth 조회 실패: symbol={}({}), error={}", symbol, apiSymbol, e.getMessage());
-            return Collections.emptyMap();
+            return guard.staleOr(key, Collections.emptyMap());
         }
     }
 
     /** Binance 현물 호가(depth) 프록시. */
     public Object getBinanceSpotDepth(String symbol, String limit) {
+        String key = "spot-depth|" + symbol + "|" + limit;
         try {
-            return guard.get("spot-depth|" + symbol + "|" + limit, DEPTH_TTL_MS, () -> binanceSpotClient.get()
+            return guard.get(key, DEPTH_TTL_MS, () -> binanceSpotClient.get()
                     .uri(uriBuilder -> uriBuilder.path("/api/v3/depth")
                             .queryParam("symbol", symbol)
                             .queryParam("limit", limit)
@@ -208,7 +199,7 @@ public class BinanceMarketService extends AbstractMarketService {
                     .block(Duration.ofSeconds(5)), Collections.emptyMap());
         } catch (Exception e) {
             log.error("❌ Binance Spot Depth 조회 실패: symbol={}, error={}", symbol, e.getMessage());
-            return Collections.emptyMap();
+            return guard.staleOr(key, Collections.emptyMap());
         }
     }
 
