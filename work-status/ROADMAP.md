@@ -24,6 +24,7 @@
 - [x] T-04b `apps/web` 폴더 구조 재편(계층 우선 + 앱별 분리 + CSS 동반) | `plan:refactor/wp-03-web-structure`
 - [x] T-04c `apps/web` CSS 정리(미사용 규칙 삭제·컴포넌트별 분리·OQ-12) | `plan:refactor/wp-04-css-cleanup`
 - [ ] T-04d 큰 파일 분해 — `DesktopApp` | `plan:refactor/wp-06-desktop-app-split` · `MarketChart`·`useAutoPatterns`·`OrderPage`는 후속 WP
+- [ ] T-04f `useCoinCandles`에서 티커 현재가 구독을 `useLivePrice`로 분리 — Desktop 훅의 캔들→호가 의존을 "현재가→셋" 방향으로 정리. Mobile 차트도 쓰는 공용 훅이라 차트 훅 정리 WP에서
 - [x] T-04e `web→desktop` 이름 통일(파일·식별자·빌드 이름; URL `/web`은 T-05에서) | `plan:refactor/wp-05-desktop-naming`
 
 ## Beta Track

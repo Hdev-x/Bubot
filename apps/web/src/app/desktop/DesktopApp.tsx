@@ -6,7 +6,6 @@ import { EXCHANGES } from '../../shared/constants/exchanges';
 import { useMainTrade } from '../../hooks/account/useMainTrade';
 import { useUsdKrw } from '../../hooks/market/useUsdKrw';
 import { useRealtimePrices } from '../../hooks/market/useRealtimePrices';
-import { useChartTheme } from '../../chart/hooks/useChartTheme';
 import { useDelayedReady } from '../../hooks/ui/useDelayedReady';
 import { PRESET_THEMES } from '../../chart/settings/ChartSettingsSheet';
 
@@ -20,9 +19,7 @@ import type { RsiSettings } from '../../shared/utils/rsiCandles';
 import { usePersistentState } from '../../hooks/ui/usePersistentState';
 import { useMtfCandles } from '../../chart/hooks/useMtfCandles';
 import { DEFAULT_OB_OPTIONS } from '../../chart/analysis/chartIndicators';
-import type { IndicatorSettings, IndicatorLayer, TFKey, OBOptions } from '../../chart/overlays/ChartOverlay';
-import { DEFAULT_MA_SETTINGS, DEFAULT_BB_SETTING, DEFAULT_PIVOT_SETTING } from '../../chart/indicators/IndicatorSheet';
-import type { MASetting, BBSetting, PivotSetting } from '../../chart/indicators/IndicatorSheet';
+import type { IndicatorLayer, TFKey, OBOptions } from '../../chart/overlays/ChartOverlay';
 import SmcSection from '../../chart/indicators/SmcSection';
 import HarmonicSection from '../../chart/indicators/HarmonicSection';
 import AbcSection from '../../chart/indicators/AbcSection';
@@ -38,7 +35,6 @@ import type { Candle } from '../../shared/types/market';
 import { getIntervalSeconds, TF, UNSUPPORTED_TF } from './lib/timeframes';
 import { fmtAsset } from './lib/format';
 import { WEB_DRAW_TOOLS } from './lib/drawTools';
-import { DARK_THEME, INDICATORS_OFF, MA_OFF, pivotOff } from './lib/indicatorDefaults';
 import { ObjectTree } from './panels/ObjectTree';
 import { MiniCandles } from './panels/MiniCandles';
 import { HeaderLogo, HdSk, Chevron } from './panels/SidebarBits';
@@ -49,6 +45,9 @@ import { type Section, type InvestTab } from './lib/sections';
 import { useDesktopCandles } from './hooks/useDesktopCandles';
 import { useOrderbookSnapshot } from './hooks/useOrderbookSnapshot';
 import { useHeaderSnapshot } from './hooks/useHeaderSnapshot';
+import { useDrawingState } from './hooks/useDrawingState';
+import { useIndicatorState } from './hooks/useIndicatorState';
+import { useChartViewState } from './hooks/useChartViewState';
 import './DesktopApp.css';
 
 // ── 데스크톱 웹 — 모바일 훅/컴포넌트를 그대로 재사용해 같은 데이터를 다룸(화면만 다름) ──
@@ -86,21 +85,15 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const [walletOpen, setWalletOpen] = useState(false);
   const [portfolioOn, setPortfolioOn] = useState(true);
   const [positionsOn, setPositionsOn] = useState(true);
-  const [activeTf, setActiveTf] = useState('1H');
   const [selPosIdx, setSelPosIdx] = useState(0);
-  // 차트 툴바 드롭다운(그리기 / 지표 / 차트설정) 열림 상태
-  const [indiOpen, setIndiOpen] = useState(false);
-  const [chartSetOpen, setChartSetOpen] = useState(false);
-  const [drawOpen, setDrawOpen] = useState(false);
-  // 활성 그리기 도구(null=커서). 도형 완성 시 MarketChart가 onToolChange(null)로 되돌림.
-  const [drawTool, setDrawTool] = useState<string | null>(null);
-  // 드로잉 undo/redo 가능 여부(그리기 패널 버튼 활성화)
-  const [drawHistory, setDrawHistory] = useState({ canUndo: false, canRedo: false });
-  // 선택된 드로잉(플로팅 툴바 표시) + 설정 다이얼로그
-  const [selDrawId, setSelDrawId] = useState<string | null>(null);
-  const [drawSettingsOpen, setDrawSettingsOpen] = useState(false);
-  // 자석(OHLC 약스냅) — TV처럼 토글, 새로고침에도 유지
-  const [magnetOn, setMagnetOn] = usePersistentState('web_draw_magnet', true);
+  // ── 차트 상태 훅 (wp-06 d04a): 드로잉 · 지표 · 보기. 툴바·무대 컴포넌트가 이 묶음을 그대로 받는다 ──
+  const isAdmin = user?.role === 'ADMIN';
+  const draw = useDrawingState();
+  const { drawOpen, setDrawOpen, drawTool, setDrawTool, drawHistory, setDrawHistory, selDrawId, setSelDrawId, drawSettingsOpen, setDrawSettingsOpen, magnetOn, setMagnetOn, drawRef } = draw;
+  const indi = useIndicatorState({ indiOff: !isAdmin });
+  const { indiOpen, setIndiOpen, indiRef, indicatorSettings, setIndicatorSettings, maSettings, setMaSettings, bbSetting, setBbSetting, pivotSetting, setPivotSetting, effIndicatorSettings, effMaSettings, effBbSetting, effPivotSetting, indiGroups, toggleIndiGroup } = indi;
+  const view = useChartViewState({ loggedIn: !!user });
+  const { activeTf, setActiveTf, chartSetOpen, setChartSetOpen, chartSetRef, chartTheme, setChartTheme, effChartTheme, isCustomTheme, isLogScale, setIsLogScale, priceLineOn, setPriceLineOn } = view;
   // RSI 캔들 지표(하단 페인) 토글 + 설정 — 새로고침에도 유지
   const [rsiOn, setRsiOn] = usePersistentState('web_rsi_candles', false);
   // 신뢰도 랭킹 선(임시) — 마스터 + 체급별 토글
@@ -108,9 +101,6 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const [rankTiers, setRankTiers] = usePersistentState<Record<string, boolean>>('web_rank_tiers', { '1M': true, '1W': true, '3D': false, '1d': false });
   const [rsiSettings, setRsiSettings] = usePersistentState<RsiSettings>('web_rsi_settings', DEFAULT_RSI_SETTINGS);
   const [rsiSettingsOpen, setRsiSettingsOpen] = useState(false);
-  const indiRef = useRef<HTMLDivElement>(null);
-  const chartSetRef = useRef<HTMLDivElement>(null);
-  const drawRef = useRef<HTMLDivElement>(null);
   const webChartRef = useRef<MarketChartRef>(null);
 
   // 현재 차트 화면 캡쳐 → PNG 다운로드 (캔들·지표·패턴·가격축·시간축 통째로)
@@ -281,8 +271,6 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   if (loadedSymbol === CHART_SYMBOL) chartDecimalsRef.current = chartDecimalsTarget;
   const chartTickDecimals = chartDecimalsRef.current;
 
-  const [chartTheme, setChartTheme] = useChartTheme(DARK_THEME); // 웹 기본 테마 = 다크
-
   // 관심 미니 시세창 — hidden(숨김) / float(떠있는 창) / dock(왼쪽 사이드바). 비로그인은 관심 잠금이라 항상 숨김.
   const [watchMode, setWatchMode] = usePersistentState<'hidden' | 'float' | 'dock'>('web_watch_mode', 'hidden');
   const effWatchMode = user ? watchMode : 'hidden';
@@ -301,36 +289,10 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
     return () => clearTimeout(t);
   }, [dockOpen]);
 
-  // ── 차트 설정/지표 상태 (모바일 CoinChartPage와 동일 저장키 — 종목 이동·새로고침 유지) ──
-  const [isLogScale, setIsLogScale] = usePersistentState('chart_log_scale', true);
-  // 현재가 기준 수평 점선(priceLine) — 기본 끔, 새로고침에도 유지
-  const [priceLineOn, setPriceLineOn] = usePersistentState('web_price_line', false);
-  const [indicatorSettings, setIndicatorSettings] = usePersistentState<IndicatorSettings>('chart_indicators', {
-    '1M': { showOB: false, showOBBox: false, showFVG: false, showCE: false, showEQ: false },
-    '1W': { showOB: false, showOBBox: false, showFVG: false, showCE: false, showEQ: false },
-    '3D': { showOB: false, showOBBox: false, showFVG: false, showCE: false, showEQ: false },
-    '1D': { showOB: false, showOBBox: false, showFVG: false, showCE: false, showEQ: false },
-  }, true);
-  const [maSettings, setMaSettings] = usePersistentState<MASetting[]>('chart_ma_settings', DEFAULT_MA_SETTINGS);
-  const [bbSetting, setBbSetting] = usePersistentState<BBSetting>('chart_bb_setting', DEFAULT_BB_SETTING, true);
-  const [pivotSetting, setPivotSetting] = usePersistentState<PivotSetting>('chart_pivot_setting', DEFAULT_PIVOT_SETTING, true);
   const [obOptions] = useState<OBOptions>(DEFAULT_OB_OPTIONS);
-  // 지표는 관리자(ADMIN)에게만 공개. 일반 유저·비로그인은 차트 지표 전부 끔(저장값은 유지, 표시만 차단)
-  const isAdmin = user?.role === 'ADMIN';
-  const indiOff = !isAdmin;
-  const effIndicatorSettings = indiOff ? INDICATORS_OFF : indicatorSettings;
-  const effMaSettings = indiOff ? MA_OFF : maSettings;
-  const effBbSetting = indiOff ? { ...bbSetting, show: false } : bbSetting;
-  const effPivotSetting = indiOff ? pivotOff(pivotSetting) : pivotSetting;
-  // 비로그인 시 테마는 다크(DARK_THEME)로 고정. 로그인 후엔 저장된 선택값 유지.
-  const effChartTheme = user ? chartTheme : DARK_THEME;
   // atomic: 활성 TF 전부 로드 후 한번에 커밋 + 그 심볼(mtfSymbol) 반환. 표시 중인 차트(loadedSymbol)와 일치할 때만 그림.
   const { mtfCandles, mtfSymbol } = useMtfCandles(CHART_SYMBOL, effIndicatorSettings, loadCandles, true);
 
-  // 차트 툴바 드롭다운 그룹 접힘 상태
-  const [indiGroups, setIndiGroups] = useState({ favorites: true, basic: true, custom: false });
-  const toggleIndiGroup = (k: keyof typeof indiGroups) => setIndiGroups((p) => ({ ...p, [k]: !p[k] }));
-  const isCustomTheme = !PRESET_THEMES.find((t) => t.id === chartTheme.id);
   const lastCandle = candles[candles.length - 1];
   // 크로스헤어가 가리키는 캔들의 OHLC (없으면 마지막 캔들)
   const [hoveredCandle, setHoveredCandle] = useState<Candle | null>(null);

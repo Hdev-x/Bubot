@@ -52,11 +52,11 @@ deliveries:
   - id: wp-06-d03-hooks
     title: "데이터 훅 — useHeaderSnapshot · useOrderbookSnapshot · useDesktopCandles"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-06-d02-shell]
     branch: refactor/dapp-d03-hooks
-    pull_requests: []
+    pull_requests: [47]
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,216 → 1,035줄(삭제 197 + 훅 호출 16줄). hooks/useDesktopCandles(36)·useOrderbookSnapshot(95)·useHeaderSnapshot(116). 승인 표 그대로, 추가로 funding을 호가 훅 반환값에 넣음(JSX가 OB 없을 때 폴백으로 씀). 상태·effect·의존성 배열 내용 변경 0. 훅 호출 순서는 캔들 → 호가(원래 호가 블록이 앞)로 바뀜 — 두 블록은 독립 구독이라 영향 없음"
@@ -66,13 +66,30 @@ deliveries:
         locator: "tsc ok · lint 0(불필요 import 14개 제거) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭에서 Desktop 로드: 종목 헤더 H 스냅샷(전날 종가·당일 시가·24h 고저·거래량) 표시, 호가 12행, 제목 현재가 갱신, 콘솔 오류는 로그인 전 ws-coin뿐. computed style 325 요소 중 14 diff는 실시간 값뿐"
         revision: working-tree
         observed_at: 2026-09-04
-  - id: wp-06-d04-chart
-    title: "차트 영역 — ChartToolbar · ChartStage · SymbolHeader, 드로잉 상태 훅"
+  - id: wp-06-d04a-chart-hooks
+    title: "차트 상태 훅 — useDrawingState · useIndicatorState · useChartViewState (툴바·무대 props 묶음)"
+    kind: git
+    state: active
+    repository: .
+    depends_on: [wp-06-d03-hooks]
+    branch: refactor/dapp-d04a-chart-hooks
+    pull_requests: []
+    evidence:
+      - kind: parity-check
+        locator: "DesktopApp.tsx 1,035 → 1,002줄(삭제 50 + 훅 호출·구조 분해 12줄). hooks/useDrawingState(24)·useIndicatorState(38)·useChartViewState(27). 상태 선언 20개·ref 3개·eff* 5개·isCustomTheme·toggleIndiGroup을 위치만 이동, 초기값·저장 키·본문 변경 0. DesktopApp은 당분간 훅 반환을 전부 구조 분해해 JSX가 기존 이름을 그대로 씀(d04b에서 묶음째 전달). 드롭다운 바깥 클릭 effect·visibleTFs·TF 폴백 effect는 잔류. 훅 호출 위치가 원래 선언 위치(89~113)와 같아 다른 훅과의 순서 변화는 chartTheme·isLogScale·priceLineOn·지표 설정 4개가 앞으로 당겨지는 것뿐"
+        revision: working-tree
+        observed_at: 2026-09-04
+      - kind: command
+        locator: "tsc ok · lint 0(불필요 import 5줄 정리) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop: 렌더링, 툴바 TF 버튼 1H→4H 클릭 시 active 전환, 호가 12행, 콘솔 오류는 로그인 전 ws-coin뿐"
+        revision: working-tree
+        observed_at: 2026-09-04
+  - id: wp-06-d04b-chart
+    title: "차트 영역 컴포넌트 — SymbolHeader · ChartStage · ChartToolbar (묶음 props)"
     kind: git
     state: planned
     repository: .
-    depends_on: [wp-06-d03-hooks]
-    branch: refactor/dapp-d04-chart
+    depends_on: [wp-06-d04a-chart-hooks]
+    branch: refactor/dapp-d04b-chart
     pull_requests: []
     evidence: []
   - id: wp-06-d05-middle
@@ -80,7 +97,7 @@ deliveries:
     kind: git
     state: planned
     repository: .
-    depends_on: [wp-06-d04-chart]
+    depends_on: [wp-06-d04b-chart]
     branch: refactor/dapp-d05-middle
     pull_requests: []
     evidence: []
@@ -146,9 +163,13 @@ extensions: {}
 - `useHeaderSnapshot(symbol, exchange)`: 747~839(`tkr`·`dayStats`·`marketCap`·H 스냅샷). `useOrderbookSnapshot`: 519~688(호가 구독·`depthScale`·OB 스냅샷). `useDesktopCandles`: 579~640.
 - 반환값은 기존 변수 이름 그대로.
 
-### wp-06-d04-chart
-- `ChartToolbar`(321줄, 가장 큰 항목): 타임프레임·지표·드로잉·RSI·설정 버튼과 드롭다운. 드로잉 상태(`drawTool`·`drawHistory`·`selDrawId`·`drawSettingsOpen`·`magnetOn`)는 `useDrawingState` 훅으로 먼저 묶어 props 수를 줄인다.
-- `ChartStage`(MarketChart + 오버레이 + 플로트바), `SymbolHeader`(H 스냅샷 표시).
+### wp-06-d04a-chart-hooks (2026-09-04 분할)
+- 툴바 52개·무대 48개 참조를 묶기 위해 상태 훅 3개를 먼저 뽑는다: `useDrawingState`(도구·히스토리·선택·설정·자석·드롭다운), `useIndicatorState`(SMC·MA·BB·피벗 설정 + eff* + 그룹 접힘·드롭다운, 입력 `indiOff`), `useChartViewState`(TF·로그축·현재가선·테마·설정 드롭다운, 입력 `loggedIn`).
+- `rsi`·`rank`·`solo` 묶음은 객체로 d04b에서 만든다. `visibleTFs`·TF 폴백 effect·바깥 클릭 effect는 DesktopApp 잔류.
+
+### wp-06-d04b-chart
+- `SymbolHeader`(props 7), `ChartStage`(묶음 `draw`·`indi`·`view`·`rsi`·`solo` + 캔들·MTF·OHLC·`spot`·포맷터·`chartTickDecimals`), `ChartToolbar`(묶음 6개 + `user`·`isAdmin`·`section`·`webChartRef`·`handleCaptureChart`·`visibleTFs`).
+- 시작 전 props 표 확정.
 
 ### wp-06-d05-middle
 - `OrderbookPanel`(`TradeOrderbook` 래핑 + 묶음 선택), `RightPanel`(마켓/전략 탭). `STRUCTURE.md` 트리 갱신, 잔여 줄 수 확인.
