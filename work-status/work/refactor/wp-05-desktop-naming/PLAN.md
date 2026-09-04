@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-05-desktop-naming
 title: web → desktop 이름 통일 (파일·식별자·빌드 이름)
 workstream: refactor
-state: active
+state: completed
 updated: 2026-09-04
 depends_on: [wp-04-css-cleanup]
 supersedes: []
@@ -51,11 +51,11 @@ deliveries:
   - id: wp-05-d03-docs
     title: "문서 갱신, web-mockup.html 처리, 잔여 'web' 목록 확정"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-05-d02-build]
     branch: docs/naming-d03
-    pull_requests: []
+    pull_requests: [42]
     evidence:
       - kind: document
         locator: "COMMANDS·README·GIT-WORKFLOW·STRUCTURE 트리·ROADMAP·CURRENT 갱신. web-mockup.html → docs/design/desktop-mockup.html(사용자 결정: 이동), DESIGN.md에 항목"
@@ -68,13 +68,21 @@ deliveries:
 milestones:
   - id: desktop-naming-done
     title: "이름 통일 완료"
-    state: pending
+    state: passed
     depends_on: [wp-05-d03-docs]
     acceptance:
       - "GATE-AC-001: AC-001~AC-004 확인 (잔여 grep 목록이 예외 4종뿐, Gate 통과, 문서 일치)."
       - "GATE-AC-002: 사용자가 로컬 기동에서 Desktop 로그인·차트·패널을 육안 확인."
     unlocks: []
-    evidence: []
+    evidence:
+      - kind: command
+        locator: "GATE-AC-001: main 기준 잔여 grep = deploy.sh Tomcat WEBAPPS 4줄뿐, 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success, 문서 명령·경로 일치(d03)"
+        revision: main
+        observed_at: 2026-09-04
+      - kind: manual-check
+        locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Desktop 5174 새 config)에서 Desktop 로그인·차트·패널 확인(2026-09-04)"
+        revision: main
+        observed_at: 2026-09-04
 extensions: {}
 ---
 

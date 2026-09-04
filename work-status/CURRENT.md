@@ -1,6 +1,6 @@
 # 현재 상태
 
-- 마지막 갱신: 2026-09-04 (wp-05 PLAN 작성)
+- 마지막 갱신: 2026-09-04 (wp-05 완료)
 
 > 이 문서는 다음 세션을 위한 상태판이다. 이력을 쌓지 않고 덮어쓴다.
 > Branch·Commit·작업 트리는 Git에서, 완료 작업의 상세·증거는 PLAN과 Git History에서 확인한다.
@@ -14,14 +14,14 @@
 - 배포 전 품질 정리 완료(2026-09-03): README, CI lint(error 0·warning baseline 320), API test(H2 test 프로필), Ruleset `main-protection`.
 - `apps/web` 폴더 구조 재편 완료(2026-09-03, `wp-03-web-structure`, PR #24~#30): `app/{mobile,desktop}` · `chart` · `hooks/{market,account,ui}` · `api/{client,server,exchange}` · `shared`. 의존 방향 규칙은 `docs/PROJECT.md`.
 - `apps/web` CSS 정리 완료(2026-09-04, `wp-04-css-cleanup`, PR #32~#37): 미사용 242 규칙 삭제, labs 전용 148 규칙 `labs/trading/web/src/styles/`로 보존, 컴포넌트 옆 CSS 13개 파일. `mobile.css` 6,389→1,661줄, `desktop.css` 2,361→544줄.
-- 프로젝트가 지금 달성하려는 결과: `web → desktop` 이름 통일(`wp-05-desktop-naming`) — 파일·식별자·빌드 이름. URL `/web`은 T-05 배포에서. 그 다음 큰 파일 분해(T-04d, `DesktopApp.tsx`부터). 사용자와 Delivery 단위로 진행.
-- 완료 기준: Milestone `desktop-naming-done` (잔여 `web` grep이 예외 4종뿐, Gate 유지, 문서 일치, 화면 확인).
+- `web → desktop` 이름 통일 완료(2026-09-04, `wp-05-desktop-naming`, PR #39~#42): `DesktopApp`·`desktop.html`·`vite.config.desktop.js`·`build:desktop`·`dist-desktop`. URL `/web`·`static/web`은 T-05 배포에서 결정.
+- 프로젝트가 지금 달성하려는 결과: 다음 WP 선택 대기. 후보는 큰 파일 분해(T-04d: `DesktopApp.tsx` 1,811·`MarketChart.tsx` 1,585·`useAutoPatterns.ts` 990·`OrderPage.tsx` 910, 첫 로직 리팩터링이라 항목별로 함께)와 Beta 배포 준비(T-05, 도메인·DB 위치 결정 필요). 사용자와 항목 단위로 진행.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. Milestone `desktop-naming-done` — 사용자 Desktop 화면 확인 후 wp-05 닫기
+1. 다음 WP 결정(큰 파일 분해 vs 배포 준비) 후 PLAN 작성
 
 ## Deferred
 
@@ -32,7 +32,7 @@
 
 ## 활성 Work Package
 
-- [refactor/wp-05-desktop-naming](work/refactor/wp-05-desktop-naming/PLAN.md) — d01부터
+- 없음.
 
 ## 완료된 Work Package (링크만)
 
@@ -40,6 +40,7 @@
 - [refactor/wp-02-beta-boundary](work/refactor/wp-02-beta-boundary/PLAN.md) — 2026-09-03, PR #14·#15·#16
 - [refactor/wp-03-web-structure](work/refactor/wp-03-web-structure/PLAN.md) — 2026-09-03, PR #24~#30
 - [refactor/wp-04-css-cleanup](work/refactor/wp-04-css-cleanup/PLAN.md) — 2026-09-04, PR #32~#37
+- [refactor/wp-05-desktop-naming](work/refactor/wp-05-desktop-naming/PLAN.md) — 2026-09-04, PR #39~#42
 
 ## Blocker·주의
 
@@ -47,7 +48,7 @@
 - `ops/check-secrets.sh` 파일명·비밀번호 규칙을 소스 코드 오탐 때문에 두 번 좁혔다(PR #4·#5). 가져오기 중 추가 오탐은 없었다.
 - API 기본 기동(`dev`)은 Beta 모드다. 자동매매·Paper·Push·Admin API는 `JAVA_TOOL_OPTIONS="-Dspring.profiles.active=dev,trading"`으로만 등록된다(`docs/COMMANDS.md`).
 - `labs/trading/web`은 `@web/*` alias로 `apps/web`을 참조하는 보존 코드다. 타입체크는 `apps/web/node_modules` symlink로 로컬에서만 한다.
-- Bubot Mobile dev 서버는 `localhost:5175`를 팀 프로젝트 PetCare Vite와 공유한다. PetCare가 떠 있으면 LAN IP로만 열리는데, API CORS 허용 목록(`app.cors.allowed-origins`, 로컬 properties)에 LAN 주소가 없어 로그인이 403이 된다. PetCare를 끄고 `localhost:5175/mobile/`로 접속한다.
+- Bubot Mobile dev 서버는 `localhost:5175`를 팀 프로젝트 PetCare Vite와 공유한다. PetCare가 떠 있으면 LAN IP로만 열리는데, API CORS 허용 목록(`app.cors.allowed-origins`, 로컬 properties)에 LAN 주소가 없어 로그인이 403이 된다. PetCare를 끄고 `localhost:5175/mobile/`로 접속한다. Desktop dev는 `npm run dev:desktop`(`vite.config.desktop.js`), 정확히 `/web/`이 아닌 경로도 `desktop.html`로 리라이트된다.
 - CSS 규칙은 쓰는 컴포넌트 옆 `.css`에 있다(D-20260904-01). 앱 `styles/`에는 토큰·reset·셸과 양 앱 공용 규칙만 있고, 두 셸에 같은 선택자 90개가 남아 있다(OQ-20260904-01). 새 규칙은 컴포넌트 옆 파일에 추가한다.
 - 로컬 기동용 Git 밖 파일이 Bubot에 준비돼 있다: 루트 `.env`, `apps/web/.env`, `apps/api/src/main/resources/application*.properties`(MyBatis key `com.bubot`), `ops/back-end.sh`·`worker.sh`. 원본 AutoTrade와 같은 DB·계정을 가리킨다.
 
