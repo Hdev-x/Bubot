@@ -52,11 +52,11 @@ deliveries:
   - id: wp-07-d03-order-page
     title: "OrderPage(911) → PositionsPanel · TradeHistoryDrawer · TradeTabBar 컴포넌트 + 호가 폴링 훅 (Mobile 전용)"
     kind: git
-    state: active
+    state: completed
     repository: .
     depends_on: [wp-07-d02-auto-patterns]
     branch: refactor/lf-d03-order-page
-    pull_requests: []
+    pull_requests: [57]
     evidence:
       - kind: parity-check
         locator: "OrderPage.tsx 911 → 417줄(삭제 513 + 호출 19줄). components/trade/TradeTabBar(43, props 6)·PositionsPanel(258, 묶음 trade 8·view 5·actions 4)·TradeHistoryDrawer(189, props 7, fmt·ago·outcomeLabel 동반)·app/mobile/hooks/useMobileOrderbook(118, 입력 10·반환 12, depthLabelFor 동반). 옛 파일에 없던 줄은 props 타입 선언·export·주석뿐. 표와 다른 점: 훅 위치를 hooks/account/가 아니라 app/mobile/hooks/로(Bitget 거래 뷰 전용 로직이라 앱 소유), 현물 보유·원가 수정 줄은 OrderPage 잔류"
@@ -69,12 +69,20 @@ deliveries:
   - id: wp-07-d04-market-chart
     title: "MarketChart(1,585) → RSI 페인·랭킹 선·자석/키보드·값 오버레이 effect를 훅으로 (공용, 양 앱 확인)"
     kind: git
-    state: planned
+    state: active
     repository: .
     depends_on: [wp-07-d03-order-page]
     branch: refactor/lf-d04-market-chart
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "MarketChart.tsx 1,585 → 1,332줄(삭제 266 + 훅 호출 13줄). chart/hooks/useDrawingMagnet(70, 반환 magnetRef·snapPriceRef)·useRsiPane(135, 반환 ensureRsiSeries — 차트 초기화 effect가 씀)·useValueOverlay(89)·useRankLines(44, RANK_TIERS·RankLine 동반). 옛 파일에 없던 줄은 훅 시그니처·타입·return뿐. effect 본문·의존성 배열 변경 0. 순서 변화: 키보드 effect가 차트 초기화 effect보다 앞으로, RSI 데이터 effect가 거래량 effect보다 앞으로(독립 대상이라 영향 없음). exhaustive-deps 경고 +12(ref props)"
+        revision: working-tree
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "tsc ok · lint 0(경고 249) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop 차트 canvas 7개 렌더링·Mobile 로그인 화면 로드. 현재가 태그·카운트다운은 Binance IP 차단(~02:03)으로 캔들이 비어 비로그인에서 확인 불가 — 사용자 확인으로. 목표 줄 수 1,100은 초기화·데이터 effect 유지로 1,332에서 마감(PLAN 표 갱신)"
+        revision: working-tree
+        observed_at: 2026-09-05
 milestones:
   - id: large-files-split-done
     title: "큰 파일 분해 완료"
@@ -97,7 +105,7 @@ extensions: {}
 | `app/desktop/panels/DrawingToolbar.tsx` | 641 | 3파일 각 ≤ 350 | 색 유틸·`ColorPicker`·`ColorSwatch`·`LinePreview`(6~134) / `DrawingFloatBar`(149~276) / `DrawingSettings`(294~641) |
 | `chart/hooks/useAutoPatterns.ts` | 990 | ≤ 700 | 순수 헬퍼 함수 8개(37~330, 하모닉 색·키·라벨·TP/SL·도형 조립) + 650줄 effect 하나(332~990) |
 | `app/mobile/pages/OrderPage.tsx` | 911 | ≤ 450 | 로직 88~364(호가 폴링 255~364 포함), JSX: 탭바(367~395)·심볼 헤더·2열 그리드·포지션 패널(482~694)·거래내역 드로어(696~852)·시트 4개 |
-| `chart/MarketChart.tsx` | 1,585 | ≤ 1,100 | effect 30개. 차트 초기화 401줄(677~1077)·데이터 반영 208줄(1154~1361)은 유지. RSI 페인(445~546·1409~1412), 신뢰도 랭킹 선(75~90·1507~1586), 자석·키보드(418~441·654~674), 값 오버레이(1439~1505)를 훅으로 |
+| `chart/MarketChart.tsx` | 1,585 | ≤ 1,350 (초기화 401·데이터 208 effect 유지 시 하한, 2026-09-05 갱신) | effect 30개. 차트 초기화 401줄(677~1077)·데이터 반영 208줄(1154~1361)은 유지. RSI 페인(445~546·1409~1412), 신뢰도 랭킹 선(75~90·1507~1586), 자석·키보드(418~441·654~674), 값 오버레이(1439~1505)를 훅으로 |
 
 useAutoPatterns의 650줄 effect와 MarketChart의 초기화·데이터 effect는 "한 흐름"이라 이번엔 나누지 않는다. 그래서 두 파일의 목표는 400이 아니라 위 표 값이고, 남는 이유는 Milestone evidence에 적는다.
 
