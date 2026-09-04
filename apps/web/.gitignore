@@ -5,5 +5,5 @@ dist
 *.tsbuildinfo
 .tmp
 .vite
-.vite-web
-dist-web
+.vite-desktop
+dist-desktop

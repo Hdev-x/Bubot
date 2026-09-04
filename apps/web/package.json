@@ -1,13 +1,13 @@
 {
-  "name": "bullum-web",
+  "name": "bubot-web",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite --force --configLoader runner --host 0.0.0.0",
-    "dev:web": "vite --config vite.config.web.js --configLoader runner --host 0.0.0.0",
+    "dev:desktop": "vite --config vite.config.desktop.js --configLoader runner --host 0.0.0.0",
     "build": "tsc -b && vite build --configLoader runner",
-    "build:web": "tsc -b && vite build --config vite.config.web.js --configLoader runner",
+    "build:desktop": "tsc -b && vite build --config vite.config.desktop.js --configLoader runner",
     "lint": "eslint .",
     "preview": "vite preview --configLoader runner --host 0.0.0.0",
     "test": "vitest run",

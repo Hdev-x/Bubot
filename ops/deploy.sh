@@ -29,14 +29,14 @@ cp -r apps/web/dist apps/api/src/main/resources/static/mobile
 LOCAL_BUNDLE=$(grep -oE 'index-[A-Za-z0-9_-]+\.js' apps/web/dist/index.html | head -1)
 echo "   새 번들: $LOCAL_BUNDLE"
 
-# ── 2b. 웹 콘솔 빌드 → Spring static/web (web.html → index.html) ─
+# ── 2b. Desktop 빌드 → Spring static/web (desktop.html → index.html) ─
 #   /web/ 은 FileMappingConfig 가 forward:/web/index.html 로 서빙하므로 진입점을 index.html로 맞춘다.
-say "3/6 웹 콘솔 빌드 → apps/api/src/main/resources/static/web"
-( cd apps/web && npm run build:web )
+say "3/6 Desktop 빌드 → apps/api/src/main/resources/static/web"
+( cd apps/web && npm run build:desktop )
 rm -rf apps/api/src/main/resources/static/web
-cp -r apps/web/dist-web apps/api/src/main/resources/static/web
-mv apps/api/src/main/resources/static/web/web.html apps/api/src/main/resources/static/web/index.html
-echo "   웹 콘솔 → static/web/index.html"
+cp -r apps/web/dist-desktop apps/api/src/main/resources/static/web
+mv apps/api/src/main/resources/static/web/desktop.html apps/api/src/main/resources/static/web/index.html
+echo "   Desktop → static/web/index.html"
 
 # ── 3. WAR 빌드 ─────────────────────────────────────────
 say "4/6 bootWar 빌드"
