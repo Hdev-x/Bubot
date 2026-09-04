@@ -2,7 +2,7 @@ import type { Candle } from '../../../shared/types/market';
 
 // ── 차트 — 타임프레임 맵(버튼 라벨 → granularity/channel) ──
 export type Tf = { label: string; value: string; granularity: string; channel: string; category: 'min' | 'hour' | 'day' | 'week' | 'month' };
-export const WEB_TIMEFRAMES: Record<string, Tf> = {
+export const DESKTOP_TIMEFRAMES: Record<string, Tf> = {
   '1m': { label: '1m', value: '1m', granularity: '1min', channel: 'candle1m', category: 'min' },
   '3m': { label: '3m', value: '3m', granularity: '3min', channel: 'candle3m', category: 'min' },
   '5m': { label: '5m', value: '5m', granularity: '5min', channel: 'candle5m', category: 'min' },

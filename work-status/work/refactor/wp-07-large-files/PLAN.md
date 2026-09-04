@@ -10,7 +10,7 @@ supersedes: []
 outcome: "641·990·911·1,585줄짜리 파일 4개가 역할 단위 파일로 나뉘어 각 파일이 한 화면에서 읽히고, 새 파일은 400줄 이하다. 동작·화면은 분해 전과 동일하다."
 acceptance:
   - "AC-001: 새로 만든 파일은 모두 400줄 이하. 원본은 목표 줄 수(아래 표) 이하로 줄고, 남는 이유가 문서화된다."
-  - "AC-002: 동작 불변 — 상태·effect·의존성 배열·계산 로직은 위치만 옮기고 내용을 바꾸지 않는다. 새 상태·effect 0."
+  - "AC-002: 동작 불변 — 상태·effect·의존성 배열·계산 로직은 위치만 옮기고 내용을 바꾸지 않는다. 새 상태·effect 0. [2026-09-05 정정] d04에서 RSI 데이터 effect가 차트 초기화 effect보다 앞으로 옮겨져 첫 렌더 RSI 페인이 비는 회귀가 있었다(리뷰 P1 #3) — PR #60에서 원위치. 독립 effect(키보드 리스너)의 순서 변경은 허용 예외로 둔다."
   - "AC-003: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0·labs tsc가 유지되고, Desktop·Mobile dev 서버가 렌더링된다."
   - "AC-004: 공용 파일(MarketChart·useAutoPatterns)을 건드린 Delivery는 Desktop과 Mobile 양쪽에서 사용자가 육안 확인한다. 앱 전용 파일은 해당 앱만."
   - "AC-005: import 방향은 app → chart/hooks → api → shared, chart 내부는 MarketChart → hooks/overlays/drawing → analysis만."
@@ -33,7 +33,7 @@ deliveries:
         revision: working-tree
         observed_at: 2026-09-05
   - id: wp-07-d02-auto-patterns
-    title: "useAutoPatterns(990) → 순수 헬퍼 300줄을 chart/analysis/harmonicShapes.ts로 (공용, 기계적)"
+    title: "useAutoPatterns(990) → 순수 헬퍼 300줄을 chart/hooks/harmonicShapes.ts로 (공용, 기계적; 실행 시 analysis→hooks로 변경)"
     kind: git
     state: completed
     repository: .

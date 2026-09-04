@@ -1,6 +1,6 @@
 # 폴더 구조
 
-2026-09-03 기준 전체 트리와 역할이다. 요약은 루트 `README.md`, 경계 규칙은 `docs/PROJECT.md`가 소유한다.
+2026-09-05 기준 전체 트리와 역할이다. 요약은 루트 `README.md`, 경계 규칙은 `docs/PROJECT.md`가 소유한다.
 
 ```text
 Bubot/
@@ -22,12 +22,12 @@ Bubot/
 │       ├── vite.config.desktop.js Desktop 진입점 (desktop.html, URL /web)
 │       └── src/                   계층 우선: app → chart/hooks → api → shared
 │           ├── app/
-│           │   ├── mobile/        main·App, pages/ 5(+css), components/(sheets·coin-list·trade, 각 폴더 css), styles/mobile.css
+│           │   ├── mobile/        main·App, pages/ 5(+css), components/(sheets·coin-list·trade, 각 폴더 css), hooks/(useMobileOrderbook), styles/mobile.css
 │           │   └── desktop/       main·DesktopApp(조립, 451줄)·DesktopLogin·DesktopSignup(+css), styles/desktop.css
-│           │       ├── panels/    영역 컴포넌트 — DesktopHeader·IconRail·Sidebar·InvestSection·SymbolHeader·ChartToolbar·ChartStage·OrderbookPanel·RightPanel + Market·Watchlist·Favorites·DrawingToolbar·RsiSettings (+panels.css)
+│           │       ├── panels/    영역 컴포넌트 — DesktopHeader·IconRail·Sidebar·InvestSection·SymbolHeader·ChartToolbar·ChartStage·OrderbookPanel·RightPanel + Market·Watchlist·Favorites·RsiSettings (+panels.css), drawing/(ColorPicker·DrawingFloatBar·DrawingSettings)
 │           │       ├── hooks/     Desktop 전용 상태·데이터 훅 — useDesktopCandles·useOrderbookSnapshot·useHeaderSnapshot·useDrawingState·useIndicatorState·useChartViewState
 │           │       └── lib/       상수·순수 함수 — timeframes·orderbook·format·drawTools·indicatorDefaults·sections
-│           ├── chart/             MarketChart, overlays/ hooks/ indicators/ settings/ drawing/ analysis/(루트 shared 재수출)
+│           ├── chart/             MarketChart(1,332), overlays/ hooks/(캔들·지표·자동패턴·harmonicShapes + MarketChart 전용 useRsiPane·useDrawingMagnet·useValueOverlay·useRankLines) indicators/ settings/ drawing/ analysis/(루트 shared 재수출 + swingMarkers)
 │           ├── hooks/             market/(시세·호가·정밀도) account/(계좌·관심) ui/(persist·scroll·poll)
 │           ├── api/               client.ts(fetch·토큰), server/(Spring 컨트롤러 1:1), exchange/(bitget·binance·krw 직접 호출)
 │           ├── shared/            types/ constants/ contexts/ utils/(포맷터·계산 + tests)

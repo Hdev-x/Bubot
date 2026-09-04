@@ -3,7 +3,7 @@
 // (Binance kline은 지역차단 때문에 백엔드 릴레이로 — coinRealtime.subscribeBinanceKline)
 import type { CandleMessage, Subscription } from '../../server/coinRealtime';
 
-/** Bitget kline WS — data:[[ts,o,h,l,c,baseVol,...]]. ping/pong 25s. channel은 candle1H 등(WEB_TIMEFRAMES.channel). */
+/** Bitget kline WS — data:[[ts,o,h,l,c,baseVol,...]]. ping/pong 25s. channel은 candle1H 등(DESKTOP_TIMEFRAMES.channel). */
 export function subscribeBitgetKline(symbol: string, isFutures: boolean, channel: string, onCandle: (c: CandleMessage) => void): Subscription {
   const instType = isFutures ? 'USDT-FUTURES' : 'SPOT';
   let socket: WebSocket | null = null;

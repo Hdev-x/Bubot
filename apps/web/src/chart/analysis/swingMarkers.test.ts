@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Time } from 'lightweight-charts';
-import type { Pivot } from '../../chart/analysis/pivots';
+import type { Pivot } from './pivots';
 import { buildSwingMarkers } from './swingMarkers';
 
 const time = (n: number): Time => n as unknown as Time;

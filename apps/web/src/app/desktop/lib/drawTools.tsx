@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 // ── 그리기 도구(자체 드로잉 엔진) — 타입 문자열은 모바일 DrawingSheet와 동일 ──
-export const WEB_DRAW_TOOLS: { type: string; name: string; icon: ReactNode }[] = [
+export const DESKTOP_DRAW_TOOLS: { type: string; name: string; icon: ReactNode }[] = [
   {
     type: 'horizontal-line', name: '수평선',
     icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="2" y1="12" x2="22" y2="12" /><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none" /></svg>,

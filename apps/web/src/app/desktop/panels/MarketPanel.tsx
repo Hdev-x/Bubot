@@ -12,7 +12,7 @@ import { usePricePrecision } from '../../../hooks/market/usePricePrecision';
 import { useDelayedReady } from '../../../hooks/ui/useDelayedReady';
 import type { CoinTicker } from '../../../shared/types/market';
 import { EXCHANGE_OPTIONS, isFuturesSupported, type ExchangeId } from '../../../shared/constants/exchanges';
-import { SortIcon, SymbolRow, loadExchangeTickers, useWebFavorites, useCoinLogos, type Market } from './marketShared';
+import { SortIcon, SymbolRow, loadExchangeTickers, useDesktopFavorites, useCoinLogos, type Market } from './marketShared';
 import './panels.css';
 
 type Filter = 'spot' | 'futures';
@@ -30,7 +30,7 @@ export function MarketPanel({ active, onSelect }: { active: boolean; onSelect?: 
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [liveMap, setLiveMap] = useState<Record<string, RealtimeTicker>>({});
   const listRef = useRef<HTMLDivElement>(null);
-  const { isFav, toggleFav } = useWebFavorites();
+  const { isFav, toggleFav } = useDesktopFavorites();
   const logos = useCoinLogos();
   const { precisionMap } = usePricePrecision();
   const getDecimals = useCallback((t: CoinTicker) => precisionMap.get(t.symbol) ?? t.tickDecimals, [precisionMap]);
