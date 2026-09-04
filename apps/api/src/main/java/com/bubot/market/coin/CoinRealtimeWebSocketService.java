@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
+import java.time.Duration;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -43,7 +44,8 @@ public class CoinRealtimeWebSocketService {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final ObjectMapper objectMapper;
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+    private static final long STALE_TIMEOUT_MS = 60_000; // 구독 중인데 이 시간 무수신이면 재연결
     private final Map<String, Map<String, Object>> latestTickers = new ConcurrentHashMap<>();
     // [코얼레싱] 송출 대기 중인 변경분: key=STOMP topic, value=해당 topic의 최신 payload.
     // WebSocket 읽기 스레드에서 직접 송출하지 않고 여기 모았다가 flush()가 주기적으로 일괄 송출한다.
@@ -171,6 +173,17 @@ public class CoinRealtimeWebSocketService {
         }
     }
 
+    /** 10초마다 연결 상태 점검 — 닫힌 소켓·무수신 연결을 재연결 (2026-09-04 장애 후 추가). */
+    @Scheduled(fixedDelay = 10_000)
+    public void maintainConnections() {
+        if (!enabled || shuttingDown) {
+            return;
+        }
+        for (BitgetConnection connection : connections) {
+            connection.maintain();
+        }
+    }
+
     @Scheduled(fixedDelay = 25_000)
     public void ping() {
         if (!enabled || shuttingDown) {
@@ -237,8 +250,9 @@ public class CoinRealtimeWebSocketService {
         private final List<Map<String, String>> subscriptionArgs;
         private final StringBuilder messageBuffer = new StringBuilder();
         private volatile WebSocket socket;
-        private volatile boolean reconnecting;
+        private final ReconnectPolicy reconnect = new ReconnectPolicy(3_000, 60_000);
         private volatile boolean stopped;
+        private volatile long lastMsgAt;
 
         private BitgetConnection(List<Map<String, String>> subscriptionArgs) {
             this.subscriptionArgs = subscriptionArgs;
@@ -253,11 +267,10 @@ public class CoinRealtimeWebSocketService {
                 return;
             }
             try {
-                socket = httpClient.newWebSocketBuilder()
-                        .buildAsync(BITGET_PUBLIC_WS, this)
-                        .join();
+                socket = WsConnect.open(httpClient, BITGET_PUBLIC_WS, this);
             } catch (Exception e) {
-                log.warn("Bitget WebSocket 연결 실패: {}", e.getMessage());
+                reconnect.fail();
+                log.warn("Bitget WebSocket 연결 실패({}회째): {}", reconnect.attempts(), e.getMessage());
                 scheduleReconnect();
             }
         }
@@ -265,7 +278,8 @@ public class CoinRealtimeWebSocketService {
         @Override
         public void onOpen(WebSocket webSocket) {
             webSocket.request(1);
-            reconnecting = false;
+            reconnect.success();
+            lastMsgAt = System.currentTimeMillis();
             try {
                 String message = objectMapper.writeValueAsString(Map.of("op", "subscribe", "args", subscriptionArgs));
                 webSocket.sendText(message, true);
@@ -283,6 +297,7 @@ public class CoinRealtimeWebSocketService {
             }
             String message = messageBuffer.toString();
             messageBuffer.setLength(0);
+            lastMsgAt = System.currentTimeMillis();
             handleMessage(message);
             webSocket.request(1);
             return null;
@@ -302,14 +317,36 @@ public class CoinRealtimeWebSocketService {
             }
         }
 
-        private void scheduleReconnect() {
-            if (stopped || shuttingDown || reconnecting) {
+        private void maintain() {
+            if (stopped || shuttingDown || reconnect.isPending()) {
                 return;
             }
-            reconnecting = true;
+            WebSocket current = socket;
+            if (current == null || current.isInputClosed() || current.isOutputClosed()) {
+                log.warn("Bitget WebSocket 닫힘 감지 - 재연결");
+                scheduleReconnect();
+                return;
+            }
+            long idle = System.currentTimeMillis() - lastMsgAt;
+            if (lastMsgAt > 0 && idle >= STALE_TIMEOUT_MS) {
+                log.warn("Bitget WebSocket {}ms 무수신 - 재연결", idle);
+                current.abort();
+                scheduleReconnect();
+            }
+        }
+
+        private void scheduleReconnect() {
+            if (stopped || shuttingDown) {
+                return;
+            }
+            long delay = reconnect.begin();
+            if (delay < 0) {
+                return;
+            }
+            log.info("Bitget WebSocket 재연결 예약({}회째, {}ms 후)", reconnect.attempts(), delay);
             Thread.ofVirtual().start(() -> {
                 try {
-                    Thread.sleep(3_000);
+                    Thread.sleep(delay);
                     connect();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
