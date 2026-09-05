@@ -144,7 +144,12 @@ public class BitgetMarketService extends AbstractMarketService {
                     if (ts < oldest) oldest = ts;
                 }
                 if (byTs.size() >= 300) break;
-                String nextEndTime = String.valueOf(oldest - 1);
+                // 다음 페이지 커서 = 이번 페이지의 가장 오래된 봉 시작 시각(oldest). Bitget history-candles의 endTime은
+                // "봉의 마감 시각 <= endTime"으로 동작해(실측 2026-09-06: endTime=9/25 00:00 → 9/18 봉 포함, endTime=9/25-1ms → 9/18 봉 제외)
+                // 예전처럼 oldest-1을 주면 oldest 직전 봉(마감 = oldest)이 빠져 페이지 경계마다 봉 하나가 사라졌다
+                // (주봉 14개·3일봉 31개마다 갭 — 사용자 관찰). oldest를 그대로 주면 그 직전 봉이 포함되고, ts=oldest 봉은
+                // 마감이 endTime보다 뒤라 중복되지 않는다(중복돼도 TreeMap이 흡수).
+                String nextEndTime = String.valueOf(oldest);
                 if (nextEndTime.equals(endTimeCursor)) break; // 진전 없음(더 과거 데이터 없음)
                 endTimeCursor = nextEndTime;
             }
