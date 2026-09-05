@@ -1,4 +1,6 @@
-# Bubot
+# Bubit
+
+> 제품명은 Bubit(D-20260906-01). GitHub 저장소 `Hdev-x/Bubot`·로컬 폴더 `Bubot`·Java 패키지 `com.bubot`은 배포(T-05) 직전에 함께 바꾼다.
 
 암호화폐 시세·차트·호가를 보고 거래소 계좌를 Read-only로 확인하는 웹 앱이다. Desktop 웹과 Mobile(PWA) 두 화면을 하나의
 React 앱으로 제공하고, Spring Boot API가 거래소 시세를 중계하며 계좌를 조회한다. 봇 매매 엔진(하모닉·SMC·ABCD 패턴)은

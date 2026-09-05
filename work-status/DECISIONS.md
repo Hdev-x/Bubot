@@ -23,12 +23,14 @@ YYYY-MM-DD | D-YYYYMMDD-NN | kind | 결정 | 이유 | 영향 범위
 - 2026-09-02 | D-20260902-01 | durable | TPM 팀 프로젝트에서 넘어온 JSP 잔해(게시판·공지·뉴스·회원 MVC·주식 화면·JSP 정적 자산·모의 지갑)는 보관하지 않고 삭제한다 | Git 이력과 tag `tpm-legacy-last`(원본 저장소)로 복구 가능하고 팀 코드를 포트폴리오에 남기지 않는다 | 원본 저장소에서 100개 파일 삭제 완료, DB 테이블은 별도 승인
 - 2026-09-02 | D-20260902-02 | durable | 폴더 구조는 `apps/web`·`apps/api`·`labs/trading/worker`·`shared`·`ops`로 하고, 이동은 한 commit에 한 폴더와 참조 수정만 담아 commit마다 build Gate를 통과시킨다 | 이동과 기능 분리를 섞으면 안전 지점을 확인할 수 없다 | 원본 저장소에서 이동 완료
 - 2026-09-03 | D-20260903-01 | durable | 포트폴리오 제품명은 Bubot이며, 새 private 저장소 `Hdev-x/Bubot`을 만들어 정리된 트리를 첫 commit으로 시작하고 제출 시점에 public으로 전환한다 | 팀 코드·연구 자산·과거 secret 이력을 옮기지 않기 위해 이력 없이 시작한다. 이름은 포트폴리오 단계용이며 상용화 시 별도 네이밍 | 저장소, TPM 이름 rename 대상(`com.tj.app`, `TpmApplication`, `tpmApi.ts`, `tpm_token`)
+  - 대체됨: D-20260906-01 — 제품명 Bubit(저장소·패키지 이름은 배포 직전 변경)
 - 2026-09-03 | D-20260903-02 | durable | GitHub Flow(`main` 하나 + 작업 브랜치)와 Squash and merge를 사용하고 릴리즈는 태그·GitHub Release로 관리한다. `develop`·`release`·`beta` 브랜치는 정식 출시 또는 배포판 긴급 수정 상황에만 만든다 | 배포 버전이 하나뿐인 개인 프로젝트에 맞고 `main` 이력이 PR 단위로 읽힌다 | `docs/GIT-WORKFLOW.md`, GitHub 설정(squash 전용, head 자동 삭제)
 - 2026-09-03 | D-20260903-03 | operational | PR 템플릿은 목적·변경·검증·영향과 체크 2개(무관한 변경 없음, Secret·로컬 파일·산출물 없음)로 최소화하고 별도 체크리스트 문서는 두지 않는다 | 사람이 판단해야 하는 항목만 남기고 나머지는 검증 절과 GitHub 설정이 맡는다 | `.github/pull_request_template.md`
 - 2026-09-03 | D-20260903-04 | operational | CI는 `pull_request`와 `main` push에서 Web test·build 2종과 API compile을 전체 실행한다. 경로 필터는 실행 시간이 10분을 넘기 시작할 때 도입한다 | 지금 규모에서는 분할 설정 비용이 절감 시간보다 크다 | `.github/workflows/ci.yml`
 - 2026-09-03 | D-20260903-05 | durable | AI Workflow 0.16.2에서 문서 subset(`work-status/` 상태판·DECISIONS·OPEN-QUESTIONS·ROADMAP·planning, `AGENTS.md` 운영 규칙과 Main Session Checklist 표시, `docs/AI-STYLE.md`·`docs/DOCUMENTATION.md`)만 채택하고 CLI·`.ai-workflow/`·Agent Kit·CI/Merge Policy·local gate는 사용하지 않는다. `check-secrets.sh`는 `ops/`로 옮겨 `pre-commit` 훅에 연결한다 | 필요한 것은 현황 관리와 작업 운영 규칙이며 도구가 강제하는 구조·영수증 체계는 개인 포트폴리오에 과하다 | 템플릿 갱신은 사람이 `templates/common`을 보고 옮긴다
 
 - 2026-09-03 | D-20260903-06 | operational | Beta 로고·앱 표시명은 현행(Botz 로고 자산)을 유지한다 | 사이트에는 로고 이미지만 노출되며 포트폴리오 단계 이름은 Bubot으로 충분하다 | OQ-20260903-05 닫음. 잔여 "Bullum" 문구 통일은 OQ-20260903-10
+  - 대체됨: D-20260906-01 — 표시명 Bubit, 로고 자산은 유지
 
 - 2026-09-03 | D-20260903-07 | operational | Web lint는 기계적 오류(미사용·빈 블록·prefer-const)만 즉시 고치고, `any`·React Compiler 계열 규칙·`no-useless-assignment`는 `warn` baseline으로 두어 lint를 CI에 넣는다 | 오류 345개를 한 번에 고치는 것은 며칠짜리 리팩터링이고 동작 변경 위험이 있다. CI가 새 오류를 막는 것이 우선 | OQ-03 닫음, baseline 축소는 OQ-11
 
@@ -38,6 +40,7 @@ YYYY-MM-DD | D-YYYYMMDD-NN | kind | 결정 | 이유 | 영향 범위
 - 2026-09-03 | D-20260903-10 | durable | `apps/web/src/chart/analysis/` 재수출 4개(chartIndicators·harmonicPattern·elliottWavePattern·pivots)는 유지한다. 루트 `shared/` 계산 엔진은 이 폴더를 통해서만 가져온다 | 5~10줄짜리지만 `../../../../../shared/...` 경로가 화면 코드에 퍼지는 것을 막는 단일 통로다. importer 8곳이 이미 이 경로를 쓴다 | `docs/PROJECT.md` 의존 방향, PR #30
 - 2026-09-04 | D-20260904-01 | durable | CSS는 쓰는 컴포넌트 옆에 둔다(co-location). 앱 `styles/`에는 `:root` 토큰·reset·앱 셸만 남기고, 페이지·컴포넌트·공용 차트 규칙은 각 `.tsx` 옆 `.css`로 옮겨 그 컴포넌트가 import한다. 지표 시트처럼 두 앱이 같은 값으로 쓰는 규칙만 `chart/` 옆으로 모으고, 앱마다 다른 값(OHLC 숫자 폭·삭제 버튼 위치 등 5개)은 앱 CSS에 남긴다(OQ-20260903-12 종결) | React 관행이고, 컴포넌트를 지우면 CSS도 같이 사라져 미사용 규칙이 다시 쌓이지 않는다. `styles/`에 몰아두는 방식(A)으로 바꾸는 것은 `git mv`+import 경로 수정뿐이라 되돌리기 쉽다 | `wp-04-css-cleanup` d02~d04, `docs/architecture/WEB-CSS-REVIEW.md`
 - 2026-09-04 | D-20260904-02 | durable | labs 전용 CSS(자동매매·Paper·Backtest 화면만 쓰는 규칙)는 삭제하지 않고 `labs/trading/web/src/styles/`로 옮겨 보존한다 | 모의투자 단계에서 화면을 되살릴 계획이라 코드와 CSS를 같은 곳에 둔다 | PR #34
+- 2026-09-06 | D-20260906-01 | durable | 제품명은 **Bubit**으로 확정한다. 화면 문구·PWA 이름·HTML title·프론트 식별자(package name, 전역 루트 변수)·현재 상태 문서의 제품명을 Bubit으로 바꾸고, 로고 이미지(`botz-icon.*`)는 그대로 쓴다 | 사용자 확정(2026-09-06). GitHub 저장소 `Hdev-x/Bubot`·로컬 폴더 `Bubot`·Java 패키지 `com.bubot`은 세션·실행 스크립트·PR에 영향이 있어 배포(T-05) 직전에 함께 바꾼다. localStorage 키 `bubot_token`은 사용자 데이터라 유지 | OQ-20260903-10 닫음, D-20260903-01의 이름 부분·D-20260903-06의 표시명 부분 대체
 - 2026-09-05 | D-20260905-01 | operational | `DesktopApp.tsx` 분해(wp-06)는 원안 300~400줄 대신 451줄에서 마감하고(solo 포커스·dock 애니메이션·바깥 클릭 effect 51줄 잔류), 영역 컴포넌트에는 묶음(props 그룹) 방식으로 넘긴다 | 남은 effect는 여러 패널 상태를 한 번에 다뤄 옮기면 오히려 읽기 어렵고, 묶음 props는 호출부 줄 수를 줄인다. wp-06 PLAN이 `D-20260905`로 참조하던 결정을 정식 ID로 기록(2차 리뷰 P2) | `wp-06-desktop-app-split` Outcome·AC-001, PR #50(d05)·#51(완료 처리, 사용자 '451줄에서 wp-06 닫아줘')
 
 ## 대체된 결정

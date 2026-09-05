@@ -61,11 +61,11 @@
 - `ops/check-secrets.sh` 파일명·비밀번호 규칙을 소스 코드 오탐 때문에 두 번 좁혔다(PR #4·#5). 가져오기 중 추가 오탐은 없었다.
 - API 기본 기동(`dev`)은 Beta 모드다. 자동매매·Paper·Push·Admin API는 `JAVA_TOOL_OPTIONS="-Dspring.profiles.active=dev,trading"`으로만 등록된다(`docs/COMMANDS.md`).
 - `labs/trading/web`은 `@web/*` alias로 `apps/web`을 참조하는 보존 코드다. 타입체크는 `apps/web/node_modules` symlink로 로컬에서만 한다.
-- Bubot Mobile dev 서버는 `localhost:5175`를 팀 프로젝트 PetCare Vite와 공유한다. PetCare가 떠 있으면 LAN IP로만 열리는데, API CORS 허용 목록(`app.cors.allowed-origins`, 로컬 properties)에 LAN 주소가 없어 로그인이 403이 된다. PetCare를 끄고 `localhost:5175/mobile/`로 접속한다. Desktop dev는 `npm run dev:desktop`(`vite.config.desktop.js`), 정확히 `/web/`이 아닌 경로도 `desktop.html`로 리라이트된다.
+- Bubit Mobile dev 서버는 `localhost:5175`를 팀 프로젝트 PetCare Vite와 공유한다. PetCare가 떠 있으면 LAN IP로만 열리는데, API CORS 허용 목록(`app.cors.allowed-origins`, 로컬 properties)에 LAN 주소가 없어 로그인이 403이 된다. PetCare를 끄고 `localhost:5175/mobile/`로 접속한다. Desktop dev는 `npm run dev:desktop`(`vite.config.desktop.js`), 정확히 `/web/`이 아닌 경로도 `desktop.html`로 리라이트된다.
 - API의 거래소 중계(`CoinRealtimeWebSocketService`·`BinanceKlineRelayService`·Binance 티커 WS)는 2026-09-04 장애(포트 고갈·reconnecting 플래그 고착) 뒤 PR #52·#61·#63~#65로 재연결 백오프·타임아웃·유령 소켓 차단·종료 직렬화·무수신 점검을 갖췄다. Mobile은 모든 실시간 데이터가 이 중계에 의존한다. 실제 끊김 후 재연결 로그(`재연결 예약(N회째)` → `연결 완료`)는 아직 확인 전. 로컬 API는 2026-09-05 19:56 PR #65 코드로 기동 중.
 - Binance REST는 서버가 매 요청을 상류로 보내지 않도록 `BinanceRestGuard`(PR #56·#61·#63)가 호가 0.4초·캔들 1초·티커 10초 캐시와 429/418 차단 시각을 존중한다. 차단 중에는 로그에 `Binance REST 418 — N초 동안 상류 요청 중지`가 10초에 1회 찍히고, 호가는 15초·캔들은 10분 넘은 캐시를 주지 않아 빈 값(화면 호가는 빈 응답 3회 뒤, 약 1.5초+응답 시간 뒤 비워짐), 티커는 마지막 값 유지(관심종목 목록 보존). Bitget·국내 거래소는 무관.
 - CSS 규칙은 쓰는 컴포넌트 옆 `.css`에 있다(D-20260904-01). 앱 `styles/`에는 토큰·reset·셸과 양 앱 공용 규칙만 있고, 두 셸에 같은 선택자 90개가 남아 있다(OQ-20260904-01). 새 규칙은 컴포넌트 옆 파일에 추가한다. 셸 CSS는 `main.tsx`에서 컴포넌트 import보다 먼저 import해야 한다 — `npm run check:css`(CI)가 import 순서·번들 순서를 검사한다.
-- 로컬 기동용 Git 밖 파일이 Bubot에 준비돼 있다: 루트 `.env`, `apps/web/.env`, `apps/api/src/main/resources/application*.properties`(MyBatis key `com.bubot`), `ops/back-end.sh`·`worker.sh`. 원본 AutoTrade와 같은 DB·계정을 가리킨다.
+- 로컬 기동용 Git 밖 파일이 로컬 폴더 `Bubot`에 준비돼 있다: 루트 `.env`, `apps/web/.env`, `apps/api/src/main/resources/application*.properties`(MyBatis key `com.bubot`), `ops/back-end.sh`·`worker.sh`. 원본 AutoTrade와 같은 DB·계정을 가리킨다.
 
 ## 읽기 안내
 

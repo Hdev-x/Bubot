@@ -26,11 +26,9 @@
 
 - 질문: OQ-20260903-11 lint warning baseline 320개(`no-explicit-any` 145, `react-hooks/refs` 82, `set-state-in-effect` 44, `no-useless-assignment` 8 등)를 어느 WP에서 줄이고 언제 `error`로 올릴지 | `apps/web/eslint.config.js`
 
-- 질문: OQ-20260903-10 코드·문구에 남은 "Bullum"(`apps/web/package.json` name, `document.title`, 푸터)을 Bubot으로 통일할지 | D-20260903-06
-
 - 질문: OQ-20260903-09 `apps/web/.env`의 `VITE_BOT_API_TOKEN`이 브라우저 번들에 노출되는 값인데 Beta에서 계속 프론트에 둘지, 서버 프록시(`/api/bot`)로만 쓰고 제거할지 | `apps/web/src/api/botApi.ts`
 
 - 질문: OQ-20260903-08 `apps/api/src/main/resources/static/{web,index.html}`에 추적된 Desktop build 산출물을 Git에서 빼고 배포 시 생성할지, 아니면 계속 추적할지 (현재 bundle은 rename 전 `tpm_token`을 포함) | `work-status/work/refactor/wp-01-rename-tpm/PLAN.md`
 
 - 질문: OQ-20260903-06 `MemberDTO.cash`(주식 예수금)·`members` 컬럼과 미사용 legacy DB 테이블을 언제 정리할지 (DB 변경 승인 필요)
-- 질문: OQ-20260903-07 Private Worklog를 원본 저장소 worklog에 이어 쓸지 Bubot용으로 새로 만들지
+- 질문: OQ-20260903-07 Private Worklog를 원본 저장소 worklog에 이어 쓸지 Bubit용으로 새로 만들지

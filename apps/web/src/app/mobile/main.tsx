@@ -37,8 +37,8 @@ if (import.meta.env.DEV && 'serviceWorker' in navigator) {
 import { CurrencyProvider } from '../../shared/contexts/CurrencyContext';
 
 // dev HMR로 main.tsx가 다시 실행돼도 React 루트는 하나만 재사용한다(Desktop main.tsx와 같은 이유 — 중복 createRoot 방지).
-declare global { interface Window { __bubotMobileRoot?: Root } }
-const root = (window.__bubotMobileRoot ??= createRoot(document.getElementById('root')!));
+declare global { interface Window { __bubitMobileRoot?: Root } }
+const root = (window.__bubitMobileRoot ??= createRoot(document.getElementById('root')!));
 root.render(
   <StrictMode>
     <ErrorBoundary>

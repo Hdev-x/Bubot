@@ -22,8 +22,8 @@ export default defineConfig({
         type: 'module'
       },
       manifest: {
-        name: 'Botz Mobile',
-        short_name: 'Botz',
+        name: 'Bubit Mobile',
+        short_name: 'Bubit',
         theme_color: '#1a1a1a',
         background_color: '#1a1a1a',
         display: 'standalone',

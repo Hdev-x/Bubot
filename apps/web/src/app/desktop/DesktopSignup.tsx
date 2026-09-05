@@ -34,7 +34,7 @@ export default function DesktopSignup({ onSignup, onBackToLogin, onClose }: { on
     <div style={styles.wrap}>
       {/* 앱 헤더(.header) 위치만 재사용 — 배경/구분선은 페이지색과 동일하게 덮어써 탑바가 없는 것처럼 */}
       <header className="header" style={{ background: 'transparent', borderBottom: 'none' }}>
-        <img className="header-logo" src={botzMark} alt="Botz" />
+        <img className="header-logo" src={botzMark} alt="Bubit" />
         {onClose && <button type="button" onClick={onClose} style={styles.close} aria-label="닫기">✕</button>}
       </header>
       <div style={styles.center}>
