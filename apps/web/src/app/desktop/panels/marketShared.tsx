@@ -42,7 +42,7 @@ export const withDividerLabel = (key: string, label: string) => { const i = key.
 const FAV_EVENT = 'web-favs-changed';
 
 /** 즐겨찾기 스토어(localStorage). 같은 탭의 다른 인스턴스 토글도 즉시 반영(커스텀 이벤트) + 다른 탭은 storage 이벤트로 동기화. */
-export function useWebFavorites() {
+export function useDesktopFavorites() {
   const [favs, setFavs] = useState<string[]>(loadFavs);
   // 다른 인스턴스/탭에서 즐겨찾기가 바뀌면 최신값을 다시 읽어 미러링(미니창↔관심패널 양방향).
   useEffect(() => {

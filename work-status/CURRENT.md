@@ -1,6 +1,6 @@
 # 현재 상태
 
-- 마지막 갱신: 2026-09-04 (wp-07 완료)
+- 마지막 갱신: 2026-09-04 (리뷰 수정 반영)
 
 > 이 문서는 다음 세션을 위한 상태판이다. 이력을 쌓지 않고 덮어쓴다.
 > Branch·Commit·작업 트리는 Git에서, 완료 작업의 상세·증거는 PLAN과 Git History에서 확인한다.
@@ -19,13 +19,14 @@
 - API 중계 재연결 보강 완료(2026-09-05, PR #52, Fast Path): `ReconnectPolicy`·`WsConnect` + Bitget 무수신 점검. 실제 끊김 후 재연결 로그 확인은 미실행.
 - 큰 파일 분해 완료(2026-09-05, `wp-07-large-files`, PR #53~#58): DrawingToolbar 3파일, useAutoPatterns 695, OrderPage 417, MarketChart 1,332. 남은 큰 덩어리는 useAutoPatterns의 650줄 effect와 MarketChart의 초기화(401)·데이터(208) effect — 한 흐름이라 의도적으로 유지.
 - Binance 호가·캔들 프록시 캐시 + 429/418 차단 존중 완료(2026-09-05, PR #56, Fast Path). 2026-09-05 00:23 서버 IP가 Binance에 약 73분 차단됐던 원인(호가 폴링 분당 150~250회) 수정.
-- 프로젝트가 지금 달성하려는 결과: 리팩터링 전체(wp-03~wp-07 + Fast Path 2건) 독립 리뷰(Codex gpt-5.6-sol, 읽기 전용) 결과 반영 후 다음 WP 선택. 후보는 T-04f `useLivePrice` 분리, OQ-11 lint 경고 축소, OQ-04 Beta 배포.
+- 독립 리뷰(Codex gpt-5.6-sol, 2026-09-05, P0 2·P1 7·P2 9) 반영: PR #60(셸 CSS 로드 순서 복원·RSI effect 원위치), #61(Binance guard 공유·동시성·중계 연결 소유권·pong, 관심종목 사라짐 원인), #62(역방향 import·lockfile·web 식별자·PLAN 정정). 리뷰 원문은 세션 scratchpad에만 있다.
+- 프로젝트가 지금 달성하려는 결과: 리뷰 수정 3건 merge 후 다음 WP 선택. 후보는 T-04f `useLivePrice` 분리, OQ-11 lint 경고 축소, OQ-04 Beta 배포.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. Codex 독립 리뷰 결과의 P0·P1을 원문 재확인 후 Fast Path로 수정
+1. PR #60·#61·#62 사용자 확인 후 merge, 02:21 이후 Binance 차단 해제 시 관심종목 목록 유지 확인
 2. 다음 WP 결정 후 PLAN 작성
 
 ## Deferred

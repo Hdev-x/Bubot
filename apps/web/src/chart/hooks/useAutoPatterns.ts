@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import type { ISeriesApi, SeriesMarker, Time } from 'lightweight-charts';
 import { createSeriesMarkers } from 'lightweight-charts';
 import { getPivots } from '../analysis/pivots';
-import { buildSwingMarkers } from '../../shared/utils/swingMarkers';
+import { buildSwingMarkers } from '../analysis/swingMarkers';
 import { detectElliottWave, detectAbcWave, predictAbcWave } from '../analysis/elliottWavePattern';
 import { predictHarmonicPatterns } from '../analysis/harmonicPattern';
 import type { Candle } from '../../shared/types/market';

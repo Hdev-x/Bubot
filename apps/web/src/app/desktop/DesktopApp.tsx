@@ -80,11 +80,11 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const [rankTiers, setRankTiers] = usePersistentState<Record<string, boolean>>('web_rank_tiers', { '1M': true, '1W': true, '3D': false, '1d': false });
   const [rsiSettings, setRsiSettings] = usePersistentState<RsiSettings>('web_rsi_settings', DEFAULT_RSI_SETTINGS);
   const [rsiSettingsOpen, setRsiSettingsOpen] = useState(false);
-  const webChartRef = useRef<MarketChartRef>(null);
+  const chartRef = useRef<MarketChartRef>(null);
 
   // 현재 차트 화면 캡쳐 → PNG 다운로드 (캔들·지표·패턴·가격축·시간축 통째로)
   const handleCaptureChart = () => {
-    const canvas = webChartRef.current?.captureImage();
+    const canvas = chartRef.current?.captureImage();
     if (!canvas) return;
     canvas.toBlob((blob) => {
       if (!blob) return;
@@ -179,7 +179,7 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
       setSoloActive(false);
       setFocusTracker(null);
       soloUserViewRef.current = null;
-      webChartRef.current?.resetPriceAutoScale();
+      chartRef.current?.resetPriceAutoScale();
     }
   }, [CHART_SYMBOL, soloActive, focusTracker]);
   const soloOn = soloActive && focusTracker?.symbol === CHART_SYMBOL;
@@ -228,12 +228,12 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
     focusScrollKeyRef.current = key;
     if (soloUserViewRef.current) {
       const { from, to } = soloUserViewRef.current;
-      webChartRef.current?.focusTimeWindow(from, to, 0);
+      chartRef.current?.focusTimeWindow(from, to, 0);
       return;
     }
     const fromT = Number(x.X.time);
     const toT = Number((focusTracker as any).exitTime ?? (focusTracker as any).przHitTime ?? x.D?.time ?? x.C?.time ?? fromT);
-    if (fromT && toT) webChartRef.current?.focusTimeWindow(fromT, toT, 0.3);
+    if (fromT && toT) chartRef.current?.focusTimeWindow(fromT, toT, 0.3);
   }, [focusTracker]);
   // solo 진입 등 activeTf 변경 없이 focusTracker/candles가 바뀌는 케이스의 안전망(중복 시 key 일치로 no-op).
   useEffect(() => {
@@ -393,11 +393,11 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
                 <ChartToolbar
                   draw={draw} indi={indi} view={view} rsi={rsi} rank={rank} solo={solo}
                   user={user} onLoginClick={onLoginClick} isAdmin={isAdmin} visibleTFs={visibleTFs}
-                  webChartRef={webChartRef} handleCaptureChart={handleCaptureChart}
+                  chartRef={chartRef} handleCaptureChart={handleCaptureChart}
                 />
                 <ChartStage
                   draw={draw} indi={indi} view={view} rsi={rsi} rank={rank} solo={solo} data={chartData} sel={sel}
-                  user={user} webChartRef={webChartRef} ohlc={ohlc} setHoveredCandle={setHoveredCandle} fmtPx={fmtPx} fmtVol={fmtVol}
+                  user={user} chartRef={chartRef} ohlc={ohlc} setHoveredCandle={setHoveredCandle} fmtPx={fmtPx} fmtVol={fmtVol}
                 />
               </section>
 
@@ -433,7 +433,7 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
       </div>
 
       <footer className="app-footer">
-        <span>© 2026 Bullum · Web</span>
+        <span>© 2026 Bubot · Desktop</span>
         <span>v0.1</span>
       </footer>
 

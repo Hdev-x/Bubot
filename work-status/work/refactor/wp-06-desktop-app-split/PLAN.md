@@ -7,10 +7,10 @@ state: completed
 updated: 2026-09-05
 depends_on: [wp-05-desktop-naming]
 supersedes: []
-outcome: "DesktopApp.tsx가 상태를 조립해 영역 컴포넌트에 넘기는 300줄 안팎의 파일이 되고, 화면 8개 영역은 각자 컴포넌트, 데이터 흐름 5개는 각자 훅으로 나뉜다. 동작·화면은 분해 전과 동일하다."
+outcome: "DesktopApp.tsx가 상태를 조립해 영역 컴포넌트에 넘기는 파일(451줄, 사용자 결정 D-20260905 — 원안 300줄 안팎에서 조정)이 되고, 화면 8개 영역은 각자 컴포넌트, 데이터 흐름 5개는 각자 훅으로 나뉜다. 동작·화면은 분해 전과 동일하다."
 acceptance:
-  - "AC-001: DesktopApp.tsx가 400줄 이하이고, 새 파일은 각각 400줄 이하다. 소형 컴포넌트·상수·순수 함수는 DesktopApp.tsx 밖에 있다."
-  - "AC-002: 각 Delivery는 동작을 바꾸지 않는다. 상태 변수·effect·핸들러는 위치만 옮기고 내용을 바꾸지 않으며, 새 상태·새 effect를 만들지 않는다 (props 전달을 위한 타입 선언만 추가)."
+  - "AC-001: DesktopApp.tsx가 451줄 이하(2026-09-05 사용자 결정으로 400 → 451, solo 포커스·dock 애니메이션·바깥 클릭 effect 잔류)이고, 새 파일은 각각 400줄 이하다. 소형 컴포넌트·상수·순수 함수는 DesktopApp.tsx 밖에 있다."
+  - "AC-002: 각 Delivery는 동작을 바꾸지 않는다. 상태 변수·effect·핸들러는 위치만 옮기고 내용을 바꾸지 않으며, 새 상태·새 effect를 만들지 않는다 (props 전달을 위한 타입 선언만 추가). 예외(2026-09-05 기록, 리뷰 P2 #17): 서로 독립인 구독 훅의 호출 순서는 바뀔 수 있다 — d03에서 캔들 훅이 호가 훅 앞으로 이동(현재가를 넘기기 위해)."
   - "AC-003: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0·labs tsc가 유지되고, Desktop dev 서버가 렌더링된다."
   - "AC-004: 각 Delivery 후 사용자가 로그인 상태에서 해당 영역의 상호작용(버튼·탭·드롭다운)을 육안 확인한다. AI는 비로그인 화면의 computed style 대조만 한다."
   - "AC-005: 영역 컴포넌트는 app/desktop/ 안에 두고, chart/·hooks/·api/를 새로 참조하는 방향은 app → 하위 계층만이다."

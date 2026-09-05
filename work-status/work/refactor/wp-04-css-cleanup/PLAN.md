@@ -124,7 +124,7 @@ milestones:
     unlocks: []
     evidence:
       - kind: command
-        locator: "GATE-AC-001: main 0ac0d46 — CSS 15개 파일(앱 셸 2 + 컴포넌트 옆 13), mobile.css 6,389→1,661줄·desktop.css 2,361→544줄, 미참조 클래스 0(d01), 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·computed style 대조 통과. 잔여: 두 앱 셸에 같은 선택자 90개(Desktop이 Mobile 호가창 규칙을 다른 값으로 덮는 override + 양 앱 공용 규칙) — AC-001 부분 충족, OQ-20260904-01"
+        locator: "GATE-AC-001: main 0ac0d46 — CSS 15개 파일(앱 셸 2 + 컴포넌트 옆 13), mobile.css 6,389→1,661줄·desktop.css 2,361→544줄, 미참조 클래스 0(d01), 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·computed style 대조 통과. 잔여: 두 앱 셸에 같은 선택자 90개(Desktop이 Mobile 호가창 규칙을 다른 값으로 덮는 override + 양 앱 공용 규칙) — AC-001 부분 충족, OQ-20260904-01. [2026-09-05 정정] AC-004 'cascade 변화 0'은 사실이 아니었다: d03에서 main.tsx가 셸 CSS를 화면 컴포넌트 뒤에 import해 번들 순서가 뒤집혀 .coin-chart-page 테마·.show-current-label flex가 덮였다(리뷰 P0). 로그인 화면 스냅샷만 대조해 잡지 못함. PR #60에서 import 순서·media 규칙 이동으로 복원하고 scripts/check-css-cascade-order.py로 원본 대비 뒤집힘 0 확인"
         revision: 0ac0d46
         observed_at: 2026-09-04
       - kind: manual-check

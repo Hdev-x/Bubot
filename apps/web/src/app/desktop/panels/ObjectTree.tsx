@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { DrawingManager } from '../../../chart/drawing';
-import { WEB_DRAW_TOOLS } from '../lib/drawTools';
+import { DESKTOP_DRAW_TOOLS } from '../lib/drawTools';
 
 // 웹 오브젝트 트리 — 드로잉 목록(보이기/잠금/삭제/선택). manager는 ref라 폴링으로 동기화(모바일 시트와 동일 방식).
 export function ObjectTree({ getManager, onSelect }: { getManager: () => DrawingManager | null | undefined; onSelect: (id: string) => void }) {
@@ -19,7 +19,7 @@ export function ObjectTree({ getManager, onSelect }: { getManager: () => Drawing
     return () => clearInterval(t);
   }, [getManager]);
 
-  const nameOf = (type: string) => WEB_DRAW_TOOLS.find((t) => t.type === type)?.name ?? type;
+  const nameOf = (type: string) => DESKTOP_DRAW_TOOLS.find((t) => t.type === type)?.name ?? type;
 
   if (!items.length) return <div className="draw-obj-empty">작도 객체 없음</div>;
   return (

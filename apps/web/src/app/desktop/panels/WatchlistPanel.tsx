@@ -6,7 +6,7 @@ import { usePersistentState } from '../../../hooks/ui/usePersistentState';
 import type { ExchangeId } from '../../../shared/constants/exchanges';
 import { FavoritesPanel } from './FavoritesPanel';
 import { snapFloat } from './snapFloat';
-import { useWebFavorites, type Market } from './marketShared';
+import { useDesktopFavorites, type Market } from './marketShared';
 import './panels.css';
 
 type Mode = 'float' | 'dock';
@@ -34,7 +34,7 @@ export function WatchlistPanel({ mode, onSelect, onClose, onToggleDock }: {
   const [half, setHalf] = useState<'top' | 'bottom' | null>(null); // 커서가 위/아래 절반 중 어디 → 해당 핸들만 노출
   const [editMode, setEditMode] = useState(false); // 편집 모드(드래그 재정렬 + 제거)
   const [addOpen, setAddOpen] = useState(false);    // + 드롭다운(구분선 추가 등)
-  const { addDivider } = useWebFavorites();
+  const { addDivider } = useDesktopFavorites();
   useEffect(() => {
     if (!addOpen) return;
     const close = () => setAddOpen(false); // 메뉴/버튼은 mousedown stopPropagation이라 바깥 클릭만 닫음

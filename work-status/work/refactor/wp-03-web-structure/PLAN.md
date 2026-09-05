@@ -149,7 +149,7 @@ milestones:
         revision: f31cc27
         observed_at: 2026-09-03
       - kind: manual-check
-        locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Vite 5174/5175)에서 로그인 후 Mobile·Desktop 화면을 확인함(2026-09-03). 스크린샷 파일 대조는 하지 않았고 육안 확인으로 대체"
+        locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Vite 5174/5175)에서 로그인 후 Mobile·Desktop 화면을 확인함(2026-09-03). AC-004의 스크린샷 파일 대조는 실행하지 않고 사용자 육안 확인으로 대체(waived, 사용자 결정 2026-09-03). 2026-09-05 리뷰 P2 #11 지적에 따라 명시"
         revision: f31cc27
         observed_at: 2026-09-03
 extensions: {}

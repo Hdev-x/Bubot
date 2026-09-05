@@ -7,7 +7,7 @@ import MaSection from '../../../chart/indicators/MaSection';
 import BbSection from '../../../chart/indicators/BbSection';
 import PivotSection from '../../../chart/indicators/PivotSection';
 import ElliottSection from '../../../chart/indicators/ElliottSection';
-import { WEB_DRAW_TOOLS } from '../lib/drawTools';
+import { DESKTOP_DRAW_TOOLS } from '../lib/drawTools';
 import type { DrawingState } from '../hooks/useDrawingState';
 import type { IndicatorState } from '../hooks/useIndicatorState';
 import type { ChartViewState } from '../hooks/useChartViewState';
@@ -18,7 +18,7 @@ import { Chevron } from './SidebarBits';
 
 // 차트 툴바 — 타임프레임·solo 칩·신뢰선·RSI·캡쳐·그리기/지표/차트설정 드롭다운. DesktopApp에서 JSX만 옮김 (wp-06 d04b).
 // 상태는 묶음(draw·indi·view·rsi·rank·solo)으로 받고 첫 줄에서 풀어 쓴다. 본문은 그대로.
-export function ChartToolbar({ draw, indi, view, rsi, rank, solo, user, onLoginClick, isAdmin, visibleTFs, webChartRef, handleCaptureChart }: {
+export function ChartToolbar({ draw, indi, view, rsi, rank, solo, user, onLoginClick, isAdmin, visibleTFs, chartRef, handleCaptureChart }: {
   draw: DrawingState;
   indi: IndicatorState;
   view: ChartViewState;
@@ -29,7 +29,7 @@ export function ChartToolbar({ draw, indi, view, rsi, rank, solo, user, onLoginC
   onLoginClick: () => void;
   isAdmin: boolean;
   visibleTFs: string[];
-  webChartRef: ChartRef;
+  chartRef: ChartRef;
   handleCaptureChart: () => void;
 }) {
   const { drawOpen, setDrawOpen, drawTool, setDrawTool, drawHistory, magnetOn, setMagnetOn, drawRef } = draw;
@@ -45,7 +45,7 @@ export function ChartToolbar({ draw, indi, view, rsi, rank, solo, user, onLoginC
                       <button key={t} className={`tf-btn${activeTf === t ? ' active' : ''}`} onClick={() => {
                         if (soloOn) {
                           // 전환 직전 뷰(사용자가 팬/줌했을 수 있는 상태)를 캡처해 TF 넘어가도 유지.
-                          const r = webChartRef.current?.getVisibleRawTimeRange();
+                          const r = chartRef.current?.getVisibleRawTimeRange();
                           if (r) soloUserViewRef.current = r;
                           // setActiveTf보다 먼저 동기 호출 → 새 TF 캔들 도착 시 바로 정위치(튐 방지).
                           frameForTf(t);
@@ -58,7 +58,7 @@ export function ChartToolbar({ draw, indi, view, rsi, rank, solo, user, onLoginC
                     <button
                       className="chart-solo-chip"
                       title="이 패턴만 보기 해제"
-                      onClick={() => { setSoloActive(false); setFocusTracker(null); soloUserViewRef.current = null; webChartRef.current?.resetPriceAutoScale(); }}
+                      onClick={() => { setSoloActive(false); setFocusTracker(null); soloUserViewRef.current = null; chartRef.current?.resetPriceAutoScale(); }}
                     >
                       <span className="chart-solo-dot" />
                       {String((focusTracker as any)?.symbol ?? '').replace('USDT', '')} {(focusTracker as any)?.patternName ?? '패턴'} 집중
@@ -159,7 +159,7 @@ export function ChartToolbar({ draw, indi, view, rsi, rank, solo, user, onLoginC
                               <em className="draw-item-state">{magnetOn ? 'ON' : 'OFF'}</em>
                             </button>
                             <div className="draw-sep" />
-                            {WEB_DRAW_TOOLS.map((t) => (
+                            {DESKTOP_DRAW_TOOLS.map((t) => (
                               <button
                                 key={t.type}
                                 className={`draw-item${drawTool === t.type ? ' active' : ''}`}
@@ -171,21 +171,21 @@ export function ChartToolbar({ draw, indi, view, rsi, rank, solo, user, onLoginC
                             ))}
                             <div className="draw-sep" />
                             <div className="draw-actions">
-                              <button className="draw-act-btn" disabled={!drawHistory.canUndo} onClick={() => webChartRef.current?.undo()} title="되돌리기">
+                              <button className="draw-act-btn" disabled={!drawHistory.canUndo} onClick={() => chartRef.current?.undo()} title="되돌리기">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 7.5 4.5 12 9 16.5" /><path d="M4.5 12h8.8c4.1 0 6.2 2.7 6.2 6.2" /></svg>
                               </button>
-                              <button className="draw-act-btn" disabled={!drawHistory.canRedo} onClick={() => webChartRef.current?.redo()} title="다시 실행">
+                              <button className="draw-act-btn" disabled={!drawHistory.canRedo} onClick={() => chartRef.current?.redo()} title="다시 실행">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M15 7.5 19.5 12 15 16.5" /><path d="M19.5 12h-8.8c-4.1 0-6.2 2.7-6.2 6.2" /></svg>
                               </button>
-                              <button className="draw-act-btn danger" onClick={() => webChartRef.current?.clearAll()} title="모두 삭제">
+                              <button className="draw-act-btn danger" onClick={() => chartRef.current?.clearAll()} title="모두 삭제">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
                               </button>
                             </div>
                             <div className="draw-sep" />
                             <div className="draw-section-title">오브젝트 트리</div>
                             <ObjectTree
-                              getManager={() => webChartRef.current?.getDrawingManager()}
-                              onSelect={(id) => webChartRef.current?.selectDrawing(id)}
+                              getManager={() => chartRef.current?.getDrawingManager()}
+                              onSelect={(id) => chartRef.current?.selectDrawing(id)}
                             />
                           </div>
                         </div>

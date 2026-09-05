@@ -1,6 +1,6 @@
 import { useCandleLoader } from '../../../chart/hooks/useCandleLoader';
 import { useCoinCandles } from '../../../chart/hooks/useCoinCandles';
-import { WEB_TIMEFRAMES, CHART_FALLBACK, getBucketTime } from '../lib/timeframes';
+import { DESKTOP_TIMEFRAMES, CHART_FALLBACK, getBucketTime } from '../lib/timeframes';
 
 export type DesktopExchange = 'BITGET' | 'BINANCE' | 'UPBIT' | 'BITHUMB';
 
@@ -14,7 +14,7 @@ export function useDesktopCandles({ activeTf, symbol, productType, exchange, isB
   isBinance: boolean;
   isFutures: boolean;
 }) {
-  const timeframe = WEB_TIMEFRAMES[activeTf] ?? WEB_TIMEFRAMES['1H'];
+  const timeframe = DESKTOP_TIMEFRAMES[activeTf] ?? DESKTOP_TIMEFRAMES['1H'];
   const loadCandles = useCandleLoader({ symbol, productType, exchange });
   const { candles, livePrice, dailyOpenPrice, loadedSymbol, handleVisibleRangeChange } = useCoinCandles({
     symbol,

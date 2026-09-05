@@ -28,7 +28,7 @@ function Root() {
   return <DesktopApp user={user} onLoginClick={() => setAuth('login')} onLogout={() => { logout(); window.location.reload(); }} />;
 }
 
-createRoot(document.getElementById('web-root')!).render(
+createRoot(document.getElementById('desktop-root')!).render(
   <StrictMode>
     <Root />
   </StrictMode>

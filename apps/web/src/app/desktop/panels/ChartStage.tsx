@@ -26,7 +26,7 @@ export type ChartDataGroup = {
 };
 
 // 차트 무대 — 드로잉 플로팅바·설정, RSI 설정 패널, OHLC 오버레이, MarketChart. DesktopApp에서 JSX만 옮김 (wp-06 d04b).
-export function ChartStage({ draw, indi, view, rsi, rank, solo, data, sel, user, webChartRef, ohlc, setHoveredCandle, fmtPx, fmtVol }: {
+export function ChartStage({ draw, indi, view, rsi, rank, solo, data, sel, user, chartRef, ohlc, setHoveredCandle, fmtPx, fmtVol }: {
   draw: DrawingState;
   indi: IndicatorState;
   view: ChartViewState;
@@ -36,7 +36,7 @@ export function ChartStage({ draw, indi, view, rsi, rank, solo, data, sel, user,
   data: ChartDataGroup;
   sel: ChartSel & { productType: string | undefined };
   user: AuthUser | null;
-  webChartRef: ChartRef;
+  chartRef: ChartRef;
   ohlc: Candle | undefined;
   setHoveredCandle: Dispatch<SetStateAction<Candle | null>>;
   fmtPx: (n: number | null | undefined) => string;
@@ -57,14 +57,14 @@ export function ChartStage({ draw, indi, view, rsi, rank, solo, data, sel, user,
                   {/* 드로잉 플로팅 툴바 + 설정 다이얼로그 — 도형 선택 시 */}
                   {selDrawId && (
                     <DrawingFloatBar
-                      getManager={() => webChartRef.current?.getDrawingManager()}
+                      getManager={() => chartRef.current?.getDrawingManager()}
                       selectedId={selDrawId}
                       onOpenSettings={() => setDrawSettingsOpen(true)}
                     />
                   )}
                   {selDrawId && drawSettingsOpen && (
                     <DrawingSettings
-                      getManager={() => webChartRef.current?.getDrawingManager()}
+                      getManager={() => chartRef.current?.getDrawingManager()}
                       drawingId={selDrawId}
                       onClose={() => setDrawSettingsOpen(false)}
                     />
@@ -103,7 +103,7 @@ export function ChartStage({ draw, indi, view, rsi, rank, solo, data, sel, user,
                   {/* lightweight-charts (모바일 MarketChart 재사용) */}
                   <div style={{ position: 'absolute', inset: 0 }}>
                     <MarketChart
-                      ref={webChartRef}
+                      ref={chartRef}
                       candles={candles}
                       symbol={CHART_SYMBOL}
                       period={timeframe.value}

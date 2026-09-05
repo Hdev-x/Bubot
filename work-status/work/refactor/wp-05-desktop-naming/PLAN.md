@@ -11,7 +11,7 @@ outcome: "Desktop 앱을 가리키던 'web' 이름(파일·컴포넌트·빌드 
 acceptance:
   - "AC-001: apps/web 안에서 Desktop 앱을 뜻하는 'web' 이름이 0이다. 남는 'web'은 apps/web(프론트엔드 전체), URL /web(배포 경로, T-05), WebSocket, labs 보존 코드뿐이다 (git grep으로 잔여 목록 확인)."
   - "AC-002: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0·labs tsc가 유지되고, dev 서버 Mobile·Desktop이 로드된다."
-  - "AC-003: 변경은 rename·import 경로·식별자 치환·설정 문자열뿐이다. 로직·마크업·CSS 값은 바꾸지 않는다."
+  - "AC-003: 변경은 rename·import 경로·식별자 치환·설정 문자열뿐이다. 로직·마크업·CSS 값은 바꾸지 않는다. 예외(2026-09-05 기록, 리뷰 P2 #15): d02에서 dev 서버 리라이트를 정확한 /web/ 비교에서 쿼리스트링 포함 경로로 넓힌 것은 기능 변경이다(PR #41에 명시)."
   - "AC-004: docs/COMMANDS.md·README·STRUCTURE.md의 명령·경로가 실제와 일치한다."
 deliveries:
   - id: wp-05-d01-source
@@ -76,7 +76,7 @@ milestones:
     unlocks: []
     evidence:
       - kind: command
-        locator: "GATE-AC-001: main 기준 잔여 grep = deploy.sh Tomcat WEBAPPS 4줄뿐, 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success, 문서 명령·경로 일치(d03)"
+        locator: "GATE-AC-001: [2026-09-05 정정] 완료 시 적은 '잔여 grep = Tomcat WEBAPPS 4줄뿐'은 틀렸다 — 검사 명령이 파일 경로 apps/web를 걸러내며 모든 줄을 지웠다(리뷰 P2 #13). 실제로 web-root·webChartRef·useWebFavorites·WEB_TIMEFRAMES·WEB_DRAW_TOOLS·푸터 'Web'이 남아 있었고 PR #62에서 정리. 남기는 예외(의도): localStorage 키 web_*(사용자 데이터), CSS 클래스·keyframes web-*·wm-*(클래스 이름 변경은 wp-04 규칙상 후속), 이벤트명 web-favs-changed, URL /web·static/web(T-05). 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success, 문서 명령·경로 일치(d03)"
         revision: main
         observed_at: 2026-09-04
       - kind: manual-check
