@@ -30,7 +30,7 @@
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. wp-09 d01 시작 전 '받을 것·돌려줄 것' 표 확정 → marketKey·candleState 신설, useCoinCandles 키 통일
+1. wp-09 d01 PR 사용자 확인(Desktop 같은 심볼 Bitget↔Binance·현선물 전환, Mobile 차트 전환) 후 merge
 2. wp-09 d02 useLivePrice ready·seed 재시도·일봉 롤오버
 
 ## Deferred
@@ -42,7 +42,7 @@
 
 ## 활성 Work Package
 
-- [refactor/wp-09-market-key](work/refactor/wp-09-market-key/PLAN.md) — ready, d01 대기
+- [refactor/wp-09-market-key](work/refactor/wp-09-market-key/PLAN.md) — active, d01 review(PR 대기)
 
 ## 완료된 Work Package (링크만)
 

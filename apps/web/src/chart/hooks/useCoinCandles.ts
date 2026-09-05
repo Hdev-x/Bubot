@@ -4,6 +4,8 @@ import { subscribeKrwCandle } from '../../api/exchange/krw/krwRealtime';
 import { subscribeBitgetKline } from '../../api/exchange/bitget/klineRealtime';
 import type { CandleMessage } from '../../api/server/coinRealtime';
 import type { Candle } from '../../shared/types/market';
+import { chartKey, resolveExchange } from './marketKey';
+import { INTERVAL_SECONDS, canApplyCandle, canApplyPrice, mergeRefresh, shouldDropResponse } from './candleState';
 
 type TimeframeOption = {
   granularity: string;
@@ -15,13 +17,6 @@ type LoadCandles = (granularity: string, limit: number, endTime?: string) => Pro
 // 과거 페이징 버퍼 상한(봉 개수). 10000봉 = 1H ~13.7개월 / 4H ~4.6년 / 1D ~27년.
 // 이 이상은 더 불러오지 않아 메모리·렌더 비용을 일정하게 유지한다.
 const MAX_CANDLES = 10000;
-
-// TF별 봉 간격(초) — WS 갭 감지용. 1Mutc는 대표값 30일(실제 28~31일 편차는 1.5배 여유로 흡수).
-const INTERVAL_SECONDS: Record<string, number> = {
-  '1min': 60, '3min': 180, '5min': 300, '15min': 900, '30m': 1800, '30min': 1800,
-  '1h': 3600, '4h': 14400, '6h': 21600, '6Hutc': 21600, '12h': 43200, '12Hutc': 43200,
-  '1Dutc': 86400, '3Dutc': 259200, '1Wutc': 604800, '1Mutc': 2592000,
-};
 
 type Ticker = {
   time: number;
@@ -63,15 +58,17 @@ export function useCoinCandles({
   exchange,
   liveCandle = false,
 }: Params) {
+  // 현재 선택의 마켓 키(거래소|현선물|심볼|TF). 모든 가드·ref가 이 키를 쓴다(wp-09 d01 — 예전 `${symbol}|${tf}`는 거래소·현선물을 구분하지 못했다).
+  const marketKey = chartKey(resolveExchange(exchange, isBinance), isFutures, symbol, timeframe.granularity);
   const [candles, setCandles] = useState<Candle[]>([]);
   const [livePrice, setLivePrice] = useState<number | null>(null);
   const [openPrice, setOpenPrice] = useState<number | null>(null);
   const [dailyOpenPrice, setDailyOpenPrice] = useState<number | null>(null);
   // 실제 데이터(캔들+일봉시가) 로드가 끝난 심볼. Mobile 차트 헤더가 "준비된 종목"만 표시하도록(스테이지드 스왑).
   const [loadedSymbol, setLoadedSymbol] = useState<string | null>(null);
-  // 화면 candles 배열이 어느 심볼 것인지 — candlesKeyRef의 심볼 부분을 state로 미러(렌더 중 ref 접근 금지 규칙).
-  // Desktop 차트 소수점·지표 스테이징이 쓴다 (wp-08 d02). candlesKeyRef를 설정하는 곳에서 함께 갱신.
-  const [candlesSymbol, setCandlesSymbol] = useState<string | null>(null);
+  // 화면 candles 배열이 어느 마켓 키 것인지 — candlesKeyRef를 state로 미러(렌더 중 ref 접근 금지 규칙).
+  // Desktop 차트 소수점·지표 스테이징이 쓴다 (wp-08 d02 → wp-09 d01: 심볼에서 키로). candlesKeyRef를 설정하는 곳에서 함께 갱신.
+  const [candlesKey, setCandlesKey] = useState<string | null>(null);
   const isLoadingMore = useRef(false);
   const prevSymbolKeyRef = useRef<string | null>(null);
   // "로드가 끝난 심볼|TF" 키. WS 틱은 이 키가 현재와 일치할 때만 반영한다.
@@ -91,7 +88,7 @@ export function useCoinCandles({
     let ignore = false;
     // 종목/타임프레임이 바뀐 경우에만 캔들을 비운다 — 이전 종목 잔상("차트 열리고 종목 바뀌는 느낌") 방지.
     // productType/exchange가 단계적으로 settling되는 thrash엔 비우지 않아 디바운스+블랭크 억제 효과 유지.
-    const symbolKey = `${symbol}|${timeframe.granularity}`;
+    const symbolKey = marketKey; // 거래소·현선물이 바뀌어도 '전환'으로 본다(같은 심볼 다른 거래소 → 재로드·재구독)
     const cleared = prevSymbolKeyRef.current !== null && prevSymbolKeyRef.current !== symbolKey;
     // 종목/타임프레임이 바뀌면 이전 종목 잔상을 즉시 비운다("차트 열리고 종목 바뀌는 느낌" 방지).
     // clearOnSymbolChange=false면 비우지 않고 새 데이터 도착 시 교체(웹: 클릭 전환 깜빡임 방지).
@@ -111,7 +108,7 @@ export function useCoinCandles({
         if (nextCandles.length) {
           setCandles(nextCandles);
           candlesKeyRef.current = symbolKey; // 캔들 배열이 이 심볼|TF 것임 → WS 봉 반영 허용
-          setCandlesSymbol(symbol);
+          setCandlesKey(symbolKey);
           setOpenPrice(nextCandles[nextCandles.length - 1]?.open ?? null);
         } else {
           setCandles(prev => prev.length ? prev : fallbackCandles);
@@ -135,12 +132,12 @@ export function useCoinCandles({
     if (cleared) loadChart();
     else timer = setTimeout(loadChart, 60);
     return () => { ignore = true; if (timer) clearTimeout(timer); };
-  }, [fallbackCandles, initialLimit, loadCandles, productType, symbol, timeframe.granularity, clearOnSymbolChange]);
+  }, [fallbackCandles, initialLimit, loadCandles, productType, symbol, timeframe.granularity, clearOnSymbolChange, marketKey]);
 
   // (일봉시가 dailyOpenPrice는 loadChart에서 캔들과 원자적으로 함께 로드 — 등락 계산 옛값/새값 혼합 방지)
 
   useEffect(() => {
-    const currentKey = `${symbol}|${timeframe.granularity}`;
+    const currentKey = marketKey;
     const intervalSec = INTERVAL_SECONDS[timeframe.granularity];
     // 새 봉 사이에 봉이 통째로 빠졌으면(WS 단절·절전 복귀 등) REST 재조회로 메꾼다.
     // 1.5배 여유: 월봉의 28~31일 편차 흡수 + 정상 롤오버(diff=1봉)는 통과.
@@ -153,10 +150,10 @@ export function useCoinCandles({
     const onTick = (ticker: Ticker) => {
       // 이 심볼/TF 로드가 끝나기 전(전환 직후)이나 잔존 WS 틱은 무시 — 옛 현재가가 새 종목 일봉시가와
       // 섞여 등락이 깜빡이거나 다른 종목 가격이 순간 보이는 것 방지.
-      if (loadedKeyRef.current !== currentKey) return;
+      if (!canApplyPrice(loadedKeyRef.current, currentKey)) return;
       setLivePrice(ticker.close);
-      // 캔들 배열이 이전 종목/TF 것(fetch 실패로 유지 중)이면 현재가만 갱신하고 봉은 건드리지 않음
-      if (candlesKeyRef.current !== currentKey) return;
+      // 캔들 배열이 이전 선택 것(fetch 실패로 유지 중)이면 현재가만 갱신하고 봉은 건드리지 않음
+      if (!canApplyCandle(loadedKeyRef.current, candlesKeyRef.current, currentKey)) return;
       setCandles(currentCandles => {
         if (!currentCandles.length) return currentCandles;
         const nextCandles = [...currentCandles];
@@ -200,10 +197,9 @@ export function useCoinCandles({
     };
     // kline WS(Binance/Bitget): 현재 캔들 OHLCV를 통째로 받아 마지막 캔들 교체/추가 — 거래량까지 실시간.
     const onKline = (c: CandleMessage) => {
-      if (loadedKeyRef.current !== currentKey) return;
+      if (!canApplyPrice(loadedKeyRef.current, currentKey)) return;
       setLivePrice(c.close);
-      // 캔들 배열이 이전 종목/TF 것(fetch 실패로 유지 중)이면 현재가만 갱신하고 봉은 건드리지 않음
-      if (candlesKeyRef.current !== currentKey) return;
+      if (!canApplyCandle(loadedKeyRef.current, candlesKeyRef.current, currentKey)) return;
       setCandles(currentCandles => {
         if (!currentCandles.length) return currentCandles;
         const nextCandles = [...currentCandles];
@@ -252,7 +248,7 @@ export function useCoinCandles({
       const poll = () => {
         loadCandles(timeframe.granularity, 2).then(cs => {
           // 캔들이 이전 종목 것이면 skip — 같은 TF는 버킷 time이 종목 불문 일치해 거래량이 섞임
-          if (loadedKeyRef.current !== currentKey || candlesKeyRef.current !== currentKey) return;
+          if (!canApplyCandle(loadedKeyRef.current, candlesKeyRef.current, currentKey)) return;
           const latest = cs[cs.length - 1];
           if (!latest) return;
           setCandles(currentCandles => {
@@ -268,46 +264,28 @@ export function useCoinCandles({
       pollTimer = window.setInterval(poll, 5000);
     }
     return () => { subscription.close(); if (pollTimer) clearInterval(pollTimer); };
-  }, [active, getBucketTime, isBinance, isFutures, productType, symbol, timeframe.channel, timeframe.granularity, exchange, liveCandle, loadCandles]);
+  }, [active, getBucketTime, isBinance, isFutures, productType, symbol, timeframe.channel, timeframe.granularity, exchange, liveCandle, loadCandles, marketKey]);
 
   const refreshCandles = useCallback(async () => {
-    const requestKey = `${symbol}|${timeframe.granularity}`;
+    const requestKey = marketKey;
     try {
       const nextCandles = await loadCandles(timeframe.granularity, initialLimit);
-      // 응답 대기 중 종목/TF가 바뀌었으면 폐기 — 옛 종목 캔들이 새 차트를 덮어쓰는 것 방지
-      if (prevSymbolKeyRef.current !== requestKey) return;
+      // 응답 대기 중 선택(거래소·현선물·종목·TF)이 바뀌었으면 폐기 — 옛 캔들이 새 차트를 덮어쓰는 것 방지
+      if (shouldDropResponse(prevSymbolKeyRef.current, requestKey)) return;
       if (nextCandles.length) {
-        // 전량 교체하면 loadMore로 쌓은 과거 버퍼가 initialLimit개로 잘리고, 응답 대기 중
-        // WS가 만든 새 봉이 한 봉 되감기며 깜빡임 → time 기준 병합(겹치는 봉은 REST 값 우선).
-        setCandles(prev => {
-          if (!prev.length || candlesKeyRef.current !== requestKey) return nextCandles;
-          const lastRest = Number(nextCandles[nextCandles.length - 1].time);
-          const iv = INTERVAL_SECONDS[timeframe.granularity];
-          const byTime = new Map<number, Candle>();
-          for (const c of prev) {
-            const t = Number(c.time);
-            // TF 간격에 어긋난 봉(다른 TF 틱이 만든 가짜 봉)과 2봉 초과 미래 봉은 병합에서 제외 — 오염 자동 청소
-            // (1M은 간격이 가변이라 제외. 상대 간격 기준이라 빗썸 KST 시프트·3D 앵커에도 안전)
-            if (iv && timeframe.granularity !== '1Mutc') {
-              if ((t - lastRest) % iv !== 0) continue;
-              if (t > lastRest + iv * 2) continue;
-            }
-            byTime.set(t, c);
-          }
-          for (const c of nextCandles) byTime.set(Number(c.time), c);
-          return [...byTime.values()].sort((a, b) => Number(a.time) - Number(b.time));
-        });
+        // time 기준 병합(겹치는 봉은 REST 값 우선) — 규칙은 candleState.mergeRefresh
+        setCandles(prev => (candlesKeyRef.current !== requestKey ? nextCandles : mergeRefresh(prev, nextCandles, timeframe.granularity)));
         candlesKeyRef.current = requestKey;
-        setCandlesSymbol(symbol);
+        setCandlesKey(requestKey);
         setLivePrice(nextCandles[nextCandles.length - 1]?.close ?? null);
         setOpenPrice(nextCandles[nextCandles.length - 1]?.open ?? null);
       } else {
         setCandles(prev => prev.length ? prev : fallbackCandles);
       }
     } catch {
-      if (prevSymbolKeyRef.current === requestKey) setCandles(prev => prev.length ? prev : fallbackCandles);
+      if (!shouldDropResponse(prevSymbolKeyRef.current, requestKey)) setCandles(prev => prev.length ? prev : fallbackCandles);
     }
-  }, [fallbackCandles, initialLimit, loadCandles, symbol, timeframe.granularity]);
+  }, [fallbackCandles, initialLimit, loadCandles, timeframe.granularity, marketKey]);
 
   // 자동 재조회(WS 갭 감지·탭 복귀) — 30초 레이트리밋으로 연쇄 refresh 폭주 방지
   const autoRefresh = useCallback(() => {
@@ -339,8 +317,8 @@ export function useCoinCandles({
   const loadMoreCandles = useCallback(async () => {
     if (isLoadingMore.current || !candles.length) return;
     if (candles.length >= MAX_CANDLES) return; // 버퍼 상한 도달 — 더 과거는 불러오지 않음
-    const requestKey = `${symbol}|${timeframe.granularity}`;
-    // 화면 캔들이 다른 종목/TF 것(전환 직후 잔상)이면 백필 자체를 하지 않음
+    const requestKey = marketKey;
+    // 화면 캔들이 다른 선택 것(전환 직후 잔상)이면 백필 자체를 하지 않음
     if (candlesKeyRef.current !== requestKey) return;
     isLoadingMore.current = true;
     try {
@@ -348,7 +326,7 @@ export function useCoinCandles({
       const endTimeMs = (Number(oldestTime)) * 1000 - 1000;
       const moreCandles = await loadCandles(timeframe.granularity, 500, String(endTimeMs));
       // 응답 대기 중 종목/TF가 바뀌었으면 폐기 — 다른 종목/TF 캔들이 병합되는 것(가격 절벽) 방지
-      if (prevSymbolKeyRef.current !== requestKey || candlesKeyRef.current !== requestKey) return;
+      if (shouldDropResponse(prevSymbolKeyRef.current, requestKey) || candlesKeyRef.current !== requestKey) return;
       if (moreCandles.length > 0) {
         setCandles(prev => {
           const existingTimes = new Set(prev.map(c => c.time));
@@ -362,7 +340,7 @@ export function useCoinCandles({
     } finally {
       isLoadingMore.current = false;
     }
-  }, [candles, loadCandles, symbol, timeframe.granularity]);
+  }, [candles, loadCandles, timeframe.granularity, marketKey]);
 
   const handleVisibleRangeChange = useCallback((range: { logicalRange: { from: number; to: number } | null }) => {
     if (!range.logicalRange || candles.length === 0) return;
@@ -375,7 +353,7 @@ export function useCoinCandles({
 
   return {
     candles,
-    candlesSymbol,
+    candlesKey,
     livePrice,
     openPrice,
     dailyOpenPrice,

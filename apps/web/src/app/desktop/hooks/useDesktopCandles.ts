@@ -18,7 +18,7 @@ export function useDesktopCandles({ activeTf, symbol, productType, exchange, isB
   loadCandles: ReturnType<typeof useCandleLoader>;
 }) {
   const timeframe = DESKTOP_TIMEFRAMES[activeTf] ?? DESKTOP_TIMEFRAMES['1H'];
-  const { candles, candlesSymbol, handleVisibleRangeChange } = useCoinCandles({
+  const { candles, candlesKey, handleVisibleRangeChange } = useCoinCandles({
     symbol,
     productType,
     isBinance,
@@ -33,5 +33,5 @@ export function useDesktopCandles({ activeTf, symbol, productType, exchange, isB
     exchange,
     liveCandle: true, // 현재 캔들 거래량 실시간(Binance/Bitget=kline WS, 업비트/빗썸=REST 폴링)
   });
-  return { timeframe, candles, candlesSymbol, handleVisibleRangeChange };
+  return { timeframe, candles, candlesKey, handleVisibleRangeChange };
 }

@@ -19,9 +19,10 @@ function hasEnabledIndicator(settings: IndicatorSettings[TFKey]) {
 
 /**
  * MTF 지표 캔들 로더.
- * - 반환: { mtfCandles, mtfSymbol } — mtfSymbol = 현재 mtfCandles가 속한 종목(호출부가 표시 중인 차트와 일치할 때만 그리도록).
+ * - 반환: { mtfCandles, mtfKey } — mtfKey = 현재 mtfCandles가 속한 마켓 키(호출부가 표시 중인 차트와 일치할 때만 그리도록).
+ *   key 인자를 주면(Desktop, marketKey.priceKey) 그 값, 없으면 symbol(Mobile — 게이팅 미사용). wp-09 d01: 심볼 → 키.
  * - atomic=true(웹): 활성 TF를 전부 받은 뒤 한 번에 커밋(+심볼 태그). 로드 중엔 옛 데이터·심볼 유지 →
- *   "지표 먼저 꺼짐"도, "옛 지표가 새 차트에 잠깐 얹혀 튀는 것"도 없음(호출부가 mtfSymbol로 게이팅).
+ *   "지표 먼저 꺼짐"도, "옛 지표가 새 차트에 잠깐 얹혀 튀는 것"도 없음(호출부가 mtfKey로 게이팅).
  * - atomic=false(모바일 기본): 기존 동작 — 종목 변경 즉시 비우고 TF별 도착하는 대로 표시.
  */
 export function useMtfCandles(
@@ -29,9 +30,11 @@ export function useMtfCandles(
   indicatorSettings: IndicatorSettings,
   loadCandles: LoadCandles,
   atomic = false,
+  key?: string,
 ) {
+  const marketKey = key ?? symbol;
   const [mtfCandles, setMtfCandles] = useState<Partial<Record<TFKey, Candle[]>>>({});
-  const [mtfSymbol, setMtfSymbol] = useState<string | null>(null);
+  const [mtfKey, setMtfKey] = useState<string | null>(null);
   const reqSymbolRef = useRef<string | null>(null);
   const mtfCandlesRef = useRef<Partial<Record<TFKey, Candle[]>>>({});
   const seqRef = useRef(0);
@@ -41,13 +44,13 @@ export function useMtfCandles(
   }, [mtfCandles]);
 
   useEffect(() => {
-    const symbolChanged = reqSymbolRef.current !== symbol;
-    if (symbolChanged) reqSymbolRef.current = symbol;
+    const symbolChanged = reqSymbolRef.current !== marketKey;
+    if (symbolChanged) reqSymbolRef.current = marketKey;
     const enabled = TF_KEYS.filter(tf => hasEnabledIndicator(indicatorSettings[tf]));
 
     if (atomic) {
-      // 웹: 활성 TF 전부 로드 완료 시 원자적 커밋. 그 전까진 옛 mtfCandles·mtfSymbol 유지(keep-old).
-      if (enabled.length === 0) { setMtfCandles({}); setMtfSymbol(symbol); return; }
+      // 웹: 활성 TF 전부 로드 완료 시 원자적 커밋. 그 전까진 옛 mtfCandles·mtfKey 유지(keep-old).
+      if (enabled.length === 0) { setMtfCandles({}); setMtfKey(marketKey); return; }
       const seq = ++seqRef.current;
       Promise.all(
         enabled.map(tf =>
@@ -60,7 +63,7 @@ export function useMtfCandles(
         const data: Partial<Record<TFKey, Candle[]>> = {};
         for (const [tf, c] of results) if (c.length) data[tf] = c;
         setMtfCandles(data);
-        setMtfSymbol(symbol);
+        setMtfKey(marketKey);
       });
       return;
     }
@@ -69,7 +72,7 @@ export function useMtfCandles(
     if (symbolChanged) {
       mtfCandlesRef.current = {};
       setMtfCandles({});
-      setMtfSymbol(symbol);
+      setMtfKey(marketKey);
     }
     TF_KEYS.forEach(tf => {
       if (!hasEnabledIndicator(indicatorSettings[tf])) return;
@@ -85,7 +88,7 @@ export function useMtfCandles(
         })
         .catch(() => {});
     });
-  }, [indicatorSettings, loadCandles, symbol, atomic]);
+  }, [indicatorSettings, loadCandles, marketKey, atomic]);
 
-  return { mtfCandles, mtfSymbol };
+  return { mtfCandles, mtfKey };
 }
