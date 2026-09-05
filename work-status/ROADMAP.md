@@ -27,7 +27,7 @@
 - [x] T-04g 큰 파일 분해 나머지 — `DrawingToolbar`·`useAutoPatterns`·`OrderPage`·`MarketChart` | `plan:refactor/wp-07-large-files`
 - [x] T-04h API 거래소 중계 재연결 보강(백오프·상태 초기화·연결 타임아웃) — PR #52
 - [x] T-04i Binance REST 프록시 캐시·429/418 차단 존중 — PR #56
-- [ ] T-04f `useCoinCandles`에서 티커 현재가 구독을 `useLivePrice`로 분리 — Desktop 훅의 캔들→호가 의존을 "현재가→셋" 방향으로 정리. Mobile 차트도 쓰는 공용 훅이라 차트 훅 정리 WP에서
+- [ ] T-04f `useCoinCandles`에서 티커 현재가 구독을 `useLivePrice`로 분리 — Desktop 훅의 캔들→호가 의존을 "현재가→셋" 방향으로 정리(A안: 현재가 소스를 전용 훅으로 교체, 2026-09-05) | `plan:refactor/wp-08-live-price`
 - [x] T-04e `web→desktop` 이름 통일(파일·식별자·빌드 이름; URL `/web`은 T-05에서) | `plan:refactor/wp-05-desktop-naming`
 
 ## Beta Track
