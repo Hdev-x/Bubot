@@ -26,11 +26,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "DrawingToolbar.tsx(641) 삭제 → panels/drawing/ColorPicker(133)·DrawingFloatBar(147)·DrawingSettings(373)·types(3). 옛 파일에 없던 줄은 export 추가 5줄·주석 3줄·GetManager 타입 재선언 1줄뿐. ChartStage import 경로 2줄 변경"
-        revision: working-tree
+        revision: 9b6f5fe
         observed_at: 2026-09-05
       - kind: command
         locator: "tsc ok · lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop 로드·툴바·차트 렌더링, 콘솔 오류는 로그인 전 ws-coin뿐. 드로잉 선택 시 플로팅바·설정 다이얼로그는 사용자 확인"
-        revision: working-tree
+        revision: 9b6f5fe
         observed_at: 2026-09-05
   - id: wp-07-d02-auto-patterns
     title: "useAutoPatterns(990) → 순수 헬퍼 300줄을 chart/hooks/harmonicShapes.ts로 (공용, 기계적; 실행 시 analysis→hooks로 변경)"
@@ -43,11 +43,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "useAutoPatterns.ts 990 → 695줄, 새 파일 chart/hooks/harmonicShapes.ts 304줄(순수 함수 8개). 옛 파일에 없던 줄은 export 8·주석 2·import뿐. 위치를 PLAN의 chart/analysis/가 아니라 chart/hooks/로 바꿈 — AutoShape 타입이 overlays에 있어 analysis→overlays 역방향 import가 생기기 때문(AC-005)"
-        revision: working-tree
+        revision: 92611de
         observed_at: 2026-09-05
       - kind: command
         locator: "tsc ok · lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop 차트 렌더링·Mobile 로그인 화면 로드, 콘솔 오류는 로그인 전 ws-coin과 Binance REST 418(거래소 측 rate limit, 무관)뿐. 하모닉 패턴 표시는 관리자 로그인 후 양 앱 사용자 확인"
-        revision: working-tree
+        revision: 92611de
         observed_at: 2026-09-05
   - id: wp-07-d03-order-page
     title: "OrderPage(911) → PositionsPanel · TradeHistoryDrawer · TradeTabBar 컴포넌트 + 호가 폴링 훅 (Mobile 전용)"
@@ -60,11 +60,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "OrderPage.tsx 911 → 417줄(삭제 513 + 호출 19줄). components/trade/TradeTabBar(43, props 6)·PositionsPanel(258, 묶음 trade 8·view 5·actions 4)·TradeHistoryDrawer(189, props 7, fmt·ago·outcomeLabel 동반)·app/mobile/hooks/useMobileOrderbook(118, 입력 10·반환 12, depthLabelFor 동반). 옛 파일에 없던 줄은 props 타입 선언·export·주석뿐. 표와 다른 점: 훅 위치를 hooks/account/가 아니라 app/mobile/hooks/로(Bitget 거래 뷰 전용 로직이라 앱 소유), 현물 보유·원가 수정 줄은 OrderPage 잔류"
-        revision: working-tree
+        revision: 226ea20
         observed_at: 2026-09-05
       - kind: command
         locator: "tsc ok · lint 0(경고 237, 불필요 import 6줄 정리) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Mobile 로그인 화면 로드(스타일시트 12). 거래 탭은 로그인 후 사용자 확인. 콘솔의 Binance 418은 거래소 IP 차단(PR #56 참고), 무관"
-        revision: working-tree
+        revision: 226ea20
         observed_at: 2026-09-05
   - id: wp-07-d04-market-chart
     title: "MarketChart(1,585) → RSI 페인·랭킹 선·자석/키보드·값 오버레이 effect를 훅으로 (공용, 양 앱 확인)"
@@ -77,11 +77,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "MarketChart.tsx 1,585 → 1,332줄(삭제 266 + 훅 호출 13줄). chart/hooks/useDrawingMagnet(70, 반환 magnetRef·snapPriceRef)·useRsiPane(135, 반환 ensureRsiSeries — 차트 초기화 effect가 씀)·useValueOverlay(89)·useRankLines(44, RANK_TIERS·RankLine 동반). 옛 파일에 없던 줄은 훅 시그니처·타입·return뿐. effect 본문·의존성 배열 변경 0. 순서 변화: 키보드 effect가 차트 초기화 effect보다 앞으로, RSI 데이터 effect가 거래량 effect보다 앞으로 — 당시 '독립 대상이라 영향 없음'으로 판정했으나 오판: RSI 데이터 effect는 초기화 effect가 만든 페인에 의존해 첫 렌더 RSI가 비었다(리뷰 P1 #3, PR #60 원위치, AC-002 정정 참조). exhaustive-deps 경고 +12(ref props)"
-        revision: working-tree
+        revision: 05180b2
         observed_at: 2026-09-05
       - kind: command
         locator: "tsc ok · lint 0(경고 249) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop 차트 canvas 7개 렌더링·Mobile 로그인 화면 로드. 현재가 태그·카운트다운은 Binance IP 차단(~02:03)으로 캔들이 비어 비로그인에서 확인 불가 — 사용자 확인으로. 목표 줄 수 1,100은 초기화·데이터 effect 유지로 1,332에서 마감(PLAN 표 갱신)"
-        revision: working-tree
+        revision: 05180b2
         observed_at: 2026-09-05
       - kind: command
         locator: "[2026-09-05 정정 실행] AC-005 역방향 import 1건(shared/utils/pivots.test.ts → chart) 을 chart/analysis/pivots.test.ts로 이동, AC-002 RSI 오판·OrderPage 순서 예외 기록(2차 리뷰 수정 PR #63)"

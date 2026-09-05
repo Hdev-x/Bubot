@@ -26,7 +26,7 @@ deliveries:
     evidence:
       - kind: document
         locator: "docs/architecture/WEB-CSS-REVIEW.md — 요약, owner 폴더별 구역 지도, 중복 선택자 172(본문 동일 105·상이 67), 미사용 후보 mobile 129+동적의심 2 / desktop 51+3, labs 전용 46/66, :root 토큰 차이표, 착수 순서"
-        revision: working-tree
+        revision: 27f5d23
         observed_at: 2026-09-03
   - id: wp-04-d01-unused
     title: "미사용 규칙 삭제, labs 전용 규칙 처리 (Mobile·Desktop)"
@@ -39,11 +39,11 @@ deliveries:
     evidence:
       - kind: command
         locator: "규칙 단위 처리(선택자 목록은 편집하지 않음). mobile 1,004 → 763 (삭제 177·labs 이동 64, 6,389 → 4,757줄), desktop 713 → 564 (삭제 65·labs 이동 84, 2,361 → 1,956줄). 남은 파일에 새 줄 0(HEAD에 없던 줄 없음), 사용 중 클래스 제거 0, 중괄호 균형"
-        revision: working-tree
+        revision: ba41ebe
         observed_at: 2026-09-04
       - kind: command
         locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. computed style 대조: Mobile 로그인 화면 55 요소 해시 동일(diff 0). Desktop 325 요소 중 23 diff — 전부 실시간 값(sh-chg 등락 부호, OHLC 오버레이, 호가 게이지, 클래스 없는 span/a/svg)이며 삭제·이동된 클래스를 가진 요소 0. 삭제 전 3초 간격 재측정에서도 11 요소가 달라지는 잡음 수준"
-        revision: working-tree
+        revision: ba41ebe
         observed_at: 2026-09-04
   - id: wp-04-d02-chart
     title: "chart/ 공용 CSS 분리 — MarketChart·overlays·indicators (OQ-12 결정 반영)"
@@ -56,11 +56,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "지표 시트 규칙 중 두 앱에 본문까지 같고 파일당 1회·@media 밖인 21개를 chart/indicators/indicators.css(148줄)로 이동, IndicatorSheet.tsx가 import. mobile 788→767, desktop 571→550 규칙, 남은 파일에 새 줄 0. Mobile 전용 interval-sheet* 7개는 d03으로. MarketChart.css는 필요 규칙이 앱마다 달라(drawing-delete-float 위치, chart-host Mobile 전용) 만들지 않음"
-        revision: working-tree
+        revision: 7042079
         observed_at: 2026-09-04
       - kind: command
         locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. computed style 대조: Mobile 55 요소 동일(diff 0), Desktop 325 중 12 diff는 호가 게이지(실시간)뿐, indicators.css 로드 확인. 첫 빌드는 주석 안의 'app/*/'가 주석을 조기 종료해 실패 → 문구 수정"
-        revision: working-tree
+        revision: 7042079
         observed_at: 2026-09-04
   - id: wp-04-d03-mobile
     title: "Mobile 컴포넌트별 CSS 분리 — pages·trade·coin-list·sheets, mobile.css는 셸·토큰만"
@@ -73,15 +73,15 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "767 규칙 → mobile.css 338 + 8개 파일 429 (coin-list 97·trade 90·AssetsPage 54·OrderPage 49·sheets 45·components 43·CoinChartPage 42·CoinListPage 9), 합계 767 보존, 새 줄 0. 목적지는 '클래스를 쓰는 컴포넌트 폴더'로 결정, 여러 폴더가 쓰는 규칙·요소 선택자·LoginPage(WebLogin과 공유)는 셸 잔류"
-        revision: working-tree
+        revision: 6d0a8e7
         observed_at: 2026-09-04
       - kind: command
         locator: "정적 안전 검사: 같은 선택자가 다른 파일로 갈리는 경우 0, 같은 특이도·같은 속성·겹치는 rightmost 클래스 쌍이 순서 뒤집히는 경우 0. Desktop이 import하는 TradeOrderbook·StrategyComingSoon 클래스 중 desktop.css에 동일 규칙이 없는 10개는 Desktop 변화 방지를 위해 셸에 보류(d04에서 정리)"
-        revision: working-tree
+        revision: 6d0a8e7
         observed_at: 2026-09-04
       - kind: command
         locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. computed style 대조: Mobile 55 요소 동일(diff 0, 스타일시트 12개 로드), Desktop 325 중 14 diff는 OHLC·호가 게이지·클래스 없는 span(실시간)뿐, trade.css가 Desktop에도 로드됨을 확인"
-        revision: working-tree
+        revision: 6d0a8e7
         observed_at: 2026-09-04
   - id: wp-04-d04-desktop
     title: "Desktop 컴포넌트별 CSS 분리 — panels·WebApp 셸·로그인, desktop.css는 셸·토큰만"
@@ -94,11 +94,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "550 규칙 → desktop.css 156 + WebApp.css 195 + panels/panels.css 174 + WebLogin.css 2 = 527, 삭제 23은 trade.css·components.css(Desktop이 이미 로드)에 동일 규칙이 있는 복사본. 새 줄 0. 범용 상태 클래스(사용 파일 6개 이상)는 소유자 판정에서 제외"
-        revision: working-tree
+        revision: 0ac0d46
         observed_at: 2026-09-04
       - kind: command
         locator: "정적 안전 검사: 같은 선택자 분리 0, 순서 뒤집힘 후보 1(속성 선택자 오탐, 셸 잔류로 처리). lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. computed style 대조: Desktop 325 중 12 diff는 호가 게이지(실시간)뿐(스타일시트 9개), Mobile 55 요소 해시 기준선과 동일"
-        revision: working-tree
+        revision: 0ac0d46
         observed_at: 2026-09-04
   - id: wp-04-d05-tokens
     title: ":root 토큰 비교 후 공통 토큰 처리 (사용자 결정 후 진행, 생략 가능)"
@@ -144,7 +144,11 @@ milestones:
         revision: 86d366b
         observed_at: 2026-09-05
       - kind: manual-check
-        locator: "GATE-AC-002: 사용자가 로컬 기동에서 로그인 후 Mobile·Desktop 화면을 육안 확인(2026-09-04, d04 merge 전 상태)"
+        locator: "GATE-AC-002 재확인(P0 수정 뒤): 사용자가 2026-09-05 19:56 PR #65 코드로 API 재시작 후 로그인해 Mobile 차트 페이지 테마·하단 여백·Show current 정렬, 관심종목 유지, Desktop RSI 즉시 렌더·관심 패널·푸터를 확인. 마켓·거래·자산 탭은 이 확인에서 개별 열거되지 않았고 wp-07 d03(거래 탭)·wp-08 d02/d03(Desktop 전환·Mobile 차트) 확인으로 보완됨 — 한계로 기록"
+        revision: 86d366b
+        observed_at: 2026-09-05
+      - kind: manual-check
+        locator: "GATE-AC-002: 사용자가 로컬 기동에서 로그인 후 Mobile·Desktop 화면을 육안 확인(2026-09-04, d04 merge 전 상태 — 이후 P0 회귀가 있었으므로 수정 결과의 근거는 위 재확인 항목)"
         revision: 0ac0d46
         observed_at: 2026-09-04
 extensions: {}

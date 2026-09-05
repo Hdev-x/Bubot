@@ -11,7 +11,7 @@
 
 ## 배포·제품
 
-- 질문: OQ-20260903-04 Beta 배포 대상 — EC2는 꺼져 있고 후보는 (a) Intel iMac 홈 서버 + Docker Compose + Cloudflare Tunnel(도메인 구입 필요) 또는 Duck DNS(`autotradev.duckdns.org`) + 포트포워딩, (b) AWS Lightsail 서울 2GB(월 약 $7). 도메인 구입 여부와 `DB_URL`이 가리키는 PostgreSQL 위치가 정해지면 `wp-03` PLAN | `work-status/ROADMAP.md`
+- 질문: OQ-20260903-04 Beta 배포 대상 — EC2는 꺼져 있고 후보는 (a) Intel iMac 홈 서버 + Docker Compose + Cloudflare Tunnel(도메인 구입 필요) 또는 Duck DNS(`autotradev.duckdns.org`) + 포트포워딩, (b) AWS Lightsail 서울 2GB(월 약 $7). 도메인 구입 여부와 `DB_URL`이 가리키는 PostgreSQL 위치가 정해지면 배포 WP PLAN(T-05) | `work-status/ROADMAP.md`
 
 ## 막지는 않음
 
@@ -22,7 +22,7 @@
 - 질문: OQ-20260905-06 `WsConnect.Attempt`에서 소켓 기록 뒤 `delegate.onOpen`은 lock 밖이라, 포기 직전에 통과한 콜백이 `reconnect.success()`로 다음 재연결 예약 상태를 풀 수 있다(매우 좁은 경합, 소켓 자체는 abort됨). success를 소켓 설치 시점에 결속하는 설계 변경을 별도 WP로 할지 | 4차 리뷰 P1
 - 질문: OQ-20260905-05 소소한 기존 문제 묶음 — RSI를 켠 채 `MarketChart`가 in-place로 차트를 재생성하면 RSI 페인이 빌 수 있음(현재 호출부에서는 발동하지 않음), Bitget 텍스트 ping과 프레임 pong이 중복. 정리 시점 | 2차 리뷰 기존 설계 지적
 
-- 질문: OQ-20260904-01 `mobile.css`·`desktop.css` 셸에 같은 선택자 90개가 남아 있다. 대부분 Desktop이 Mobile 호가창(`TradeOrderbook`) 규칙을 다른 값으로 덮는 override(`book-row`·`funding-rate-countdown`·`gauge-*` 등 10개 계열)와 `.up/.down` 같은 양 앱 공용 규칙이다. Desktop override를 `WebApp.css`로 옮겨 명시할지, 값을 통일할지(디자인 판단) | `wp-04-css-cleanup` Milestone 잔여
+- 질문: OQ-20260904-01 `mobile.css`·`desktop.css` 셸에 같은 선택자 90개가 남아 있다. 대부분 Desktop이 Mobile 호가창(`TradeOrderbook`) 규칙을 다른 값으로 덮는 override(`book-row`·`funding-rate-countdown`·`gauge-*` 등 10개 계열)와 `.up/.down` 같은 양 앱 공용 규칙이다. Desktop override를 `DesktopApp.css`(또는 해당 패널 CSS)로 옮겨 명시할지, 값을 통일할지(디자인 판단) | `wp-04-css-cleanup` Milestone 잔여
 
 - 질문: OQ-20260903-11 lint warning baseline 320개(`no-explicit-any` 145, `react-hooks/refs` 82, `set-state-in-effect` 44, `no-useless-assignment` 8 등)를 어느 WP에서 줄이고 언제 `error`로 올릴지 | `apps/web/eslint.config.js`
 

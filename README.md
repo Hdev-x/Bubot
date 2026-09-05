@@ -46,9 +46,10 @@ Git에 포함되지 않는다. 키 이름은 `apps/web/.env.example`을 참고�
 # API (8081)
 cd apps/api && ./gradlew bootRun
 
-# Web — Mobile 5175, Desktop 5174
-cd apps/web && npm ci && npm run dev        # Mobile
-cd apps/web && npm run dev:desktop          # Desktop
+# Web — Mobile(vite.config.js 기본 5173), Desktop 5174
+cd apps/web && npm ci && npm run dev        # Mobile → http://localhost:5173/mobile/
+cd apps/web && npm run dev:desktop          # Desktop → http://localhost:5174/web/
+# ops/front-end.sh는 Mobile을 5175로 띄운다(API CORS 허용 목록 기준)
 ```
 
 검증 명령과 프로필 옵션은 [docs/COMMANDS.md](docs/COMMANDS.md)에 있다.
@@ -61,7 +62,7 @@ cd apps/api && ./gradlew compileJava bootWar -x test
 ## 개발 규칙
 
 - Git: GitHub Flow(`main` + 작업 브랜치), Squash and merge, 태그 기반 릴리즈 — [docs/GIT-WORKFLOW.md](docs/GIT-WORKFLOW.md)
-- CI: PR과 `main` push에서 Web test·build 2종, API compile — [.github/workflows/ci.yml](.github/workflows/ci.yml)
+- CI: PR과 `main` push에서 Web lint·test·build 2종·check:css, API test — [.github/workflows/ci.yml](.github/workflows/ci.yml)
 - commit 전 `ops/check-secrets.sh`가 staged 파일의 secret 패턴을 검사한다 (`.githooks/pre-commit`, `git config core.hooksPath .githooks`)
 - 현재 상태와 다음 할 일: [work-status/CURRENT.md](work-status/CURRENT.md) · 결정: [work-status/DECISIONS.md](work-status/DECISIONS.md)
 

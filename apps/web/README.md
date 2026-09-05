@@ -1,13 +1,14 @@
-# Bullum Web
+# Bubot Web
 
-Spring Boot 백엔드는 유지하고, 모바일/앱 전용 화면을 React로 분리해서 개발하기 위한 프론트엔드입니다.
+Spring Boot API(`apps/api`, 8081)를 두고 Desktop·Mobile(PWA) 두 진입점을 한 Vite 프로젝트로 개발하는 프론트엔드다. 구조와 의존 방향은 `docs/architecture/STRUCTURE.md`, 명령은 `docs/COMMANDS.md`.
 
 ## 개발 실행
 
 ```bash
-cd frontend
-npm install
-npm run dev
+cd apps/web
+npm ci
+npm run dev            # Mobile  → http://localhost:5173/mobile/ (ops/front-end.sh는 5175)
+npm run dev:desktop    # Desktop → http://localhost:5174/web/
 ```
 
-Vite 개발 서버는 `/stock`, `/coin`, `/api`, `/asset` 요청을 `http://localhost:80`의 Spring Boot 서버로 프록시합니다.
+Vite 개발 서버는 API 요청을 `http://localhost:8081`의 Spring Boot 서버로 프록시한다.
