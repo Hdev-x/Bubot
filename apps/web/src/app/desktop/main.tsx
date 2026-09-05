@@ -1,11 +1,11 @@
 import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import './styles/desktop.css'; // 앱 셸 CSS를 화면 컴포넌트보다 먼저 로드 — 컴포넌트 옆 CSS가 뒤에 와서 원본 cascade(셸 → 화면) 유지 (리뷰 P0 수정)
 import DesktopApp from './DesktopApp';
 import DesktopLogin from './DesktopLogin';
 import DesktopSignup from './DesktopSignup';
 import { fetchMe, logout } from '../../api/server/authApi';
 import type { AuthUser } from '../../api/server/authApi';
-import './styles/desktop.css';
 
 // 앱은 로그인 없이도 표시(마켓/차트 공개). 로그인/회원가입은 헤더 버튼 → 오버레이로 띄운다.
 // 내투자·전략·관심·커뮤니티 글쓰기 등 계정 기능은 DesktopApp 안에서 로그인 게이트.

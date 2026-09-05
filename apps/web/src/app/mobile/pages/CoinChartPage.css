@@ -297,3 +297,10 @@
       height: calc(100dvh - 50px - 48px - 52px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
     }
 }
+
+/* 860px 이상 — mobile.css 공용 media 규칙에서 분리(리뷰 P0 후속). 위 .chart-tool-strip 규칙보다 뒤에 있어야 원본 cascade가 유지된다. */
+@media (width>=860px) {
+  .chart-tool-strip {
+    width: 100%;
+  }
+}
