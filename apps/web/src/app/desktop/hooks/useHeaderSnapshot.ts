@@ -7,7 +7,8 @@ import type { useCandleLoader } from '../../../chart/hooks/useCandleLoader';
 import type { DesktopExchange } from './useDesktopCandles';
 
 // Desktop 종목 헤더 데이터 — 24h 티커·일봉 2개·시총 폴링과 통합 스냅샷(H). DesktopApp에서 옮김 (wp-06 d03).
-// livePrice·dailyOpenPrice·loadedSymbol·loadCandles는 useDesktopCandles 결과, fmtPx는 DesktopApp의 가격 포맷터.
+// livePrice·dailyOpenPrice(캔들 1Dutc 시가)·loadedSymbol(현재가·시가 seed 완료 종목)은 useLivePrice 결과(wp-08 d02 전엔 useDesktopCandles),
+// loadCandles는 DesktopApp의 useCandleLoader(일봉 통계용), fmtPx는 DesktopApp의 가격 포맷터.
 export function useHeaderSnapshot({ symbol, exchange, isFutures, base, loadCandles, livePrice, dailyOpenPrice, loadedSymbol, fmtPx }: {
   symbol: string;
   exchange: DesktopExchange;
