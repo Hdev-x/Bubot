@@ -1,6 +1,6 @@
 # 현재 상태
 
-- 마지막 갱신: 2026-09-05 (wp-08 PLAN 작성)
+- 마지막 갱신: 2026-09-05 (wp-08 완료)
 
 > 이 문서는 다음 세션을 위한 상태판이다. 이력을 쌓지 않고 덮어쓴다.
 > Branch·Commit·작업 트리는 Git에서, 완료 작업의 상세·증거는 PLAN과 Git History에서 확인한다.
@@ -21,15 +21,15 @@
 - Binance 호가·캔들 프록시 캐시 + 429/418 차단 존중 완료(2026-09-05, PR #56, Fast Path). 2026-09-05 00:23 서버 IP가 Binance에 약 73분 차단됐던 원인(호가 폴링 분당 150~250회) 수정.
 - 독립 리뷰(Codex gpt-5.6-sol, 2026-09-05, P0 2·P1 7·P2 9) 반영: PR #60(셸 CSS 로드 순서 복원·RSI effect 원위치), #61(Binance guard 공유·동시성·중계 연결 소유권·pong, 관심종목 사라짐 원인), #62(역방향 import·lockfile·web 식별자·PLAN 정정) — 2026-09-05 merge. 2차 리뷰(sol 3명·gpt-6-astra 3명)의 잔여 P1·P2는 PR #63(2026-09-05 merge)에서: `WsConnect` 유령 소켓 차단·리스너 소유권, guard 소유자 재확인·null 시 캐시 유지·stale 최대 나이, exchangeInfo guard 경유, 종료 플래그, 부트스트랩 timeout, Bitget 유효 티커 수신·구독 전송 실패 관찰, kline 재구독 소켓·전송 타임아웃, `check:css` 3종 검사 + CI, PLAN Acceptance 정식 변경, 기존 설계 문제 5건 OQ 등록. 3차 리뷰(gpt-6-astra 3명, #63 이후)의 잔여 P1 6건은 PR #64(2026-09-05 merge)에서: WsConnect Attempt(열린 소켓 기억·포기 시 abort), 종료 중 완료된 연결 abort + stop() 직렬화, guard stale 나이를 응답 시점 기준으로, 프론트 useOrderbook 빈 응답 3회면 호가 비움, price-precision 거래소별 캐시(빈 결과 1분 재조회), kline refcount 전이 lock, check:css [4] 최종 선언·media 검사, PLAN Evidence 분리. 4차 리뷰(#64 이후) 잔여는 종결 PR(4차 수정)에서: 호가 표시 스냅샷(Desktop obRef·Mobile obSnapRef) 비움, media 조건 정확 비교, Bitget 정밀도 상품군별 캐시·마지막 성공값 보존, wp-07 350→400·wp-04 AC-004 대체·Evidence revision 정리. 5차 리뷰(PR #65 브랜치) 뒤 같은 PR에 추가: check:css 최종값 비교, precision 갱신 직렬화, kline 전송 큐·onOpen 소켓 설치. 늦은 `onOpen`의 `reconnect.success`(OQ-20260905-06)는 리뷰어도 이관 수용 — PR #65 merge(86d366b)로 사용자 결정에 따라 리뷰 루프를 닫았다(잔여 위험은 OQ-20260905-06과 테스트 정밀도 항목에 명시). 로컬 API 프로세스는 PR #61 이전 코드로 기동돼 있어 재시작해야 #61~#65 서버 수정이 반영된다. 리뷰 원문은 세션 scratchpad에만 있다.
 - 로컬 API는 2026-09-05 19:56 PR #65 코드로 재시작했고 사용자가 로그인 화면(Mobile 차트·관심종목, Desktop RSI·관심 패널·푸터)을 확인했다.
-- 프로젝트가 지금 달성하려는 결과: `wp-08-live-price`(T-04f, A안) 완료 후 T-05 배포. 다음 WP 순서는 사용자 결정(2026-09-05): T-04f → T-05 배포 → OQ-11 lint 경고 축소. 배포 전에 배포 대상·도메인·DB 위치(OQ-20260903-04) 결정 필요. 후보는 T-04f `useLivePrice` 분리, OQ-11 lint 경고 축소, OQ-04 Beta 배포.
+- 현재가 구독 분리 완료(2026-09-05, `wp-08-live-price`, PR #68~#70): Desktop 현재가는 `useLivePrice`(티커 REST seed + 티커 WS, 등락 기준은 캔들 1Dutc 시가 — Binance 티커 openPrice는 24h 롤링이라 사용자 결정으로 제외), 조립 순서 현재가 → 캔들 → 호가 → 헤더. `useCoinCandles`는 캔들 전용. `DesktopApp.tsx` 451→461줄.
+- 프로젝트가 지금 달성하려는 결과: T-05 배포 준비. 다음 WP 순서는 사용자 결정(2026-09-05): T-04f → T-05 배포 → OQ-11 lint 경고 축소. 배포 전에 배포 대상·도메인·DB 위치(OQ-20260903-04) 결정 필요. 후보는 T-04f `useLivePrice` 분리, OQ-11 lint 경고 축소, OQ-04 Beta 배포.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. wp-08 d03 PR 사용자 Mobile 로그인 확인(차트 현재가·등락) 후 merge, wp-08 Milestone 판정·닫기
-2. wp-06 AC-001(DesktopApp ≤451줄, 현재 461) 정정 여부 결정
-3. T-05 준비: 배포 대상·도메인·DB 위치 결정(OQ-20260903-04)
+1. wp-06 AC-001(DesktopApp ≤451줄, 현재 461 — wp-08 d02에서 로더·시가 로더 +10) 정정 여부 결정
+2. T-05 준비: 배포 대상·도메인·DB 위치 결정(OQ-20260903-04) → PLAN 작성
 
 ## Deferred
 
@@ -40,7 +40,7 @@
 
 ## 활성 Work Package
 
-- [refactor/wp-08-live-price](work/refactor/wp-08-live-price/PLAN.md) — active, d03 review(PR 대기)
+- 없음.
 
 ## 완료된 Work Package (링크만)
 
@@ -51,6 +51,7 @@
 - [refactor/wp-05-desktop-naming](work/refactor/wp-05-desktop-naming/PLAN.md) — 2026-09-04, PR #39~#42
 - [refactor/wp-06-desktop-app-split](work/refactor/wp-06-desktop-app-split/PLAN.md) — 2026-09-05, PR #44~#50
 - [refactor/wp-07-large-files](work/refactor/wp-07-large-files/PLAN.md) — 2026-09-05, PR #53~#58
+- [refactor/wp-08-live-price](work/refactor/wp-08-live-price/PLAN.md) — 2026-09-05, PR #68~#70
 
 ## Blocker·주의
 
