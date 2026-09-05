@@ -39,7 +39,7 @@ export const dividerLabel = (key: string) => { const i = key.indexOf('::'); retu
 export const withDividerLabel = (key: string, label: string) => { const i = key.indexOf('::'); return `${i < 0 ? key : key.slice(0, i)}::${label}`; };
 
 // 같은 탭의 여러 인스턴스(예: 관심패널 + 플로팅 미니창)가 즐겨찾기를 실시간 공유하도록 알리는 이벤트명.
-const FAV_EVENT = 'web-favs-changed';
+const FAV_EVENT = 'desktop-favs-changed'; // wp-05 이름 통일 잔여(리뷰 P2)
 
 /** 즐겨찾기 스토어(localStorage). 같은 탭의 다른 인스턴스 토글도 즉시 반영(커스텀 이벤트) + 다른 탭은 storage 이벤트로 동기화. */
 export function useDesktopFavorites() {

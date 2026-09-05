@@ -183,6 +183,8 @@
 }
 
 .web-monitoring .live-ob-chip:hover { background: #20222a; color: #edf1f7; border-color: rgba(255, 255, 255, 0.08); }
+.web-monitoring .live-ob-chip.active { background: rgba(49, 130, 246, 0.08); color: #3182f6; border-color: rgba(49, 130, 246, 0.2); }
+.web-monitoring .live-ob-chip.active.phase-waiting { border-color: rgba(138, 147, 159, 0.2); color: #8a939f; background: rgba(138, 147, 159, 0.06); }
 
 /* ── 웹 모니터링 스크롤: 필터 고정 + 목록만 스크롤 (부모 .sidebar-section overflow:hidden) ── */
 .web-monitoring { display: flex; flex-direction: column; flex: 1; min-height: 0; }

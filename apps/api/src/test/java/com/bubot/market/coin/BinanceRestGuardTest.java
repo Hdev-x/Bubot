@@ -115,4 +115,53 @@ class BinanceRestGuardTest {
         }
         assertTrue(g.cacheSize() <= BinanceRestGuard.MAX_ENTRIES, "endTime 페이징 키가 무한히 쌓이지 않는다: " + g.cacheSize());
     }
+
+    @Test
+    void 상류가_null이면_기존_캐시를_지우지_않는다() throws Exception {
+        BinanceRestGuard g = new BinanceRestGuard();
+        g.get("k", 0, () -> Map.of("v", "old"), Map.of());
+        Object v = g.get("k", 0, () -> null, Map.of());
+        assertEquals(Map.of("v", "old"), v, "빈 응답 한 번에 관심종목 목록이 사라지지 않는다");
+        assertEquals(Map.of("v", "old"), g.staleOr("k", Map.of()));
+    }
+
+    @Test
+    void stale_최대_나이를_넘긴_캐시는_차단_중에도_빈값() throws Exception {
+        BinanceRestGuard g = new BinanceRestGuard();
+        g.get("k", 0, () -> Map.of("v", "old"), Map.of());
+        Thread.sleep(30);
+        g.noteRateLimit(429, "60");
+        assertEquals(Map.of(), g.get("k", 0, 10, () -> Map.of("v", "new"), Map.of()), "10ms보다 오래된 호가는 주지 않는다");
+        assertEquals(Map.of("v", "old"), g.get("k", 0, 60_000, () -> Map.of("v", "new"), Map.of()), "허용 나이 안이면 마지막 값");
+        assertEquals(Map.of(), g.staleOr("k", 10, Map.of()));
+        assertEquals(Map.of("v", "old"), g.staleOr("k", 60_000, Map.of()));
+    }
+
+    @Test
+    void 소유자가_된_뒤_차단이_시작됐으면_상류를_부르지_않는다() throws Exception {
+        // 첫 검사 통과 → in-flight 소유자 → (그 사이 다른 스레드가 429를 기록) → 재확인에서 차단을 보고 상류 생략
+        BinanceRestGuard g = new BinanceRestGuard();
+        AtomicInteger calls = new AtomicInteger();
+        CountDownLatch ownerInside = new CountDownLatch(1);
+        CountDownLatch blockRecorded = new CountDownLatch(1);
+        Thread owner = new Thread(() -> {
+            try {
+                g.get("a", 0, () -> {
+                    calls.incrementAndGet();
+                    ownerInside.countDown();
+                    try { blockRecorded.await(); } catch (InterruptedException ignored) { /* test */ }
+                    throw status(429, "60");
+                }, Map.of());
+            } catch (Exception e) { throw new RuntimeException(e); }
+        });
+        owner.start();
+        ownerInside.await();
+        g.noteRateLimit(429, "60"); // 다른 key의 요청이 먼저 429를 받은 상황
+        blockRecorded.countDown();
+        owner.join(5_000);
+        // 차단이 기록된 뒤 새 key의 요청은 소유자가 되더라도 상류로 나가지 않는다
+        Object v = g.get("b", 0, () -> { calls.incrementAndGet(); return Map.of("v", 1); }, Map.of());
+        assertEquals(Map.of(), v);
+        assertEquals(1, calls.get(), "차단 뒤 상류 호출 없음");
+    }
 }

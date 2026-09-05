@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -52,6 +53,7 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
 
     private final BinanceRestGuard guard;
     private volatile boolean connecting;
+    private volatile boolean shuttingDown; // 종료 뒤 재연결 예약 금지(리뷰 2차 P1)
 
     public BinanceSpotRealtimeWebSocketService(SimpMessagingTemplate messagingTemplate, ObjectMapper objectMapper, BinanceRestGuard guard) {
         this.guard = guard;
@@ -72,6 +74,7 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
     }
 
     private synchronized void connect() {
+        if (shuttingDown) return;
         connecting = true;
         try {
             webSocket = WsConnect.open(httpClient, BINANCE_SPOT_WS, this);
@@ -95,7 +98,7 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
 
     private void subscribeDailyKlines(WebSocket webSocket) {
         try {
-            HttpRequest request = HttpRequest.newBuilder(BINANCE_SPOT_EXCHANGE_INFO).GET().build();
+            HttpRequest request = HttpRequest.newBuilder(BINANCE_SPOT_EXCHANGE_INFO).timeout(Duration.ofSeconds(10)).GET().build();
             if (guard.isBlocked()) { log.warn("Binance Spot 구독 목록 REST 생략 — Binance 차단 중"); return; }
             HttpResponse<String> res = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (res.statusCode() != 200) {
@@ -123,7 +126,7 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
                 String message = objectMapper.writeValueAsString(
                         Map.of("method", "SUBSCRIBE", "params", chunk, "id", id++));
                 // 이전 send 완료를 기다려야 함 (미완료 상태에서 재호출 시 IllegalStateException)
-                webSocket.sendText(message, true).join();
+                webSocket.sendText(message, true).orTimeout(5, TimeUnit.SECONDS).join();
             }
         } catch (Exception e) {
             log.warn("Binance Spot 일봉 구독 실패: {}", e.getMessage());
@@ -191,7 +194,7 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
     @Scheduled(fixedDelay = 10_000)
     public void reconnectIfNeeded() {
         WebSocket socket = webSocket;
-        if (!enabled || reconnect.isPending() || connecting) {
+        if (!enabled || shuttingDown || reconnect.isPending() || connecting) {
             return;
         }
         if (socket == null || socket.isInputClosed() || socket.isOutputClosed()) {
@@ -208,6 +211,7 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
     }
 
     private void scheduleReconnect() {
+        if (shuttingDown) return;
         long delay = reconnect.begin();
         if (delay < 0) return;
         log.info("Binance Spot WS 재연결 예약({}회째, {}ms 후)", reconnect.attempts(), delay);
@@ -223,19 +227,24 @@ public class BinanceSpotRealtimeWebSocketService implements WebSocket.Listener {
 
     @Override
     public CompletionStage<?> onClose(WebSocket webSocket, int statusCode, String reason) {
-        log.warn("Binance Spot WS 종료: status={}, reason={}", statusCode, reason);
-        scheduleReconnect();
+        // 종료 중이거나 이미 교체된 옛 소켓의 종료면 재연결하지 않는다(리스너 소유권, 리뷰 2차 P1)
+        if (!shuttingDown && webSocket == this.webSocket) {
+            log.warn("Binance Spot WS 종료: status={}, reason={}", statusCode, reason);
+            scheduleReconnect();
+        }
         return WebSocket.Listener.super.onClose(webSocket, statusCode, reason);
     }
 
     @Override
     public void onError(WebSocket webSocket, Throwable error) {
+        if (shuttingDown || webSocket != this.webSocket) return;
         log.warn("Binance Spot WS 오류: {}", error.getMessage());
         scheduleReconnect();
     }
 
     @PreDestroy
     public void stop() {
+        shuttingDown = true;
         WebSocket socket = webSocket;
         if (socket != null) {
             socket.sendClose(WebSocket.NORMAL_CLOSURE, "shutdown");

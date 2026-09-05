@@ -38,6 +38,7 @@ YYYY-MM-DD | D-YYYYMMDD-NN | kind | 결정 | 이유 | 영향 범위
 - 2026-09-03 | D-20260903-10 | durable | `apps/web/src/chart/analysis/` 재수출 4개(chartIndicators·harmonicPattern·elliottWavePattern·pivots)는 유지한다. 루트 `shared/` 계산 엔진은 이 폴더를 통해서만 가져온다 | 5~10줄짜리지만 `../../../../../shared/...` 경로가 화면 코드에 퍼지는 것을 막는 단일 통로다. importer 8곳이 이미 이 경로를 쓴다 | `docs/PROJECT.md` 의존 방향, PR #30
 - 2026-09-04 | D-20260904-01 | durable | CSS는 쓰는 컴포넌트 옆에 둔다(co-location). 앱 `styles/`에는 `:root` 토큰·reset·앱 셸만 남기고, 페이지·컴포넌트·공용 차트 규칙은 각 `.tsx` 옆 `.css`로 옮겨 그 컴포넌트가 import한다. 지표 시트처럼 두 앱이 같은 값으로 쓰는 규칙만 `chart/` 옆으로 모으고, 앱마다 다른 값(OHLC 숫자 폭·삭제 버튼 위치 등 5개)은 앱 CSS에 남긴다(OQ-20260903-12 종결) | React 관행이고, 컴포넌트를 지우면 CSS도 같이 사라져 미사용 규칙이 다시 쌓이지 않는다. `styles/`에 몰아두는 방식(A)으로 바꾸는 것은 `git mv`+import 경로 수정뿐이라 되돌리기 쉽다 | `wp-04-css-cleanup` d02~d04, `docs/architecture/WEB-CSS-REVIEW.md`
 - 2026-09-04 | D-20260904-02 | durable | labs 전용 CSS(자동매매·Paper·Backtest 화면만 쓰는 규칙)는 삭제하지 않고 `labs/trading/web/src/styles/`로 옮겨 보존한다 | 모의투자 단계에서 화면을 되살릴 계획이라 코드와 CSS를 같은 곳에 둔다 | PR #34
+- 2026-09-05 | D-20260905-01 | operational | `DesktopApp.tsx` 분해(wp-06)는 451줄에서 마감한다. 원안 목표 300~400줄 대신 solo 포커스·dock 애니메이션·바깥 클릭 effect 51줄은 조립 파일에 남기고, 영역 컴포넌트에는 개별 props가 아니라 묶음(props 그룹) 방식으로 넘긴다 | 남은 effect는 여러 패널 상태를 한 번에 다뤄 옮기면 오히려 읽기 어렵고, 묶음 props는 호출부 줄 수를 줄인다. wp-06 PLAN이 `D-20260905`로 참조하던 결정을 정식 ID로 기록(2차 리뷰 P2) | `wp-06-desktop-app-split` Outcome·AC-001, PR #50
 
 ## 대체된 결정
 

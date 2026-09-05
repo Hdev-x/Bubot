@@ -47,8 +47,6 @@ body {
 }
 /* 로고 — 모바일 로봇 마크만 */
 .header-logo { height: 40px; width: 40px; display: block; flex-shrink: 0; position: relative; top: 3px; left: -7px; }
-.web-list-chg.up { color: var(--up); }
-.web-list-chg.down { color: var(--down); }
 .paper-toggle.on { background: #f0b90b; border-color: #f0b90b; color: #101114; }
 .paper-order-open.on { background: #fff; border-color: #fff; color: #101114; } /* 활성 = 흰 배경 + 검은 글씨 */
 .open-close-toggle button.active { background: #4a4e56; color: #fff; }
@@ -537,8 +535,6 @@ body {
 .wps-dir.short { background: rgba(246, 70, 93, 0.15); color: var(--down); }
 .wps-cell.up { color: var(--up); }
 .wps-cell.down { color: var(--down); }
-.web-monitoring .live-ob-chip.active { background: rgba(49, 130, 246, 0.08); color: #3182f6; border-color: rgba(49, 130, 246, 0.2); }
-.web-monitoring .live-ob-chip.active.phase-waiting { border-color: rgba(138, 147, 159, 0.2); color: #8a939f; background: rgba(138, 147, 159, 0.06); }
 
 .strat-subtab.active { background: rgba(49,130,246,0.1); color: #3182f6; border-color: rgba(49,130,246,0.25); }
 
