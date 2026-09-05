@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -151,6 +153,9 @@ public class BinanceKlineRelayService {
         private volatile long lastMsgAt;
         private volatile boolean connecting;
         private final Object refLock = new Object(); // refCounts·zeroSince·subscribed 전이를 함께 보호(3차 리뷰 P1: decref의 get/put이 incref와 겹치면 활성 구독을 0으로 덮었다)
+        // 전송 큐: SUBSCRIBE/UNSUBSCRIBE를 상태 전이와 같은 순서로 한 스레드가 보낸다(5차 리뷰 P1: lock 밖 전송은 유예 만료 UNSUBSCRIBE가 새 SUBSCRIBE 뒤에 도착할 수 있었다).
+        // enqueue는 refLock 안에서 하므로 큐 순서 = 상태 변경 순서. 실제 전송(최대 5초 대기)은 큐 스레드에서.
+        private final ExecutorService sender = Executors.newSingleThreadExecutor(Thread.ofVirtual().name("kline-sender-", 0).factory());
 
         Conn(String market, URI uri) { this.market = market; this.uri = uri; }
 
@@ -176,8 +181,8 @@ public class BinanceKlineRelayService {
                 refCounts.merge(stream, 1, Integer::sum);
                 zeroSince.remove(stream);
                 needSub = subscribed.add(stream); // 처음 보는 스트림만 실제 SUBSCRIBE
+                if (needSub) enqueue("SUBSCRIBE", stream); // 큐 순서 = 상태 순서
             }
-            if (needSub) sendSub(stream); // 전송(최대 5초 대기)은 lock 밖에서
         }
 
         void decref(String stream) {
@@ -192,7 +197,6 @@ public class BinanceKlineRelayService {
         void maintain() {
             // 1) 유예 지난 0-구독 스트림 UNSUBSCRIBE
             long now = System.currentTimeMillis();
-            List<String> toUnsub = new ArrayList<>();
             synchronized (refLock) {
                 for (Map.Entry<String, Long> e : new HashMap<>(zeroSince).entrySet()) {
                     if (now - e.getValue() < IDLE_UNSUB_MS) continue;
@@ -200,11 +204,10 @@ public class BinanceKlineRelayService {
                     zeroSince.remove(stream);
                     if (refCounts.getOrDefault(stream, 0) == 0) {
                         refCounts.remove(stream);
-                        if (subscribed.remove(stream)) toUnsub.add(stream);
+                        if (subscribed.remove(stream)) enqueue("UNSUBSCRIBE", stream);
                     }
                 }
             }
-            for (String stream : toUnsub) sendUnsub(stream); // 전송은 lock 밖에서
             // 2) 재연결 필요 판단
             WebSocket s = ws;
             if (reconnect.isPending() || connecting) return;
@@ -216,8 +219,10 @@ public class BinanceKlineRelayService {
             }
         }
 
-        private void sendSub(String stream) { sendMethod(ws, "SUBSCRIBE", stream); }
-        private void sendUnsub(String stream) { sendMethod(ws, "UNSUBSCRIBE", stream); }
+        /** 큐에 넣는다. 실행 시점의 현재 소켓으로 보낸다(소켓이 없으면 버림 — onOpen 재구독이 subscribed 전체를 다시 보낸다). */
+        private void enqueue(String method, String stream) {
+            sender.execute(() -> sendMethod(ws, method, stream));
+        }
 
         private void sendMethod(WebSocket s, String method, String stream) {
             if (s == null) return;
@@ -235,8 +240,11 @@ public class BinanceKlineRelayService {
             webSocket.request(1);
             reconnect.success();
             lastMsgAt = System.currentTimeMillis();
-            // 재연결 시 활성 구독 복원 — onOpen 시점엔 필드 ws가 아직 옛 소켓이라 콜백 소켓으로 보낸다(리뷰 2차 P1)
-            for (String stream : subscribed) sendMethod(webSocket, "SUBSCRIBE", stream);
+            // 재연결 시 활성 구독 복원 — refLock 안에서 새 소켓을 설치하고 구독 snapshot을 큐에 넣어, 그 뒤 들어오는 incref가 옛 소켓/null로 가지 않게 한다(5차 리뷰 P1 연결 인계)
+            synchronized (refLock) {
+                ws = webSocket;
+                for (String stream : subscribed) enqueue("SUBSCRIBE", stream);
+            }
             log.info("Binance kline relay({}) 연결 완료 (활성 {}스트림)", market, subscribed.size());
         }
 
@@ -308,6 +316,7 @@ public class BinanceKlineRelayService {
         }
 
         synchronized void close() { // connect()와 같은 lock
+            sender.shutdown();
             WebSocket s = ws;
             if (s != null) s.sendClose(WebSocket.NORMAL_CLOSURE, "shutdown");
         }

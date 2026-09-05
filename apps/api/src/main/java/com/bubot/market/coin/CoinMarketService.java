@@ -138,9 +138,13 @@ public class CoinMarketService extends AbstractMarketService {
         return result;
     }
 
-    /** 거래소·상품군 단위 캐시. 빈 결과(실패)는 마지막 성공값이 있으면 그것을 유지하고 60초 뒤 재조회, 성공은 1시간(4차 리뷰 P1). */
+    /**
+     * 거래소·상품군 단위 캐시. 빈 결과(실패)는 마지막 성공값이 있으면 그것을 유지하고 60초 뒤 재조회, 성공은 1시간(4차 리뷰 P1).
+     * synchronized — 같은 키의 실패 요청이 prev를 읽은 뒤 성공 요청의 새 값을 옛 값으로 되돌리지 않게 갱신을 직렬화한다(5차 리뷰 P1).
+     * 조회 하나가 최대 5~10초라 동시 요청은 그만큼 기다릴 수 있지만 1시간에 한 번 있는 갱신이다.
+     */
     @SuppressWarnings("unchecked")
-    private Map<String, Integer> precisionPart(String cacheKey, java.util.function.Supplier<Map<String, Integer>> loader) {
+    private synchronized Map<String, Integer> precisionPart(String cacheKey, java.util.function.Supplier<Map<String, Integer>> loader) {
         if (isCacheValid(cacheKey)) {
             return (Map<String, Integer>) cache.get(cacheKey);
         }

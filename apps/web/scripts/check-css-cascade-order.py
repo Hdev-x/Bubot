@@ -7,7 +7,7 @@
  2. 진입점(main.tsx) import 순서 — 셸 CSS import가 컴포넌트를 끌어오는 첫 import보다 앞에 있는지(`import type`은 제외).
     (2026-09-05 P0 원인: 셸 CSS가 컴포넌트 CSS 뒤에 번들돼 테마·flex 규칙이 덮였다.)
  3. 빌드 산출물(dist/, dist-desktop/)이 있으면 번들 CSS에서 셸 규칙이 모든 컴포넌트 CSS 파일보다 앞에 있는지.
- 4. 번들에서 과거 P0 선택자의 최종 선언이 기대값인지(.coin-chart-page 배경·색·하단 여백은 전용 규칙, .show-current-label은 flex),
+ 4. 번들에서 과거 P0 선택자의 최종 선언이 기대값인지(.coin-chart-page 배경·색·하단 여백은 전용 규칙이며 값이 CoinChartPage.css와 같음, .show-current-label은 flex),
     .chart-tool-strip의 media 조건(<=410px·>=860px, 방향·값 정확 비교)이 남아 있는지 — 3차 리뷰 P2: 위치 비교만으로는 같은 파일 안 재배치·값 변경을 못 잡았다.
 
 실행: apps/web에서 `npm run check:css` (빌드 뒤에 돌리면 3·4번까지 검사). 문제가 있으면 exit 1.
@@ -22,9 +22,11 @@ ORIGIN_COMMIT = 'f31cc27'
 APPS = [
     dict(app='mobile', shell='src/app/mobile/styles/mobile.css', comp_glob='src/app/mobile/**/*.css',
          orig='apps/web/src/app/mobile/styles/mobile.css', entry='src/app/mobile/main.tsx', dist='dist',
-         # (선택자, 속성, 기대: 값 또는 'ONLY_SELECTOR'(그 선택자 단독 규칙이 최종이어야 함))
-         final=[('.coin-chart-page', 'background', 'ONLY_SELECTOR'), ('.coin-chart-page', 'color', 'ONLY_SELECTOR'),
-                ('.coin-chart-page', 'padding-bottom', 'ONLY_SELECTOR'),
+         # (선택자, 속성, 기대값). 'SOURCE:<파일>'은 그 파일의 단독 선택자 규칙에 적힌 값이 번들 최종값이어야 한다는 뜻
+         # (5차 리뷰 P2: 단독 선택자인지만 보면 값이 바뀐 회귀를 통과시킨다).
+         final=[('.coin-chart-page', 'background', 'SOURCE:src/app/mobile/pages/CoinChartPage.css'),
+                ('.coin-chart-page', 'color', 'SOURCE:src/app/mobile/pages/CoinChartPage.css'),
+                ('.coin-chart-page', 'padding-bottom', 'SOURCE:src/app/mobile/pages/CoinChartPage.css'),
                 ('.show-current-label', 'display', 'flex')],
          # (선택자, media 조건) — 조건은 '<=410px' 형태로 정규화해 정확히 비교한다(4차 리뷰 P2: 부분 문자열 비교는 1860px도 통과시켰다)
          media=[('.chart-tool-strip', '<=410px'), ('.chart-tool-strip', '>=860px')]),
@@ -192,6 +194,24 @@ def media_conditions(media):
     return out
 
 
+def norm_value(v):
+    """minify 차이를 흡수한 값 비교용 정규화 — 공백 제거·소문자·#aabbcc→#abc·선행 0(0.5→.5)·'0px'→'0'."""
+    v = re.sub(r'\s+', '', v.lower())
+    v = re.sub(r'#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3\b', r'#\1\2\3', v)
+    v = re.sub(r'(?<![\d.])0+\.(\d)', r'.\1', v)
+    v = re.sub(r'(?<![\d.])0(px|em|rem|%)\b', '0', v)
+    return v
+
+
+def source_value(path, sel, prop):
+    """컴포넌트 CSS에서 sel 단독 규칙(media 밖)의 prop 최종값."""
+    v = None
+    for media, s, b in rules(open(path, encoding='utf-8').read()):
+        if not media and simple(s) == [sel] and prop in props(b):
+            v = prop_value(b, prop)
+    return v
+
+
 def check_bundle_final(cfg, bundle):
     if not cfg['final'] and not cfg['media']:
         print('  [4] 번들 최종 선언: 검사 항목 없음')
@@ -207,9 +227,17 @@ def check_bundle_final(cfg, bundle):
                 last = (s, prop_value(b, prop))
         if last is None:
             problems.append(f'FINAL {sel} {prop}: 번들에 선언이 없다')
-        elif expect == 'ONLY_SELECTOR' and simple(last[0]) != [sel]:
-            problems.append(f'FINAL {sel} {prop}: 최종 선언이 전용 규칙이 아니라 "{last[0][:40]}" (값 {last[1]})')
-        elif expect != 'ONLY_SELECTOR' and last[1] != expect:
+            continue
+        if expect.startswith('SOURCE:'):
+            src = source_value(expect[len('SOURCE:'):], sel, prop)
+            if src is None:
+                problems.append(f'FINAL {sel} {prop}: 원본 파일에 단독 규칙 값이 없다')
+                continue
+            if simple(last[0]) != [sel]:
+                problems.append(f'FINAL {sel} {prop}: 최종 선언이 전용 규칙이 아니라 "{last[0][:40]}" (값 {last[1]})')
+            elif norm_value(last[1]) != norm_value(src):
+                problems.append(f'FINAL {sel} {prop}: 최종값 {last[1]} (원본 {src})')
+        elif last[1] != expect:
             problems.append(f'FINAL {sel} {prop}: 최종값 {last[1]} (기대 {expect})')
     for sel, cond in cfg['media']:
         if not any(media and cond in media_conditions(media) and sel in simple(s) for media, s, b in rs):
