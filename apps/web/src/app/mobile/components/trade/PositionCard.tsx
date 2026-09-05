@@ -1,6 +1,7 @@
 // 포지션 카드 (Bitget 정합) — Trade 탭과 Bot 탭이 공유하는 단일 컴포넌트.
 // 일부 필드(margin/mmr/realizedPl/liqPrice/tp/sl)는 출처에 따라 없을 수 있어 방어적으로 '—' 표시.
 import { useSettings, currencyLabel } from '../../../../shared/contexts/CurrencyContext';
+import { fmtPrice } from '../../../../shared/utils/coinFormatters';
 import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
 import './trade.css';
 
@@ -21,11 +22,6 @@ export type PositionCardData = {
   stopLoss?: number;
 };
 
-function fmtPrice(n: number): string {
-  if (!Number.isFinite(n)) return '—';
-  const dec = n >= 100 ? 2 : n >= 1 ? 4 : 6;
-  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: dec });
-}
 
 export default function PositionCard({
   position: p,

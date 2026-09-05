@@ -2,6 +2,7 @@
 // 선물 패널(TradeAccountSummary)과 동일 구조·CSS, 데이터만 현물(보유자산 + USDT 잔고).
 // 현물은 포지션/레버리지/미실현이 없어 "총자산(실시간 평가) + 가용/동결 + 보유자산 목록"으로 구성.
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { fmtAsset } from '../../../../shared/utils/coinFormatters';
 import type { SpotHolding } from '../../../../api/server/spotTradeApi';
 import { useSettings, currencyLabel } from '../../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
@@ -10,13 +11,6 @@ import { CoinLogo } from '../coin-list/CoinLogo';
 import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatters';
 import './trade.css';
 
-function fmtAsset(n: number): string {
-  if (!Number.isFinite(n)) return '—';
-  return n.toLocaleString(undefined, {
-    minimumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-    maximumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-  });
-}
 
 export default function SpotAccountSummary({
   holdings,

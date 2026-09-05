@@ -2,15 +2,11 @@
 // 한국거래소 기준 필드: 평가손익·수익률·평가금액·매수금액·현재가·매수평균가·보유수량·비중.
 // 매입가(avgCost)는 체결내역 재구성값. 없거나 신뢰불가면 사용자가 직접 입력 가능(costSource='manual').
 import type { SpotHolding } from '../../../../api/server/spotTradeApi';
+import { fmtPrice } from '../../../../shared/utils/coinFormatters';
 import { useSettings, currencyLabel } from '../../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
 import './trade.css';
 
-function fmtPrice(n: number): string {
-  if (!Number.isFinite(n)) return '—';
-  const dec = n >= 100 ? 2 : n >= 1 ? 4 : 6;
-  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: dec });
-}
 
 export default function SpotHoldingCard({
   holding: h,

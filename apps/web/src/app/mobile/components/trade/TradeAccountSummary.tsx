@@ -3,6 +3,7 @@
 // 데이터는 useMainTrade 폴링 결과(MainTradeOverview)를 그대로 받는다 — 새 호출 없음.
 // 통화/잔고숨김은 자산 탭과 동일하게 useSettings(CurrencyContext) 공유.
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { fmtAsset } from '../../../../shared/utils/coinFormatters';
 import type { MainPosition } from '../../../../api/server/mainTradeApi';
 import { useSettings, currencyLabel } from '../../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../../hooks/market/useUsdKrw';
@@ -12,13 +13,6 @@ import { getOfficialLogo, coinColor } from '../../../../shared/utils/coinFormatt
 import './trade.css';
 
 // 자산 탭 총자산 표기와 동일 규칙 (1 미만 4자리, 그 외 1자리)
-function fmtAsset(n: number): string {
-  if (!Number.isFinite(n)) return '—';
-  return n.toLocaleString(undefined, {
-    minimumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-    maximumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-  });
-}
 
 export default function TradeAccountSummary({
   equity,

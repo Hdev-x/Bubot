@@ -13,7 +13,7 @@ import type { IndicatorState } from '../hooks/useIndicatorState';
 import type { ChartViewState } from '../hooks/useChartViewState';
 import type { ChartRef, RankGroup, RsiGroup, SoloGroup } from './chartProps';
 import { ObjectTree } from './ObjectTree';
-import { MiniCandles } from './MiniCandles';
+import { MiniCandles } from '../../../chart/settings/ChartSettingsSheet';
 import { Chevron } from './SidebarBits';
 
 // 차트 툴바 — 타임프레임·solo 칩·신뢰선·RSI·캡쳐·그리기/지표/차트설정 드롭다운. DesktopApp에서 JSX만 옮김 (wp-06 d04b).
