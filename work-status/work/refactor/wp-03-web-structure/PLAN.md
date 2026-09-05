@@ -12,7 +12,7 @@ acceptance:
   - "AC-001: 목표 트리(docs/architecture/WEB-STRUCTURE-REVIEW.md 4절)와 실제 폴더가 일치하고 src/components·src/web·src/pages·src/utils·src/drawing가 남지 않는다."
   - "AC-002: import 방향이 app → chart/hooks → api → shared로만 향한다 (역방향 grep 0)."
   - "AC-003: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0이 유지된다."
-  - "AC-004: d03~d05는 Mobile·Desktop 주요 화면이 재편 전후 동일하다 (레이아웃·색 변화 없음). [2026-09-05 정식 변경, 사용자 결정 2026-09-03] 확인 방법은 스크린샷 파일 대조가 아니라 로컬 기동(API 8081·Vite 5174/5175) 후 사용자 로그인 육안 확인이다. 원안의 스크린샷 대조는 실행하지 않았다(리뷰 P2 #11)."
+  - "AC-004: d03~d05는 Mobile·Desktop 주요 화면이 재편 전후 동일하다 (레이아웃·색 변화 없음). [2026-09-05 정식 변경] 확인 방법은 스크린샷 파일 대조가 아니라 로컬 기동(API 8081·Vite 5174/5175) 후 사용자 로그인 육안 확인이다. 2026-09-03에는 사용자가 육안 확인 후 각 PR merge를 승인했고 스크린샷 대체를 명시한 별도 결정은 없었으므로, 이 기준 변경은 2026-09-05 리뷰 수정 PR 승인에 결속한다(리뷰 P2 #11, 4차 리뷰 P2)."
   - "AC-005: 클래스 이름·로직은 바꾸지 않는다. 변경은 파일 위치·import 경로·CSS 파일 분할·client.ts 분리뿐이다."
 deliveries:
   - id: wp-03-d00-dead-code
@@ -153,8 +153,12 @@ milestones:
         revision: f31cc27
         observed_at: 2026-09-03
       - kind: document
-        locator: "AC-004·GATE-AC-002·진행 방식 절을 육안 확인 기준으로 정식 변경(리뷰 P2 #11, 3차 리뷰 P2). 승인 근거: 2026-09-03 사용자가 로컬 기동 육안 확인 후 각 PR merge를 승인했고('확인했어, 승인'), 스크린샷 대조를 대체한다는 별도 문구는 없었다 — 그래서 기준 변경 자체는 2026-09-05 사용자의 리뷰 수정 PR(E·F) 승인에 결속한다"
+        locator: "AC-004·GATE-AC-002를 육안 확인 기준으로 정식 변경(리뷰 P2 #11). 승인 근거: 2026-09-05 사용자의 리뷰 수정 PR E 승인"
         revision: 04adac5
+        observed_at: 2026-09-05
+      - kind: document
+        locator: "진행 방식 절의 스크린샷 문구 정정, 승인 근거 Evidence 분리(3차 리뷰 P2). 2026-09-03 당시에는 사용자가 육안 확인 후 merge를 승인했을 뿐 스크린샷 대체를 명시한 결정은 없었음을 AC-004에 명시(4차 리뷰 P2)"
+        revision: d0bd09c
         observed_at: 2026-09-05
 extensions: {}
 ---
@@ -181,7 +185,7 @@ extensions: {}
 - 사용자와 Delivery 단위로 진행한다. 각 Delivery 시작 전에 이동 목록·import 변경 방식·검증을 설명하고 승인받는다.
 - 한 PR에 한 Delivery. `git mv` + 경로 치환, 내용 변경은 import 줄과 CSS 파일 분할뿐임을 diff로 확인한다.
 - Gate: `npm test`(22) · `npm run build` · `npm run build:web` · `npm run lint`(error 0) · 번들 grep(`/api/paper|/api/admin|/api/bot|backtest-runs|trade-configs` 0).
-  d03~d05는 로컬 기동 후 사용자 육안 확인으로 전후를 대조한다(2026-09-03 사용자 결정, 원안의 스크린샷 저장·대조는 실행하지 않음 — AC-004 2026-09-05 정식 변경).
+  d03~d05는 로컬 기동 후 사용자 육안 확인으로 전후를 대조한다(원안의 스크린샷 저장·대조는 실행하지 않음 — AC-004 2026-09-05 정식 변경).
 
 ## Delivery Notes
 

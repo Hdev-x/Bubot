@@ -80,6 +80,8 @@ export function useOrderbookSnapshot({ symbol, exchange, isFutures, isKrw, liveP
     maxLevelSize: number; buyPct: number; center: number; obDec: number; midDec: number;
     depthLabel: string; quoteLabel: string; funding: string;
   } | null>(null);
+  // 원시 호가가 비워졌으면(useOrderbook이 빈 응답 3회 뒤 null) 표시 스냅샷도 비운다 — clearOnChange=false라 종목 전환으로는 null이 되지 않으므로 전환 중 유지 동작과 충돌하지 않는다(4차 리뷰 P1)
+  if (orderbook === null) obRef.current = null;
   if (obReady) {
     obRef.current = {
       asks: askRows, bids: bidRows, maxLevelSize, buyPct, center: livePrice,

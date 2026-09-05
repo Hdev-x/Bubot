@@ -76,11 +76,11 @@ milestones:
     unlocks: []
     evidence:
       - kind: command
-        locator: "GATE-AC-001: 완료 시 기록 '잔여 grep = Tomcat WEBAPPS 4줄뿐' — 검사 명령이 파일 경로 apps/web를 걸러내며 모든 줄을 지운 잘못된 기록(아래 2026-09-05 정정 참조). 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success, 문서 명령·경로 일치(d03)는 사실"
+        locator: "GATE-AC-001: 완료 시 기록 '잔여 grep = Tomcat WEBAPPS 4줄뿐' — 잘못된 기록(아래 2026-09-05 정정 참조). 원인은 (추정) 검사 명령이 파일 경로 apps/web를 걸러내며 모든 줄을 지운 것으로 보이나 당시 명령을 재실행해 확인하지는 않았다. 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success, 문서 명령·경로 일치(d03)는 사실"
         revision: main
         observed_at: 2026-09-04
       - kind: command
-        locator: "[2026-09-05 정정, 리뷰 P2 #13] 실제로 web-root·webChartRef·useWebFavorites·WEB_TIMEFRAMES·WEB_DRAW_TOOLS·푸터 'Web'이 남아 있었고 PR #62에서 정리. 남기는 예외는 AC-001·Outcome에 정식 반영(localStorage web_*, CSS web-*·wm-*, URL /web·static/web). 이벤트명 web-favs-changed→desktop-favs-changed는 2차 리뷰 수정 PR에서"
+        locator: "[2026-09-05 정정, 리뷰 P2 #13] 실제로 web-root·webChartRef·useWebFavorites·WEB_TIMEFRAMES·WEB_DRAW_TOOLS·푸터 'Web'이 남아 있었고 PR #62에서 정리. 이 revision에서는 식별자 정리만 수행. 예외의 AC-001·Outcome 반영과 이벤트명 변경은 04adac5 항목"
         revision: 45f2d89
         observed_at: 2026-09-05
       - kind: command

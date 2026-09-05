@@ -153,19 +153,20 @@ class BinanceRestGuardTest {
 
     @Test
     void stale_나이는_상류_응답_시점_기준으로_판정한다() throws Exception {
-        // 요청 시작 때 10ms 된 캐시가 상류 대기 60ms 뒤 429를 받으면 70ms 된 값 — 30ms 제한을 넘겼으니 빈 값(3차 리뷰 P1)
+        // 요청 시작 때 ~20ms 된 캐시(제한 200ms 안)가 상류 대기 300ms 뒤 429를 받으면 320ms 된 값 — 제한을 넘겼으니 빈 값(3차 리뷰 P1).
+        // 수정 전 코드는 요청 전 시각(20ms)으로 판정해 old를 돌려준다. 느린 환경에서도 20ms가 200ms를 넘지 않게 여유를 둔다(4차 리뷰 P2).
         BinanceRestGuard g = new BinanceRestGuard();
         g.get("k", 0, () -> Map.of("v", "old"), Map.of());
-        Thread.sleep(10);
-        Object v = g.get("k", 0, 30, () -> {
-            try { Thread.sleep(60); } catch (InterruptedException ignored) { /* test */ }
+        Thread.sleep(20);
+        Object v = g.get("k", 0, 200, () -> {
+            try { Thread.sleep(300); } catch (InterruptedException ignored) { /* test */ }
             throw status(429, "60");
         }, Map.of());
         assertEquals(Map.of(), v, "대기 전 시각으로 판정하면 old가 나온다");
         // null 응답도 같은 규칙
         BinanceRestGuard g2 = new BinanceRestGuard();
         g2.get("k", 0, () -> Map.of("v", "old"), Map.of());
-        Object v2 = g2.get("k", 0, 30, () -> { try { Thread.sleep(60); } catch (InterruptedException ignored) { /* test */ } return null; }, Map.of());
+        Object v2 = g2.get("k", 0, 200, () -> { try { Thread.sleep(300); } catch (InterruptedException ignored) { /* test */ } return null; }, Map.of());
         assertEquals(Map.of(), v2);
     }
 }

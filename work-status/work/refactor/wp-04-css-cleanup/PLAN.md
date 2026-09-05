@@ -12,7 +12,7 @@ acceptance:
   - "AC-001: 각 CSS 규칙은 그 클래스를 쓰는 컴포넌트 폴더(또는 앱 styles/)에 있고, 두 앱 파일에 같은 선택자가 중복 정의되지 않는다. [2026-09-05 정식 변경] 예외: 두 앱 셸(mobile.css·desktop.css)에 같은 선택자 90개 — Desktop이 Mobile 호가창 규칙을 다른 값으로 덮는 override(book-row·funding-rate-countdown·gauge-* 등 10개 계열)와 .up/.down 같은 양 앱 공용 규칙. 값 통일·이동은 디자인 판단이라 OQ-20260904-01로 넘긴다(리뷰 P2 #12)."
   - "AC-002: apps/web·labs 어디서도 참조하지 않는 클래스의 규칙이 0이다 (정적 grep + 동적 클래스명 수동 확인)."
   - "AC-003: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0이 유지된다."
-  - "AC-004: 각 Delivery 전후 주요 화면의 computed style 스냅샷이 같다 (cascade 순서 변화로 인한 스타일 변경 0). [2026-09-05 정식 변경] 검증 방법: 비로그인 화면의 computed style 대조에 더해 번들 최종 선언 검사(npm run check:css — 셸 선행·과거 P0 선택자의 최종값·media 조건)로 확인한다. d03에서 이 기준이 깨졌던 사실과 재검증은 Evidence 참조."
+  - "AC-004: CSS 분할이 cascade를 바꾸지 않는다. [2026-09-05 정식 변경] 검증은 (a) 각 Delivery 전후 비로그인 화면 computed style 대조와 (b) npm run check:css 4종(원본 순서·import 순서·번들 셸 선행·최종 선언·media)이며, 로그인 후 화면은 GATE-AC-002 육안 확인으로 본다. 원안 '주요 화면 computed style 스냅샷 동일'은 로그인 화면만 대조해 d03 회귀(리뷰 P0)를 놓쳤으므로 이 기준으로 대체한다(4차 리뷰 P2)."
   - "AC-005: 클래스 이름·마크업·로직은 바꾸지 않는다. 변경은 CSS 규칙의 위치·삭제와 CSS import 줄뿐이다."
 deliveries:
   - id: wp-04-d00-survey
@@ -128,7 +128,7 @@ milestones:
         revision: 0ac0d46
         observed_at: 2026-09-04
       - kind: command
-        locator: "[2026-09-05 정정] AC-004 'cascade 변화 0'은 사실이 아니었다: d03에서 main.tsx가 셸 CSS를 화면 컴포넌트 뒤에 import해 번들 순서가 뒤집혀 .coin-chart-page 테마·.show-current-label flex가 덮였다(리뷰 P0). 로그인 화면 스냅샷만 대조해 잡지 못함. PR #60에서 import 순서·media 규칙 이동으로 복원. 검사기 scripts/check-css-cascade-order.py(npm run check:css, CI 포함)는 원본 순서 대비 뒤집힘·진입점 import 순서·번들 내 셸 선행 3종을 검사한다(2차 리뷰 P2: 1차 검사기는 import 순서를 읽지 않아 같은 P0를 통과시켰음)"
+        locator: "[2026-09-05 정정] AC-004 'cascade 변화 0'은 사실이 아니었다: d03에서 main.tsx가 셸 CSS를 화면 컴포넌트 뒤에 import해 번들 순서가 뒤집혀 .coin-chart-page 테마·.show-current-label flex가 덮였다(리뷰 P0). 로그인 화면 스냅샷만 대조해 잡지 못함. PR #60에서 import 순서·media 규칙 이동으로 복원, 원본 대비 뒤집힘 검사 스크립트(초판, 셸↔컴포넌트 순서만) 0건. 검사기 확장·CI 연결은 04adac5·d0bd09c 항목"
         revision: 837d519
         observed_at: 2026-09-05
       - kind: command
@@ -136,8 +136,8 @@ milestones:
         revision: 04adac5
         observed_at: 2026-09-05
       - kind: command
-        locator: "check:css [4] 추가 — 번들 최종 선언(.coin-chart-page background·color가 전용 규칙, .show-current-label display=flex)과 .chart-tool-strip media 410px·860px 검사. 3차 리뷰가 통과시켰던 '공용 규칙을 CoinChartPage.css 끝으로 이동' 재배치는 [1] 같은 파일 순서·[4] 최종 선언에서 잡힌다. 로그인 후 주요 화면 육안 재확인은 CURRENT TODO"
-        revision: working-tree
+        locator: "check:css [4] 추가 — 번들 최종 선언(.coin-chart-page background·color가 전용 규칙, .show-current-label display=flex)과 .chart-tool-strip media 410px·860px 검사. 3차 리뷰가 통과시켰던 '공용 규칙을 CoinChartPage.css 끝으로 이동' 재배치는 [1] 같은 파일 순서·[4] 최종 선언에서 잡힌다. 4차 리뷰 뒤 media 조건을 방향·값 정확 비교(<=410px·>=860px)로, padding-bottom 기대값 추가. 로그인 후 주요 화면 육안 재확인은 CURRENT TODO"
+        revision: d0bd09c
         observed_at: 2026-09-05
       - kind: manual-check
         locator: "GATE-AC-002: 사용자가 로컬 기동에서 로그인 후 Mobile·Desktop 화면을 육안 확인(2026-09-04, d04 merge 전 상태)"

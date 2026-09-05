@@ -7,8 +7,8 @@
  2. 진입점(main.tsx) import 순서 — 셸 CSS import가 컴포넌트를 끌어오는 첫 import보다 앞에 있는지(`import type`은 제외).
     (2026-09-05 P0 원인: 셸 CSS가 컴포넌트 CSS 뒤에 번들돼 테마·flex 규칙이 덮였다.)
  3. 빌드 산출물(dist/, dist-desktop/)이 있으면 번들 CSS에서 셸 규칙이 모든 컴포넌트 CSS 파일보다 앞에 있는지.
- 4. 번들에서 과거 P0 선택자의 최종 선언이 기대값인지(.coin-chart-page 배경은 전용 규칙, .show-current-label은 flex),
-    .chart-tool-strip의 media 조건(410px·860px)이 남아 있는지 — 3차 리뷰 P2: 위치 비교만으로는 같은 파일 안 재배치·값 변경을 못 잡았다.
+ 4. 번들에서 과거 P0 선택자의 최종 선언이 기대값인지(.coin-chart-page 배경·색·하단 여백은 전용 규칙, .show-current-label은 flex),
+    .chart-tool-strip의 media 조건(<=410px·>=860px, 방향·값 정확 비교)이 남아 있는지 — 3차 리뷰 P2: 위치 비교만으로는 같은 파일 안 재배치·값 변경을 못 잡았다.
 
 실행: apps/web에서 `npm run check:css` (빌드 뒤에 돌리면 3·4번까지 검사). 문제가 있으면 exit 1.
 """
@@ -24,8 +24,10 @@ APPS = [
          orig='apps/web/src/app/mobile/styles/mobile.css', entry='src/app/mobile/main.tsx', dist='dist',
          # (선택자, 속성, 기대: 값 또는 'ONLY_SELECTOR'(그 선택자 단독 규칙이 최종이어야 함))
          final=[('.coin-chart-page', 'background', 'ONLY_SELECTOR'), ('.coin-chart-page', 'color', 'ONLY_SELECTOR'),
+                ('.coin-chart-page', 'padding-bottom', 'ONLY_SELECTOR'),
                 ('.show-current-label', 'display', 'flex')],
-         media=[('.chart-tool-strip', '410px'), ('.chart-tool-strip', '860px')]),
+         # (선택자, media 조건) — 조건은 '<=410px' 형태로 정규화해 정확히 비교한다(4차 리뷰 P2: 부분 문자열 비교는 1860px도 통과시켰다)
+         media=[('.chart-tool-strip', '<=410px'), ('.chart-tool-strip', '>=860px')]),
     dict(app='desktop', shell='src/app/desktop/styles/desktop.css', comp_glob='src/app/desktop/**/*.css',
          orig='apps/web/src/app/desktop/styles/desktop.css', entry='src/app/desktop/main.tsx', dist='dist-desktop',
          final=[], media=[]),
@@ -177,6 +179,19 @@ def check_bundle_order(cfg, bundle, shell_rules, comp_files):
     return problems
 
 
+def media_conditions(media):
+    """'@media (width<=410px)'·'@media (max-width: 410px)' → {'<=410px'}. 방향·경계값을 정확히 비교하기 위한 정규화."""
+    m = media.replace(' ', '')
+    out = set()
+    for mo in re.finditer(r'\(width([<>]=?)(\d+(?:\.\d+)?[a-z]+)\)', m):
+        out.add(mo.group(1) + mo.group(2))
+    for mo in re.finditer(r'\(min-width:(\d+(?:\.\d+)?[a-z]+)\)', m):
+        out.add('>=' + mo.group(1))
+    for mo in re.finditer(r'\(max-width:(\d+(?:\.\d+)?[a-z]+)\)', m):
+        out.add('<=' + mo.group(1))
+    return out
+
+
 def check_bundle_final(cfg, bundle):
     if not cfg['final'] and not cfg['media']:
         print('  [4] 번들 최종 선언: 검사 항목 없음')
@@ -197,7 +212,7 @@ def check_bundle_final(cfg, bundle):
         elif expect != 'ONLY_SELECTOR' and last[1] != expect:
             problems.append(f'FINAL {sel} {prop}: 최종값 {last[1]} (기대 {expect})')
     for sel, cond in cfg['media']:
-        if not any(media and cond in media and sel in simple(s) for media, s, b in rs):
+        if not any(media and cond in media_conditions(media) and sel in simple(s) for media, s, b in rs):
             problems.append(f'MEDIA {sel}: {cond} 조건의 규칙이 번들에 없다')
     print(f'  [4] 번들 최종 선언·media: {len(cfg["final"])}+{len(cfg["media"])}개 검사, 문제 {len(problems)}개')
     return problems
