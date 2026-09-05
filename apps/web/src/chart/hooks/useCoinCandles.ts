@@ -3,7 +3,6 @@ import { subscribeBinanceCandle, subscribeBinanceKline, subscribeCoinCandle } fr
 import { subscribeKrwCandle } from '../../api/exchange/krw/krwRealtime';
 import { subscribeBitgetKline } from '../../api/exchange/bitget/klineRealtime';
 import type { CandleMessage } from '../../api/server/coinRealtime';
-import { fetchHeaderTicker } from '../../api/exchange/headerTicker';
 import type { Candle } from '../../shared/types/market';
 
 type TimeframeOption = {
@@ -45,7 +44,7 @@ type Params = {
   active?: boolean; // 차트 화면이 떠 있을 때만 실시간 캔들 WS 구독
   clearOnSymbolChange?: boolean; // 종목/TF 변경 시 즉시 비울지(기본 true). false면 새 데이터 도착까지 이전 캔들 유지(깜빡임 방지)
   exchange?: 'BITGET' | 'BINANCE' | 'UPBIT' | 'BITHUMB'; // KRW는 업비트/빗썸 직결 WS로 현재가 구독(미지정 시 isBinance 기준)
-  priceFromTicker?: boolean; // 현재가를 캔들이 아닌 전용 티커(last)에서 받음(기본 false=차트 TF 종가, 모바일 보존)
+  // (wp-08 d03) priceFromTicker 옵션 제거 — 거래소 티커 기반 현재가는 hooks/market/useLivePrice가 담당한다. 이 훅의 livePrice는 '차트 TF 마지막 종가'(Mobile 차트 헤더용)만 뜻한다.
   liveCandle?: boolean; // Binance/Bitget=kline WS(현재 캔들 OHLCV 실시간), KRW=REST 폴링으로 거래량 갱신(기본 false=모바일 티커 경로)
 };
 
@@ -62,14 +61,13 @@ export function useCoinCandles({
   active = true,
   clearOnSymbolChange = true,
   exchange,
-  priceFromTicker = false,
   liveCandle = false,
 }: Params) {
   const [candles, setCandles] = useState<Candle[]>([]);
   const [livePrice, setLivePrice] = useState<number | null>(null);
   const [openPrice, setOpenPrice] = useState<number | null>(null);
   const [dailyOpenPrice, setDailyOpenPrice] = useState<number | null>(null);
-  // 실제 데이터(캔들+현재가+일봉시가) 로드가 끝난 심볼. 헤더가 "준비된 종목"만 표시하도록(스테이지드 스왑).
+  // 실제 데이터(캔들+일봉시가) 로드가 끝난 심볼. Mobile 차트 헤더가 "준비된 종목"만 표시하도록(스테이지드 스왑).
   const [loadedSymbol, setLoadedSymbol] = useState<string | null>(null);
   // 화면 candles 배열이 어느 심볼 것인지 — candlesKeyRef의 심볼 부분을 state로 미러(렌더 중 ref 접근 금지 규칙).
   // Desktop 차트 소수점·지표 스테이징이 쓴다 (wp-08 d02). candlesKeyRef를 설정하는 곳에서 함께 갱신.
@@ -103,12 +101,10 @@ export function useCoinCandles({
     prevSymbolKeyRef.current = symbolKey;
     async function loadChart() {
       try {
-        // 차트 캔들(선택 TF) + 일봉시가(등락용) + 현재가 전용 티커(last)를 한 번에 받는다.
-        // priceFromTicker=true면 현재가를 캔들이 아닌 거래소 티커(last)에서 seed → 차트 TF와 완전 무관.
-        const [nextCandles, dailyCandles, ticker] = await Promise.all([
+        // 차트 캔들(선택 TF) + 일봉시가(등락용)를 한 번에 받는다(원자적 커밋 — 등락 계산에 옛값/새값이 섞이지 않게).
+        const [nextCandles, dailyCandles] = await Promise.all([
           loadCandles(timeframe.granularity, initialLimit),
           loadCandles('1Dutc', 2),
-          priceFromTicker ? fetchHeaderTicker(exchange ?? (isBinance ? 'BINANCE' : 'BITGET'), symbol, isFutures) : Promise.resolve(null),
         ]);
         if (ignore) return;
         // 차트 캔들
@@ -121,10 +117,8 @@ export function useCoinCandles({
           setCandles(prev => prev.length ? prev : fallbackCandles);
         }
         if (dailyCandles.length > 0) setDailyOpenPrice(dailyCandles[dailyCandles.length - 1].open);
-        // 현재가: 전용 티커 last 우선, 없으면 차트 TF 마지막 종가 — 차트 TF가 비어도(미지원 TF) 현재가는 채워짐
-        const px = priceFromTicker && ticker?.last
-          ? ticker.last
-          : nextCandles.length ? nextCandles[nextCandles.length - 1].close : null;
+        // 현재가 = 차트 TF 마지막 종가(Mobile). 캔들이 비면(미지원 TF) 현재가도 갱신하지 않는다.
+        const px = nextCandles.length ? nextCandles[nextCandles.length - 1].close : null;
         if (px != null) {
           setLivePrice(px);
           loadedKeyRef.current = symbolKey; // 로드 완료 → 이후 WS 틱(=최신가) 반영 허용
@@ -141,7 +135,7 @@ export function useCoinCandles({
     if (cleared) loadChart();
     else timer = setTimeout(loadChart, 60);
     return () => { ignore = true; if (timer) clearTimeout(timer); };
-  }, [fallbackCandles, initialLimit, loadCandles, productType, symbol, timeframe.granularity, clearOnSymbolChange, priceFromTicker, exchange, isBinance, isFutures]);
+  }, [fallbackCandles, initialLimit, loadCandles, productType, symbol, timeframe.granularity, clearOnSymbolChange]);
 
   // (일봉시가 dailyOpenPrice는 loadChart에서 캔들과 원자적으로 함께 로드 — 등락 계산 옛값/새값 혼합 방지)
 
