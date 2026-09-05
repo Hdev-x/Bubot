@@ -139,14 +139,6 @@ export function useCoinCandles({
   useEffect(() => {
     const currentKey = marketKey;
     const intervalSec = INTERVAL_SECONDS[timeframe.granularity];
-    // 새 봉 사이에 봉이 통째로 빠졌으면(WS 단절·절전 복귀 등) REST 재조회로 메꾼다.
-    // 1.5배 여유: 월봉의 28~31일 편차 흡수 + 정상 롤오버(diff=1봉)는 통과.
-    const detectGap = (lastTime: number, newTime: number) => {
-      // setCandles 업데이터(순수해야 함) 안에서 불리므로 부수효과는 다음 틱으로 미룸
-      if (intervalSec && newTime - lastTime > intervalSec * 1.5) {
-        window.setTimeout(() => autoRefreshRef.current(), 0);
-      }
-    };
     const onTick = (ticker: Ticker) => {
       // 이 심볼/TF 로드가 끝나기 전(전환 직후)이나 잔존 WS 틱은 무시 — 옛 현재가가 새 종목 일봉시가와
       // 섞여 등락이 깜빡이거나 다른 종목 가격이 순간 보이는 것 방지.
