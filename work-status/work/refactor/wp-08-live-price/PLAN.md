@@ -3,7 +3,7 @@ schema: ai-workflow/work-package@1
 id: wp-08-live-price
 title: 현재가 구독 분리 — useCoinCandles의 티커 현재가를 useLivePrice로 (T-04f)
 workstream: refactor
-state: ready
+state: active
 updated: 2026-09-05
 depends_on: [wp-07-large-files]
 supersedes: []
@@ -19,12 +19,20 @@ deliveries:
   - id: wp-08-d01-hook
     title: "hooks/market/useLivePrice.ts 신설 + 단위 테스트 (호출부 변경 없음)"
     kind: git
-    state: planned
+    state: review
     repository: .
     depends_on: []
     branch: refactor/lp-d01-hook
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "새 파일 3개 — hooks/market/useLivePrice.ts(56, React 훅: seed fetchHeaderTicker → 거래소별 티커 WS, enabled·symbol 가드), livePriceState.ts(38, 순수 상태 전이: applySeed·applyTick·livePriceKey·readySymbolOf), livePriceState.test.ts(7 tests: seed 전 틱 무시, seed→틱, 스테이지드 스왑, 늦은 seed 폐기, last 없음·openUtc 0, 같은 값 동일 객체, 키 구분). 기존 파일 변경 0, 호출부 0(grep). React 없이 테스트하기 위해 상태 전이를 훅에서 분리"
+        revision: working-tree
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "tests 29(22+7) · tsc ok · lint 0(경고 250) · build 2종 · 번들 문자열 0 · check:css 0 · labs tsc"
+        revision: working-tree
+        observed_at: 2026-09-05
   - id: wp-08-d02-desktop
     title: "Desktop 전환 — DesktopApp이 useLivePrice로 현재가를 받고 캔들·호가·헤더에 넘김, loadedSymbol 재정의"
     kind: git
