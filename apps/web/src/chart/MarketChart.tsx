@@ -418,7 +418,7 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
   const { magnetRef, snapPriceRef } = useDrawingMagnet({ magnet, seriesRef, candlesRef, drawingManagerRef, previewDrawingRef, pendingAnchorsRef, selectedDrawingIdRef, setSelectedDrawingId });
 
   // ── RSI 캔들(하단 페인1) — useRsiPane (wp-07 d04) ──
-  const { ensureRsiSeries } = useRsiPane({ chartRef, candlesRef, candles, rsiSettings, showRsiCandles, toChartTime, rsiSeriesRef, rsiPriceLinesRef, rsiSettingsRef, showRsiCandlesRef, rsiLastCountRef, rsiLastTimeRef });
+  const { ensureRsiSeries, drawRsi } = useRsiPane({ chartRef, candlesRef, rsiSettings, showRsiCandles, toChartTime, rsiSeriesRef, rsiPriceLinesRef, rsiSettingsRef, showRsiCandlesRef, rsiLastCountRef, rsiLastTimeRef });
 
   // 모니터링 카드 focus 대상(시간 창). 인덱스가 아니라 "시간"을 저장하고 적용할 때마다
   // 현재 캔들에서 인덱스를 다시 계산한다 → 캔들 길이(loadMore/새로고침)가 바뀌어도 안 깨짐.
@@ -1255,6 +1255,13 @@ const MarketChart = forwardRef<MarketChartRef, Props>(function MarketChart({
     volLastCountRef.current = newCount;
     volLastTimeRef.current = lastTime;
   }, [candles, chartTheme]);
+
+  // RSI 캔들 데이터 — candles 변경마다 그림(시리즈 있을 때만). 실시간은 마지막 봉만 update.
+  // 차트 초기화·거래량 effect 뒤에 등록해야 첫 렌더에서도 그려진다(리뷰 P1 수정 — 훅으로 옮기며 순서가 앞당겨졌던 것을 원위치).
+  useEffect(() => {
+    if (!rsiSeriesRef.current) return;
+    drawRsi(candles);
+  }, [candles, drawRsi]);
 
   useAutoPatterns({
     candles,
