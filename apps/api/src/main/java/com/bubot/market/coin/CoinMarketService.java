@@ -130,25 +130,39 @@ public class CoinMarketService extends AbstractMarketService {
      * 1시간 굳지 않고, 빈 결과는 1분 뒤 다시 조회한다(3차 리뷰 P1: 부분 실패 결과를 3,600초 캐시하던 문제).
      */
     public Map<String, Integer> getPricePrecision() {
-        Map<String, Integer> result = new HashMap<>(precisionPart("price_precision_bitget", this::loadBitgetPrecision));
+        Map<String, Integer> result = new HashMap<>();
+        for (String productType : List.of("USDT-FUTURES", "USDC-FUTURES")) {
+            result.putAll(precisionPart("price_precision_bitget_" + productType, () -> loadBitgetPrecision(productType)));
+        }
         result.putAll(precisionPart("price_precision_binance", this::loadBinancePrecision));
         return result;
     }
 
+    /**
+     * 거래소·상품군 단위 캐시. 빈 결과(실패)는 마지막 성공값이 있으면 그것을 유지하고 60초 뒤 재조회, 성공은 1시간(4차 리뷰 P1).
+     * synchronized — 같은 키의 실패 요청이 prev를 읽은 뒤 성공 요청의 새 값을 옛 값으로 되돌리지 않게 갱신을 직렬화한다(5차 리뷰 P1).
+     * 조회 하나가 최대 5~10초라 동시 요청은 그만큼 기다릴 수 있지만 1시간에 한 번 있는 갱신이다.
+     */
     @SuppressWarnings("unchecked")
-    private Map<String, Integer> precisionPart(String cacheKey, java.util.function.Supplier<Map<String, Integer>> loader) {
+    private synchronized Map<String, Integer> precisionPart(String cacheKey, java.util.function.Supplier<Map<String, Integer>> loader) {
         if (isCacheValid(cacheKey)) {
             return (Map<String, Integer>) cache.get(cacheKey);
         }
         Map<String, Integer> part = loader.get();
-        putCache(cacheKey, part, part.isEmpty() ? PRECISION_RETRY_SECONDS : PRECISION_TTL_SECONDS);
+        if (part.isEmpty()) {
+            Object prev = cache.get(cacheKey); // 만료됐지만 남아 있는 마지막 성공값
+            if (prev instanceof Map<?, ?> m && !m.isEmpty()) part = (Map<String, Integer>) prev;
+            putCache(cacheKey, part, PRECISION_RETRY_SECONDS);
+            return part;
+        }
+        putCache(cacheKey, part, PRECISION_TTL_SECONDS);
         return part;
     }
 
-    /** Bitget futures contracts → pricePlace */
-    private Map<String, Integer> loadBitgetPrecision() {
+    /** Bitget futures contracts(productType 하나) → pricePlace */
+    private Map<String, Integer> loadBitgetPrecision(String productType) {
         Map<String, Integer> result = new HashMap<>();
-        for (String productType : List.of("USDT-FUTURES", "USDC-FUTURES")) {
+        {
             try {
                 Object data = bitgetMarketService.getClient().get()
                         .uri(uriBuilder -> uriBuilder

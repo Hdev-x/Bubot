@@ -18,7 +18,8 @@
 - 질문: OQ-20260905-01 Binance 티커에서 WS 스냅샷(@kline_1d 기준 현재가·변동)이 REST 24h 티커 값을 무조건 덮는다(`applyBinanceUtcSnapshots`). 24h 롤링 기준과 UTC 일봉 기준 중 어느 값을 화면 기준으로 삼을지 | 2차 리뷰(sol·astra 2026-09-05) 기존 설계 지적, `BinanceMarketService`
 - 질문: OQ-20260905-02 거래소 WS 4개가 구독 목록 REST·SUBSCRIBE 전송(부트스트랩) 완료 전에 `reconnect.success()`를 호출해 구독 0인 연결도 성공으로 남는다. 구독 완료 뒤 success로 바꾸고 실패 시 소켓을 끊을지 | 2차 리뷰 기존 설계 지적, `ReconnectPolicy` 사용처
 - 질문: OQ-20260905-03 Bitget 구독 목록 REST 3개(spot·USDT·USDC) 중 하나가 실패하면 전체 갱신을 건너뛰는데(예외 전파), 부분 실패 시 남은 목록으로 구독을 축소할지 이전 목록을 유지할지 | 2차 리뷰 기존 설계 지적, `CoinRealtimeWebSocketService.loadSubscriptionArguments`
-- 질문: OQ-20260905-04 kline 중계의 `refCounts`·`zeroSince`·`subscribed` 세 자료구조 전이가 비원자적이고 SUBSCRIBE 전송을 스케줄러 스레드에서 동기로 한다(5초 타임아웃으로 완화). 연결별 전송 큐로 직렬화할지 | 2차 리뷰 기존 설계 지적, `BinanceKlineRelayService.Conn`
+- 질문: OQ-20260905-04 kline 중계는 PR #64 `refLock`(상태 전이)·PR #65 연결별 전송 큐(refLock 안 enqueue → 단일 스레드 전송, onOpen에서 소켓 설치 + 재구독 snapshot)로 상태 순서 = 전송 순서를 맞췄다. 남은 질문: 전송 실패(5초 타임아웃)를 로그만 남기고 subscribed에 유지하는 것이 맞는지, 실패 시 소켓을 끊어 재구독시킬지 | 2차·4차·5차 리뷰, `BinanceKlineRelayService.Conn`
+- 질문: OQ-20260905-06 `WsConnect.Attempt`에서 소켓 기록 뒤 `delegate.onOpen`은 lock 밖이라, 포기 직전에 통과한 콜백이 `reconnect.success()`로 다음 재연결 예약 상태를 풀 수 있다(매우 좁은 경합, 소켓 자체는 abort됨). success를 소켓 설치 시점에 결속하는 설계 변경을 별도 WP로 할지 | 4차 리뷰 P1
 - 질문: OQ-20260905-05 소소한 기존 문제 묶음 — RSI를 켠 채 `MarketChart`가 in-place로 차트를 재생성하면 RSI 페인이 빌 수 있음(현재 호출부에서는 발동하지 않음), Bitget 텍스트 ping과 프레임 pong이 중복. 정리 시점 | 2차 리뷰 기존 설계 지적
 
 - 질문: OQ-20260904-01 `mobile.css`·`desktop.css` 셸에 같은 선택자 90개가 남아 있다. 대부분 Desktop이 Mobile 호가창(`TradeOrderbook`) 규칙을 다른 값으로 덮는 override(`book-row`·`funding-rate-countdown`·`gauge-*` 등 10개 계열)와 `.up/.down` 같은 양 앱 공용 규칙이다. Desktop override를 `WebApp.css`로 옮겨 명시할지, 값을 통일할지(디자인 판단) | `wp-04-css-cleanup` Milestone 잔여

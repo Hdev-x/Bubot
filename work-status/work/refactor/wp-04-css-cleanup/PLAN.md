@@ -12,7 +12,7 @@ acceptance:
   - "AC-001: 각 CSS 규칙은 그 클래스를 쓰는 컴포넌트 폴더(또는 앱 styles/)에 있고, 두 앱 파일에 같은 선택자가 중복 정의되지 않는다. [2026-09-05 정식 변경] 예외: 두 앱 셸(mobile.css·desktop.css)에 같은 선택자 90개 — Desktop이 Mobile 호가창 규칙을 다른 값으로 덮는 override(book-row·funding-rate-countdown·gauge-* 등 10개 계열)와 .up/.down 같은 양 앱 공용 규칙. 값 통일·이동은 디자인 판단이라 OQ-20260904-01로 넘긴다(리뷰 P2 #12)."
   - "AC-002: apps/web·labs 어디서도 참조하지 않는 클래스의 규칙이 0이다 (정적 grep + 동적 클래스명 수동 확인)."
   - "AC-003: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0이 유지된다."
-  - "AC-004: 각 Delivery 전후 주요 화면의 computed style 스냅샷이 같다 (cascade 순서 변화로 인한 스타일 변경 0). [2026-09-05 정식 변경] 검증 방법: 비로그인 화면의 computed style 대조에 더해 번들 최종 선언 검사(npm run check:css — 셸 선행·과거 P0 선택자의 최종값·media 조건)로 확인한다. d03에서 이 기준이 깨졌던 사실과 재검증은 Evidence 참조."
+  - "AC-004: CSS 분할이 cascade를 바꾸지 않는다. [2026-09-05 정식 변경] 검증은 (a) 각 Delivery 전후 비로그인 화면 computed style 대조와 (b) npm run check:css 4종(원본 순서·import 순서·번들 셸 선행·최종 선언·media)이며, 로그인 후 화면은 GATE-AC-002 육안 확인으로 본다. 원안 '주요 화면 computed style 스냅샷 동일'은 로그인 화면만 대조해 d03 회귀(리뷰 P0)를 놓쳤으므로 이 기준으로 대체한다(4차 리뷰 P2)."
   - "AC-005: 클래스 이름·마크업·로직은 바꾸지 않는다. 변경은 CSS 규칙의 위치·삭제와 CSS import 줄뿐이다."
 deliveries:
   - id: wp-04-d00-survey
@@ -119,7 +119,7 @@ milestones:
     state: passed
     depends_on: [wp-04-d04-desktop]
     acceptance:
-      - "GATE-AC-001: AC-001~AC-004 자동 검사 통과 (중복 선택자 0 — AC-001 예외 90개 제외, 미참조 클래스 0, Gate, computed style 대조)."
+      - "GATE-AC-001: AC-001~AC-004 자동 검사 통과 (중복 선택자 0 — AC-001 예외 90개 제외, 미참조 클래스 0, Gate, 비로그인 computed style 대조 + check:css 4종)."
       - "GATE-AC-002: 사용자가 로컬 기동에서 로그인 후 Mobile·Desktop 핵심 화면(마켓·차트·거래·자산, Desktop 사이드바·패널)을 육안 확인."
     unlocks: []
     evidence:
@@ -128,7 +128,7 @@ milestones:
         revision: 0ac0d46
         observed_at: 2026-09-04
       - kind: command
-        locator: "[2026-09-05 정정] AC-004 'cascade 변화 0'은 사실이 아니었다: d03에서 main.tsx가 셸 CSS를 화면 컴포넌트 뒤에 import해 번들 순서가 뒤집혀 .coin-chart-page 테마·.show-current-label flex가 덮였다(리뷰 P0). 로그인 화면 스냅샷만 대조해 잡지 못함. PR #60에서 import 순서·media 규칙 이동으로 복원. 검사기 scripts/check-css-cascade-order.py(npm run check:css, CI 포함)는 원본 순서 대비 뒤집힘·진입점 import 순서·번들 내 셸 선행 3종을 검사한다(2차 리뷰 P2: 1차 검사기는 import 순서를 읽지 않아 같은 P0를 통과시켰음)"
+        locator: "[2026-09-05 정정] AC-004 'cascade 변화 0'은 사실이 아니었다: d03에서 main.tsx가 셸 CSS를 화면 컴포넌트 뒤에 import해 번들 순서가 뒤집혀 .coin-chart-page 테마·.show-current-label flex가 덮였다(리뷰 P0). 로그인 화면 스냅샷만 대조해 잡지 못함. PR #60에서 import 순서·media 규칙 이동으로 복원, 원본 대비 뒤집힘 검사 스크립트(초판, 셸↔컴포넌트 순서만) 0건. 검사기 확장·CI 연결은 04adac5·d0bd09c 항목"
         revision: 837d519
         observed_at: 2026-09-05
       - kind: command
@@ -136,7 +136,11 @@ milestones:
         revision: 04adac5
         observed_at: 2026-09-05
       - kind: command
-        locator: "check:css [4] 추가 — 번들 최종 선언(.coin-chart-page background·color가 전용 규칙, .show-current-label display=flex)과 .chart-tool-strip media 410px·860px 검사. 3차 리뷰가 통과시켰던 '공용 규칙을 CoinChartPage.css 끝으로 이동' 재배치는 [1] 같은 파일 순서·[4] 최종 선언에서 잡힌다. 로그인 후 주요 화면 육안 재확인은 CURRENT TODO"
+        locator: "check:css [4] 추가 — 번들 최종 선언(.coin-chart-page background·color가 전용 규칙, .show-current-label display=flex)과 .chart-tool-strip media 410px·860px 검사. 3차 리뷰가 통과시켰던 '공용 규칙을 CoinChartPage.css 끝으로 이동' 재배치는 [1] 같은 파일 순서·[4] 최종 선언에서 잡힌다"
+        revision: d0bd09c
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "check:css [4] 보강(PR #65): media 조건을 방향·값 정확 비교(<=410px·>=860px)로, .coin-chart-page background·color·padding-bottom 최종값을 CoinChartPage.css 단독 규칙 값과 비교(minify 정규화). 1860px·방향 반전·padding-bottom:0 변형 번들이 각각 실패하는 것 확인. 로그인 후 주요 화면 육안 재확인은 아직 미실행(CURRENT TODO) — GATE-AC-002 Evidence(2026-09-04)는 회귀가 있던 상태의 확인이라 현재 수정 결과의 근거가 아님"
         revision: working-tree
         observed_at: 2026-09-05
       - kind: manual-check
@@ -167,7 +171,7 @@ extensions: {}
 - 사용자와 Delivery 단위로 진행한다. 각 Delivery 시작 전에 대상 구역·옮길 곳·삭제 목록·검증을 설명하고 승인받는다. 삭제 목록은 사용자가 훑어볼 수 있게 클래스 이름과 줄 수로 제시한다.
 - 한 PR에 한 Delivery. diff는 CSS 규칙 블록의 이동·삭제와 `.tsx`의 `import './X.css'` 줄뿐임을 확인한다.
 - 미사용 판정 규칙: (1) `apps/web/src`·`labs/trading/web/src`에서 클래스 문자열이 한 번도 안 나오고, (2) 템플릿 문자열·접두어 조합(`` `asset-${kind}` `` 같은 동적 클래스)으로 만들어지지 않는지 접두어 grep으로 확인한 것만 미사용으로 본다. 확실치 않으면 남긴다.
-- cascade 주의: 한 파일이 여러 파일로 갈라지면 같은 특이도의 규칙 적용 순서가 import 순서로 바뀐다. 그래서 각 Delivery는 분할 전후에 주요 화면의 computed style 스냅샷(대표 요소의 `getComputedStyle` 값)을 저장해 대조한다(AC-004). 스냅샷은 Git 밖 임시 경로에 둔다.
+- cascade 주의: 한 파일이 여러 파일로 갈라지면 같은 특이도의 규칙 적용 순서가 import 순서로 바뀐다. 그래서 각 Delivery는 분할 전후 비로그인 화면의 computed style 대조와 `npm run check:css` 4종(원본 순서·import 순서·번들 셸 선행·최종 선언)으로 확인하고, 로그인 후 화면은 GATE-AC-002 육안 확인으로 본다(AC-004, 2026-09-05 정식 변경 — 원안의 '주요 화면 스냅샷 저장·대조'는 로그인 화면만 대조해 d03 회귀를 놓쳤다).
 - Gate: `npm test`(22) · `npm run build` · `npm run build:web` · `npm run lint`(error 0) · 번들 grep(`/api/paper|/api/admin|/api/bot|backtest-runs|trade-configs` 0) · 규칙 수 대조(분할 후 합계 = 분할 전 − 삭제분) · computed style 대조.
 
 ## Delivery Notes

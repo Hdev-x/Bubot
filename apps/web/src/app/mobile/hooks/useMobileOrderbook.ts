@@ -100,6 +100,7 @@ export function useMobileOrderbook({ symbol, active, isTradeView, isFuturesMarke
     askRows: typeof askRows; bidRows: typeof bidRows;
     maxLevelSize: number; obDecimals: number; buyPct: number;
   } | null>(null);
+  if (orderbook === null) obSnapRef.current = null; // 원시 호가가 비워지면(빈 응답 3회) 표시 스냅샷도 비움 — 전환은 clearOnChange=false라 null이 아님(4차 리뷰 P1)
   if (obCurrent && (askRows.length > 0 || bidRows.length > 0)) {
     obSnapRef.current = { askRows, bidRows, maxLevelSize, obDecimals, buyPct };
   }

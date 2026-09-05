@@ -114,7 +114,7 @@ extensions: {}
 
 | 파일 | 현재 | 목표 | 구성 |
 |---|---|---|---|
-| `app/desktop/panels/DrawingToolbar.tsx` | 641 | 3파일 각 ≤ 350 | 색 유틸·`ColorPicker`·`ColorSwatch`·`LinePreview`(6~134) / `DrawingFloatBar`(149~276) / `DrawingSettings`(294~641) |
+| `app/desktop/panels/DrawingToolbar.tsx` | 641 | 3파일 각 ≤ 400 (2026-09-05 정식 변경: 원안 350, `DrawingSettings` 373줄 — AC-001의 400 기준과 통일, 4차 리뷰 P2) | 색 유틸·`ColorPicker`·`ColorSwatch`·`LinePreview`(6~134) / `DrawingFloatBar`(149~276) / `DrawingSettings`(294~641) |
 | `chart/hooks/useAutoPatterns.ts` | 990 | ≤ 700 | 순수 헬퍼 함수 8개(37~330, 하모닉 색·키·라벨·TP/SL·도형 조립) + 650줄 effect 하나(332~990) |
 | `app/mobile/pages/OrderPage.tsx` | 911 | ≤ 450 | 로직 88~364(호가 폴링 255~364 포함), JSX: 탭바(367~395)·심볼 헤더·2열 그리드·포지션 패널(482~694)·거래내역 드로어(696~852)·시트 4개 |
 | `chart/MarketChart.tsx` | 1,585 | ≤ 1,350 (초기화 401·데이터 208 effect 유지 시 하한, 2026-09-05 갱신) | effect 30개. 차트 초기화 401줄(677~1077)·데이터 반영 208줄(1154~1361)은 유지. RSI 페인(445~546·1409~1412), 신뢰도 랭킹 선(75~90·1507~1586), 자석·키보드(418~441·654~674), 값 오버레이(1439~1505)를 훅으로 |
