@@ -30,6 +30,14 @@
 - [x] T-04f `useCoinCandles`에서 티커 현재가 구독을 `useLivePrice`로 분리 — Desktop 훅의 캔들→호가 의존을 "현재가→셋" 방향으로 정리(A안: 현재가 소스를 전용 훅으로 교체, 2026-09-05) | `plan:refactor/wp-08-live-price`
 - [x] T-04e `web→desktop` 이름 통일(파일·식별자·빌드 이름; URL `/web`은 T-05에서) | `plan:refactor/wp-05-desktop-naming`
 
+## 안정화 Track
+
+리팩터링 전체 최종 리뷰(2026-09-05, `docs/architecture/REFACTOR-BRIEFING-2026-09.md` 5절)가 남긴 P1을 닫는다. 순서는 사용자 결정(C → A → B).
+
+- [x] T-07 C 죽은 API·중복 유틸·MiniCandles 정리, PWA 아이콘 — PR #75(Fast Path)
+- [ ] T-08 A 데이터 식별자·준비 판정 통일 — 캔들·현재가를 거래소|현선물|심볼|TF 키로, seed 재시도, 일봉 롤오버 | `plan:refactor/wp-09-market-key`
+- [ ] T-09 B API 서비스 경계 보강 — WS 스냅샷 신선도, 부분 구독 실패 복구, KRW 캔들 입력 검증·캐시 상한, Bitget 응답 검증, precision stale·timeout | `doc:docs/architecture/REFACTOR-BRIEFING-2026-09.md`
+
 ## Beta Track
 
 - [ ] T-05 배포 대상을 정하고 `bootJar`로 전환한다 | `doc:work-status/OPEN-QUESTIONS.md`
