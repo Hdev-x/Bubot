@@ -23,14 +23,15 @@
 - 현재가 구독 분리 완료(2026-09-05, `wp-08-live-price`, PR #68~#70): Desktop 현재가는 `useLivePrice`(티커 REST seed + 티커 WS, 등락 기준은 캔들 1Dutc 시가 — Binance 티커 openPrice는 24h 롤링이라 사용자 결정으로 제외), 조립 순서 현재가 → 캔들 → 호가 → 헤더. `useCoinCandles`는 캔들 전용. `DesktopApp.tsx` 451→461줄.
 - 정리 Track(T-04a~i) 종료(2026-09-05). 남은 정리 후보는 OPEN-QUESTIONS(OQ-11 lint, OQ-20260904-01 셸 CSS 중복, OQ-20260905-01~06 서버 설계)에만 있다.
 - 리팩터링 전체 최종 리뷰(gpt-6-astra 3명, 2026-09-05)와 브리핑 `docs/architecture/REFACTOR-BRIEFING-2026-09.md` 완료. 최종 리뷰의 P0 0, 새 P1은 프론트 4(데이터 식별자·준비 판정·seed 재시도·일봉 롤오버)·API 8(스냅샷 신선도·부분 구독 실패·KRW 캐시 키·Bitget 오류 응답 등) — 브리핑 5절, 다음 WP 후보.
-- 프로젝트가 지금 달성하려는 결과: 배포(T-05)는 나중 문제로 보류(사용자, 2026-09-05). 다음 WP는 사용자 결정 대기 — 후보는 브리핑 6절(최종 리뷰 P1 정리, dead API 제거, 공용 UI·CSS 소유 정리) 또는 OQ-11 lint 경고 축소. 후보는 T-04f `useLivePrice` 분리, OQ-11 lint 경고 축소, OQ-04 Beta 배포.
+- 다음 작업 순서(사용자 결정 2026-09-05): C 죽은 API·중복 유틸 정리(Fast Path) → A 데이터 식별자·준비 판정 통일(최종 리뷰 프론트 P1 4건, PLAN) → B API 서비스 경계 보강(API P1 8건, PLAN). D 공용 UI·CSS 소유 정리·E lint 경고는 뒤로. 배포(T-05)는 보류.
+- C 진행 중(Fast Path, 2026-09-05): 미참조 API 함수 6개·주식 잔여 타입 4개 삭제, fmtAsset·fmtPrice를 shared/utils/coinFormatters로 통합(7곳), Desktop MiniCandles 복사본을 chart/settings export로, PWA manifest·SW 아이콘을 실제 파일(botz-icon-512·apple-touch-icon)로. 후보는 T-04f `useLivePrice` 분리, OQ-11 lint 경고 축소, OQ-04 Beta 배포.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. 다음 WP 결정 — 브리핑 6절 후보(데이터 식별자·준비 판정 통일, dead API 제거, 최종 리뷰 P1 등록) 또는 T-05 준비
-2. 최종 리뷰 P2 문서 정정(wp-04 육안 Gate 재확인 기록, wp-08 AC-003·설계 본문 동기화, CURRENT·OQ 낡은 포인터, README 포트)
+1. C Fast Path PR 사용자 확인 후 merge
+2. A `wp-09` PLAN 작성(캔들·현재가 식별자를 거래소|현선물|심볼|TF로, 준비 판정·seed 재시도·일봉 롤오버, 경계 테스트)
 
 ## Deferred
 

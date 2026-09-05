@@ -1,13 +1,7 @@
 import type { MainPosition } from '../../../api/server/mainTradeApi';
 
 // 자산 표기 — 1 미만 4자리, 그 외 1자리 (모바일 fmtAsset 동일)
-export function fmtAsset(n: number): string {
-  if (!Number.isFinite(n)) return '—';
-  return n.toLocaleString(undefined, {
-    minimumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-    maximumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-  });
-}
+export { fmtAsset } from '../../../shared/utils/coinFormatters'; // 공용으로 통합(2026-09-05)
 // base 심볼 → 로고 클래스(색) 대략 매핑
 export function logoClass(base: string): string {
   if (base === 'BTC') return 'btc';

@@ -2,7 +2,6 @@
 // 비트겟 merge-depth처럼 브라우저에서 거래소 공개 API를 바로 친다.
 // 백엔드 트레이딩 API는 사용자가 키를 줄 때 연결(M-EX6 이후).
 import type { CoinTicker, Candle } from '../../../shared/types/market';
-import type { OrderbookSnapshot } from '../bitget/bitgetMergeDepth';
 import { getToken } from '../../client';
 
 // 마켓 리스트 티커는 백엔드 캐시 집약 엔드포인트에서 받는다(브라우저 직접 폴링 제거 → 멀티유저 429 방지).
@@ -19,18 +18,6 @@ function krwRowToTicker(r: KrwRow): CoinTicker {
     last: r.last, change: r.change, changeRate: r.changeRate, volume: r.volume,
     tickDecimals: krwDecimals(r.last),
   } as CoinTicker;
-}
-
-const UPBIT_BASE = 'https://api.upbit.com/v1';
-
-// 업비트 공개 API는 group별 초당 레이트리밋이 있어, 여러 호출이 몰리면(차트+호가+마켓+헤더) 간헐 429가 난다.
-// 429면 백오프 후 재시도해 마켓 목록이 비어버리는(빈 화면) 것을 방지.
-async function upbitFetch(url: string, retries = 2): Promise<Response> {
-  for (let attempt = 0; ; attempt++) {
-    const res = await fetch(url);
-    if (res.status !== 429 || attempt >= retries) return res;
-    await new Promise((r) => setTimeout(r, 350 * (attempt + 1))); // 350ms, 700ms
-  }
 }
 
 // KRW 가격 표시 소수 자릿수 — 큰 가격은 0자리, 소액 코인만 소수 유지. (마켓 리스트·차트축·호가 공용)
@@ -90,40 +77,4 @@ export async function fetchBithumbCandles(symbol: string, granularity: string, l
     const rows = (await res.json()) as Candle[];
     return Array.isArray(rows) ? rows : [];
   } catch { return []; }
-}
-
-// ───────────────── 업비트/빗썸 호가 ─────────────────
-export async function fetchUpbitOrderbook(symbol: string): Promise<OrderbookSnapshot | null> {
-  const base = symbol.replace(/KRW$/, '');
-  try {
-    const res = await upbitFetch(`${UPBIT_BASE}/orderbook?markets=KRW-${base}`);
-    if (!res.ok) return null;
-    const arr = (await res.json()) as any[];
-    const d = arr?.[0];
-    if (!d?.orderbook_units) return null;
-    const units = d.orderbook_units as any[];
-    return {
-      asks: units.map((u) => ({ price: Number(u.ask_price), size: Number(u.ask_size) })),
-      bids: units.map((u) => ({ price: Number(u.bid_price), size: Number(u.bid_size) })),
-      ts: Number(d.timestamp) || Date.now(),
-      scale: '',
-    };
-  } catch { return null; }
-}
-
-export async function fetchBithumbOrderbook(symbol: string): Promise<OrderbookSnapshot | null> {
-  const base = symbol.replace(/KRW$/, '');
-  try {
-    const res = await fetch(`https://api.bithumb.com/public/orderbook/${base}_KRW`);
-    if (!res.ok) return null;
-    const json = (await res.json()) as { status: string; data: any };
-    if (json.status !== '0000' || !json.data) return null;
-    const d = json.data;
-    return {
-      asks: (d.asks as any[]).map((a) => ({ price: Number(a.price), size: Number(a.quantity) })).sort((x, y) => x.price - y.price),
-      bids: (d.bids as any[]).map((b) => ({ price: Number(b.price), size: Number(b.quantity) })).sort((x, y) => y.price - x.price),
-      ts: Number(d.timestamp) || Date.now(),
-      scale: '',
-    };
-  } catch { return null; }
 }

@@ -28,11 +28,8 @@ export default defineConfig({
         background_color: '#1a1a1a',
         display: 'standalone',
         icons: [
-          {
-            src: 'favicon.ico',
-            sizes: '64x64 32x32 24x24 16x16',
-            type: 'image/x-icon'
-          }
+          { src: 'botz-icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          { src: 'apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
         ]
       }
     })

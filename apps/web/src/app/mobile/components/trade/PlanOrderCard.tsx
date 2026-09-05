@@ -1,12 +1,8 @@
 // 플랜(TP/SL 트리거) 미체결 주문 카드 — Bitget 미체결 디자인 정합.
 import type { MainPlanOrder } from '../../../../api/server/mainTradeApi';
+import { fmtPrice } from '../../../../shared/utils/coinFormatters';
 import './trade.css';
 
-function fmtPrice(n: number): string {
-  if (!Number.isFinite(n)) return '—';
-  const dec = n >= 100 ? 2 : n >= 1 ? 4 : 6;
-  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: dec });
-}
 
 function fmtTime(ms: number): string {
   if (!ms) return '';

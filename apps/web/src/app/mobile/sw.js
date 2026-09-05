@@ -11,8 +11,8 @@ self.addEventListener('push', function(event) {
       const title = data.title || 'Bullum 알림';
       const options = {
         body: data.body || '새로운 신호가 포착되었습니다.',
-        icon: '/mobile/favicon.ico',
-        badge: '/mobile/favicon.ico',
+        icon: '/mobile/botz-icon-512.png',
+        badge: '/mobile/botz-icon-512.png',
         vibrate: [200, 100, 200],
         data: {
           url: '/mobile/' // 클릭 시 이동할 URL
@@ -26,7 +26,7 @@ self.addEventListener('push', function(event) {
       event.waitUntil(
         self.registration.showNotification('Bullum', {
           body: event.data.text(),
-          icon: '/mobile/favicon.ico',
+          icon: '/mobile/botz-icon-512.png',
           data: { url: '/mobile/' }
         })
       );

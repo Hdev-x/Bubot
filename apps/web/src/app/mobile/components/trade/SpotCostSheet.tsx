@@ -1,15 +1,11 @@
 // 현물 매수평균가 직접 입력 바텀시트 — 거래소에서 원가를 못 받아온 자산의 평단을 사용자가 입력.
 // 하단에서 올라오는 시트(.ob-depth-overlay/sheet 애니메이션 재사용). 저장/삭제 시 onSaved로 목록 갱신.
 import { useState } from 'react';
+import { fmtPrice } from '../../../../shared/utils/coinFormatters';
 import type { SpotHolding } from '../../../../api/server/spotTradeApi';
 import { saveSpotManualCost, deleteSpotManualCost } from '../../../../api/server/spotTradeApi';
 import './trade.css';
 
-function fmtPrice(n: number): string {
-  if (!Number.isFinite(n) || n <= 0) return '—';
-  const dec = n >= 100 ? 2 : n >= 1 ? 4 : 6;
-  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: dec });
-}
 
 export default function SpotCostSheet({
   holding: h,
@@ -62,7 +58,7 @@ export default function SpotCostSheet({
             거래소에서 원가를 못 받아온 자산이에요. 매수평균가를 입력하면 손익·수익률이 계산돼요.
             {price > 0 && (
               <>
-                {' '}현재가 <b>{fmtPrice(price)}</b>
+                {' '}현재가 <b>{(price > 0 ? fmtPrice(price) : '—')}</b>
               </>
             )}
           </p>
@@ -73,7 +69,7 @@ export default function SpotCostSheet({
               inputMode="decimal"
               autoFocus
               value={draft}
-              placeholder={fmtPrice(price)}
+              placeholder={(price > 0 ? fmtPrice(price) : '—')}
               disabled={busy}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => {

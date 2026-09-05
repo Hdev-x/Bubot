@@ -1,16 +1,10 @@
 import type { ReactNode } from 'react';
+import { fmtAsset } from '../../../shared/utils/coinFormatters';
 import { useCurrency, currencyLabel } from '../../../shared/contexts/CurrencyContext';
 import { useUsdKrw } from '../../../hooks/market/useUsdKrw';
 import './components.css';
 
 // 자산 표기 규칙(거래탭 총자산과 동일): 1 미만 4자리, 그 외 1자리
-function fmtAsset(n: number): string {
-  if (!Number.isFinite(n)) return '—';
-  return n.toLocaleString(undefined, {
-    minimumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-    maximumFractionDigits: n > 0 && n < 1 ? 4 : 1,
-  });
-}
 
 // 거래탭 총자산(.tas-hero) 디자인을 마켓·자산에서 공유하는 컴포넌트(사이즈업 + 눈 아이콘).
 // 라벨+눈 / 큰 숫자+통화토글(⇄) / 근사치. 데이터 도착 전(ready=false)엔 스켈레톤.

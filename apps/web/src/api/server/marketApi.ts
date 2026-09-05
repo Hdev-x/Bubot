@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { AxiosHeaders } from 'axios';
-import type { Candle, ChartRange, CoinTicker, StockChartResponse, StockSummary, TickerResponse } from '../../shared/types/market';
+import type { Candle, CoinTicker } from '../../shared/types/market';
 import { getToken } from '../client';
 
 const api = axios.create({
@@ -19,39 +19,6 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
-
-export async function fetchStockChart(code: string, range: ChartRange): Promise<StockChartResponse> {
-  const response = await api.get<StockChartResponse>('/stock/chart', {
-    params: { code, range }
-  });
-  return response.data;
-}
-
-export async function fetchTicker(code: string): Promise<TickerResponse> {
-  const response = await api.get<TickerResponse>('/stock/ticker', {
-    params: { code }
-  });
-  return response.data;
-}
-
-export async function fetchStockList(): Promise<StockSummary[]> {
-  const response = await api.get<unknown>('/stock/db-list');
-  const data = response.data;
-
-  if (Array.isArray(data)) {
-    return data as StockSummary[];
-  }
-
-  if (data && typeof data === 'object') {
-    const values = Object.values(data);
-    const firstArray = values.find(Array.isArray);
-    if (Array.isArray(firstArray)) {
-      return firstArray as StockSummary[];
-    }
-  }
-
-  return [];
-}
 
 function toNumber(value: unknown) {
   if (typeof value === 'number') {
@@ -337,44 +304,6 @@ export async function fetchBinanceCandles(
     console.error('fetchBinanceCandles failed:', error);
     return [];
   }
-}
-
-// 과거 전체 캔들 페이지네이션 fetch (상장 시점까지)
-export async function fetchAllCoinCandles(
-  symbol: string,
-  granularity: string,
-  productType?: string,
-  maxPages = 50,
-  onProgress?: (count: number) => void,
-): Promise<Candle[]> {
-  const PER_PAGE = 200;
-  let allCandles: Candle[] = [];
-  let endTime: string | undefined;
-
-  for (let page = 0; page < maxPages; page++) {
-    const batch = await fetchCoinCandles(symbol, granularity, PER_PAGE, endTime, productType);
-    if (!batch.length) break;
-
-    allCandles = [...batch, ...allCandles];
-    onProgress?.(allCandles.length);
-
-    // 가장 오래된 캔들 바로 앞 시점으로 endTime 설정
-    const oldest = batch[0];
-    endTime = String(Number(oldest.time) * 1000 - 1);
-
-    await new Promise(r => setTimeout(r, 150)); // rate limit 방지
-  }
-
-  // 중복 제거 + 정렬
-  const seen = new Set<number>();
-  return allCandles
-    .filter(c => {
-      const t = Number(c.time);
-      if (seen.has(t)) return false;
-      seen.add(t);
-      return true;
-    })
-    .sort((a, b) => Number(a.time) - Number(b.time));
 }
 
 export async function fetchCoinCandles(symbol: string, granularity = '1min', limit = 120, endTime?: string, productType?: string): Promise<Candle[]> {

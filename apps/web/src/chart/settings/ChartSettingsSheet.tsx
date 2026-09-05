@@ -49,7 +49,7 @@ export function getThemeCssVars(theme: ChartTheme): React.CSSProperties {
   } as React.CSSProperties;
 }
 
-function MiniCandles({ upColor, downColor, bgColor }: Pick<ChartTheme, 'upColor' | 'downColor' | 'bgColor'>) {
+export function MiniCandles({ upColor, downColor, bgColor }: Pick<ChartTheme, 'upColor' | 'downColor' | 'bgColor'>) {
   const candles = [
     { bull: true,  y: 3,  h: 14 },
     { bull: false, y: 5,  h: 12 },
