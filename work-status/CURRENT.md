@@ -1,6 +1,6 @@
 # 현재 상태
 
-- 마지막 갱신: 2026-09-05 (정리 Track 종료)
+- 마지막 갱신: 2026-09-05 (wp-09 PLAN 작성)
 
 > 이 문서는 다음 세션을 위한 상태판이다. 이력을 쌓지 않고 덮어쓴다.
 > Branch·Commit·작업 트리는 Git에서, 완료 작업의 상세·증거는 PLAN과 Git History에서 확인한다.
@@ -24,14 +24,14 @@
 - 정리 Track(T-04a~i) 종료(2026-09-05). 남은 정리 후보는 OPEN-QUESTIONS(OQ-11 lint, OQ-20260904-01 셸 CSS 중복, OQ-20260905-01~06 서버 설계)에만 있다.
 - 리팩터링 전체 최종 리뷰(gpt-6-astra 3명, 2026-09-05)와 브리핑 `docs/architecture/REFACTOR-BRIEFING-2026-09.md` 완료. 최종 리뷰의 P0 0, 새 P1은 프론트 4(데이터 식별자·준비 판정·seed 재시도·일봉 롤오버)·API 8(스냅샷 신선도·부분 구독 실패·KRW 캐시 키·Bitget 오류 응답 등) — 브리핑 5절, 다음 WP 후보.
 - 다음 작업 순서(사용자 결정 2026-09-05): C 죽은 API·중복 유틸 정리(Fast Path) → A 데이터 식별자·준비 판정 통일(최종 리뷰 프론트 P1 4건, PLAN) → B API 서비스 경계 보강(API P1 8건, PLAN). D 공용 UI·CSS 소유 정리·E lint 경고는 뒤로. 배포(T-05)는 보류.
-- C 진행 중(Fast Path, 2026-09-05): 미참조 API 함수 6개·주식 잔여 타입 4개 삭제, fmtAsset·fmtPrice를 shared/utils/coinFormatters로 통합(7곳), Desktop MiniCandles 복사본을 chart/settings export로, PWA manifest·SW 아이콘을 실제 파일(botz-icon-512·apple-touch-icon)로. 후보는 T-04f `useLivePrice` 분리, OQ-11 lint 경고 축소, OQ-04 Beta 배포.
+- C 완료(Fast Path, PR #75, 2026-09-05): 미참조 API 함수 6개·주식 잔여 타입 4개 삭제, fmtAsset·fmtPrice를 shared/utils/coinFormatters로 통합(7곳), Desktop MiniCandles 복사본을 chart/settings export로, PWA manifest·SW 아이콘을 실제 파일(botz-icon-512·apple-touch-icon)로. 후보는 T-04f `useLivePrice` 분리, OQ-11 lint 경고 축소, OQ-04 Beta 배포.
 
 ## TODO
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. C Fast Path PR 사용자 확인 후 merge
-2. A `wp-09` PLAN 작성(캔들·현재가 식별자를 거래소|현선물|심볼|TF로, 준비 판정·seed 재시도·일봉 롤오버, 경계 테스트)
+1. wp-09 d01 시작 전 '받을 것·돌려줄 것' 표 확정 → marketKey·candleState 신설, useCoinCandles 키 통일
+2. wp-09 d02 useLivePrice ready·seed 재시도·일봉 롤오버
 
 ## Deferred
 
@@ -42,7 +42,7 @@
 
 ## 활성 Work Package
 
-- 없음.
+- [refactor/wp-09-market-key](work/refactor/wp-09-market-key/PLAN.md) — ready, d01 대기
 
 ## 완료된 Work Package (링크만)
 
