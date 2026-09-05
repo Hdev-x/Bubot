@@ -141,7 +141,7 @@ milestones:
         observed_at: 2026-09-05
       - kind: command
         locator: "check:css [4] 보강(PR #65): media 조건을 방향·값 정확 비교(<=410px·>=860px)로, .coin-chart-page background·color·padding-bottom 최종값을 CoinChartPage.css 단독 규칙 값과 비교(minify 정규화). 1860px·방향 반전·padding-bottom:0 변형 번들이 각각 실패하는 것 확인. 로그인 후 주요 화면 육안 재확인은 아직 미실행(CURRENT TODO) — GATE-AC-002 Evidence(2026-09-04)는 회귀가 있던 상태의 확인이라 현재 수정 결과의 근거가 아님"
-        revision: working-tree
+        revision: 86d366b
         observed_at: 2026-09-05
       - kind: manual-check
         locator: "GATE-AC-002: 사용자가 로컬 기동에서 로그인 후 Mobile·Desktop 화면을 육안 확인(2026-09-04, d04 merge 전 상태)"

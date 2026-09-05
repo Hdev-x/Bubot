@@ -162,7 +162,7 @@ milestones:
         observed_at: 2026-09-05
       - kind: document
         locator: "2026-09-03 당시에는 사용자가 육안 확인 후 merge를 승인했을 뿐 스크린샷 대체를 명시한 결정은 없었음을 AC-004·진행 방식에 명시(4차 리뷰 P2, PR #65)"
-        revision: working-tree
+        revision: 86d366b
         observed_at: 2026-09-05
 extensions: {}
 ---
