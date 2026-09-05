@@ -20,6 +20,24 @@ export function canApplyCandle(loadedKey: string, candlesKey: string, currentKey
   return loadedKey === currentKey && candlesKey === currentKey;
 }
 
+export type BarAction = 'update' | 'append' | 'refresh' | 'ignore';
+
+/**
+ * WS로 들어온 봉(또는 틱의 버킷)을 마지막 봉과 비교해 무엇을 할지 — 같은 봉이면 갱신, 정확히 다음 봉이면 추가,
+ * 봉을 건너뛰었거나 간격이 어긋나면 직접 붙이지 않고 REST 재조회로 메꾼다(2026-09-06: Bitget 주봉에서 WS가 만든 봉이
+ * 어긋난 자리에 들어가 갭처럼 보이던 문제 — 예전엔 TF 배수이면 몇 봉을 건너뛰어도 그냥 붙였다). 과거 봉은 무시.
+ * 1Mutc는 달 길이가 가변이라 28~31일 사이면 다음 봉으로 본다. 간격 정보가 없는 TF는 예전처럼 추가.
+ */
+export function classifyIncomingBar(lastTime: number, newTime: number, tf: string): BarAction {
+  if (newTime === lastTime) return 'update';
+  if (newTime < lastTime) return 'ignore';
+  const iv = INTERVAL_SECONDS[tf];
+  if (!iv) return 'append';
+  const gap = newTime - lastTime;
+  if (tf === '1Mutc') return gap >= 28 * 86400 && gap <= 31 * 86400 ? 'append' : 'refresh';
+  return gap === iv ? 'append' : 'refresh';
+}
+
 /** REST 응답(refresh·loadMore)이 도착했을 때 폐기해야 하는가 — 대기 중 선택이 바뀌었으면 폐기. */
 export function shouldDropResponse(prevKey: string | null, requestKey: string): boolean {
   return prevKey !== requestKey;

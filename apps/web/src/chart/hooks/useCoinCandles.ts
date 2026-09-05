@@ -5,7 +5,7 @@ import { subscribeBitgetKline } from '../../api/exchange/bitget/klineRealtime';
 import type { CandleMessage } from '../../api/server/coinRealtime';
 import type { Candle } from '../../shared/types/market';
 import { chartKey, resolveExchange } from './marketKey';
-import { INTERVAL_SECONDS, canApplyCandle, canApplyPrice, mergeRefresh, shouldDropResponse } from './candleState';
+import { INTERVAL_SECONDS, canApplyCandle, canApplyPrice, classifyIncomingBar, mergeRefresh, shouldDropResponse } from './candleState';
 
 type TimeframeOption = {
   granularity: string;
@@ -181,8 +181,9 @@ export function useCoinCandles({
           };
           return nextCandles;
         }
-        if (lastTime < bucketTime) {
-          detectGap(lastTime, bucketTime);
+        const action = classifyIncomingBar(lastTime, bucketTime, timeframe.granularity);
+        if (action === 'refresh') { window.setTimeout(() => autoRefreshRef.current(), 0); return currentCandles; } // 건너뛰거나 어긋난 봉은 직접 붙이지 않고 REST로 메꿈(30초 레이트리밋)
+        if (action === 'append') {
           nextCandles.push({
             time: bucketTime, open: last.close,
             high: Math.max(last.close, ticker.high),
@@ -209,14 +210,13 @@ export function useCoinCandles({
           nextCandles[nextCandles.length - 1] = { time: last.time, open: c.open, high: c.high, low: c.low, close: c.close, volume: c.volume };
           return nextCandles;
         }
-        if (lastTime < c.time) {
-          // 다른 TF의 kline이 흘러들어오면(전환 직후 잔존 소켓 등) 간격이 어긋난 가짜 봉이 생김
-          // → 마지막 봉 기준 TF 간격의 배수가 아니면 버리고 재조회로 정리(1M은 간격 가변이라 제외)
-          if (intervalSec && timeframe.granularity !== '1Mutc' && (c.time - lastTime) % intervalSec !== 0) {
-            window.setTimeout(() => autoRefreshRef.current(), 0);
-            return currentCandles;
-          }
-          detectGap(lastTime, c.time);
+        const action = classifyIncomingBar(lastTime, c.time, timeframe.granularity);
+        if (action === 'refresh') {
+          // 간격이 어긋난 봉(다른 TF 잔존 소켓)이나 건너뛴 봉은 직접 붙이지 않고 재조회로 정리 — 2026-09-06 Bitget 주봉 갭
+          window.setTimeout(() => autoRefreshRef.current(), 0);
+          return currentCandles;
+        }
+        if (action === 'append') {
           nextCandles.push({ time: c.time, open: c.open, high: c.high, low: c.low, close: c.close, volume: c.volume });
           return nextCandles;
         }

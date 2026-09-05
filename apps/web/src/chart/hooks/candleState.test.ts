@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { canApplyCandle, canApplyPrice, mergeRefresh, shouldDropResponse } from './candleState';
+import { canApplyCandle, canApplyPrice, classifyIncomingBar, mergeRefresh, shouldDropResponse } from './candleState';
 import { chartKey } from './marketKey';
 import type { Candle } from '../../shared/types/market';
 
@@ -26,6 +26,26 @@ describe('candleState — 최종 리뷰 시나리오: Bitget BTCUSDT 표시 중 
   it('캔들 fetch가 실패해 옛 캔들이 남아 있으면 현재가만 갱신하고 봉은 건드리지 않는다', () => {
     expect(canApplyPrice(BN, BN)).toBe(true);
     expect(canApplyCandle(BN, BG, BN)).toBe(false); // candlesKey가 아직 옛 것
+  });
+});
+
+describe('classifyIncomingBar — WS 봉을 붙일지 재조회할지', () => {
+  const W = 604800;
+  it('같은 봉은 update, 정확히 다음 봉은 append, 과거 봉은 ignore', () => {
+    expect(classifyIncomingBar(1000 * W, 1000 * W, '1Wutc')).toBe('update');
+    expect(classifyIncomingBar(1000 * W, 1001 * W, '1Wutc')).toBe('append');
+    expect(classifyIncomingBar(1000 * W, 999 * W, '1Wutc')).toBe('ignore');
+  });
+  it('봉을 건너뛰거나(2주 뒤) 간격이 어긋나면(5일 뒤) 직접 붙이지 않고 refresh — Bitget 주봉 갭 재발 방지', () => {
+    expect(classifyIncomingBar(1000 * W, 1002 * W, '1Wutc')).toBe('refresh');
+    expect(classifyIncomingBar(1000 * W, 1000 * W + 5 * 86400, '1Wutc')).toBe('refresh');
+    expect(classifyIncomingBar(0, 2 * 3600, '1h')).toBe('refresh');
+  });
+  it('1Mutc는 28~31일이면 다음 봉, 그 밖이면 refresh. 간격 정보가 없는 TF는 append', () => {
+    expect(classifyIncomingBar(0, 30 * 86400, '1Mutc')).toBe('append');
+    expect(classifyIncomingBar(0, 28 * 86400, '1Mutc')).toBe('append');
+    expect(classifyIncomingBar(0, 60 * 86400, '1Mutc')).toBe('refresh');
+    expect(classifyIncomingBar(0, 12345, 'weird')).toBe('append');
   });
 });
 

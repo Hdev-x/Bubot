@@ -29,8 +29,12 @@ deliveries:
         locator: "새 파일 chart/hooks/marketKey.ts(priceKey·chartKey·priceKeyOf·symbolOf·resolveExchange, 3 tests)·candleState.ts(INTERVAL_SECONDS 이동, canApplyPrice·canApplyCandle·shouldDropResponse·mergeRefresh, 6 tests — 최종 리뷰 시나리오 Bitget→Binance 같은 심볼: 옛 틱 거부·옛 응답 폐기·fetch 실패 시 현재가만). useCoinCandles 387→365줄: 키 문자열 5곳·ref 3개가 marketKey 하나로, 병합 로직은 mergeRefresh 호출로, candlesSymbol → candlesKey, 로드·WS·refresh·loadMore deps에 marketKey(거래소·현선물 포함). useMtfCandles: key 인자·mtfKey 반환. useDesktopCandles·DesktopApp(currentPriceKey·currentChartKey, 소수점 스테이징 candlesKey === currentChartKey, useMtfCandles에 priceKey)·ChartStage(mtfKey === priceKeyOf(candlesKey)). CoinChartPage 변경 없음(반환 이름 미사용). 표와 다른 점 없음"
         revision: working-tree
         observed_at: 2026-09-06
+      - kind: parity-check
+        locator: "[추가, 사용자 관찰 2026-09-06 Bitget 주봉 갭] candleState.classifyIncomingBar — WS 봉이 마지막 봉과 같으면 update, 정확히 다음 봉이면 append, 봉을 건너뛰었거나 간격이 어긋나면 직접 붙이지 않고 refresh(30초 레이트리밋 autoRefresh), 과거 봉 ignore. 1Mutc는 28~31일. 예전 규칙은 'TF 배수이면 몇 봉을 건너뛰어도 append'라 어긋난 자리에 봉이 생겼다. onTick·onKline 두 경로에 적용, detectGap 제거. REST 주봉(Bitget·Binance 동일 월요일 UTC)·Bitget WS candle1Wutc 시각은 정상 확인 — 갭은 WS 경로 추정"
+        revision: working-tree
+        observed_at: 2026-09-06
       - kind: command
-        locator: "tests 39(30+9) · tsc · lint 0(경고 245) · build 2종 · 번들 문자열 0 · check:css 0 · labs tsc. 원시 키 문자열 grep 0(AC-001). Desktop 비로그인 dev: 캔버스 7·h1 1·탭 타이틀 정상. 같은 심볼 거래소·현선물 전환은 거래소 버튼이 로그인 패널 안이라 사용자 확인으로"
+        locator: "tests 42(30+12) · tsc · lint 0(경고 245) · build 2종 · 번들 문자열 0 · check:css 0 · labs tsc. 원시 키 문자열 grep 0(AC-001). Desktop 비로그인 dev: 캔버스 7·h1 1·탭 타이틀 정상. 같은 심볼 거래소·현선물 전환은 거래소 버튼이 로그인 패널 안이라 사용자 확인으로"
         revision: working-tree
         observed_at: 2026-09-06
   - id: wp-09-d02-live-price
