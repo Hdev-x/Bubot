@@ -8,6 +8,9 @@ import { fetchBinanceDepth } from '../../api/server/marketApi';
 import { subscribeKrwOrderbook } from '../../api/exchange/krw/krwRealtime';
 
 const POLL_MS = 500;
+// 폴링 응답이 이 횟수 연속으로 비면(서버가 15초 넘은 Binance 캐시를 거부하거나 상류 실패) 이전 호가를 지운다 —
+// 그대로 두면 차단 중 몇 분 전 호가가 실시간처럼 남는다(3차 리뷰 P1). 0.5초 폴링 기준 1.5초.
+const EMPTY_POLLS_TO_CLEAR = 3;
 
 type OrderbookExchange = 'BITGET' | 'BINANCE' | 'UPBIT' | 'BITHUMB';
 
@@ -53,10 +56,16 @@ export function useOrderbook(
       }
     };
 
+    let emptyPolls = 0;
     const poll = async () => {
       const snap = await fetchByExchange();
       if (cancelled) return;
-      if (snap) setBook({ ...snap, key: bookKey }); // key 태그 — 호출부가 "현재 종목 호가인지" 판별
+      if (snap) {
+        emptyPolls = 0;
+        setBook({ ...snap, key: bookKey }); // key 태그 — 호출부가 "현재 종목 호가인지" 판별
+      } else if (++emptyPolls === EMPTY_POLLS_TO_CLEAR) {
+        setBook(null); // 오래된 호가를 실시간처럼 보이게 두지 않는다
+      }
       timer = window.setTimeout(poll, POLL_MS);
     };
     poll();

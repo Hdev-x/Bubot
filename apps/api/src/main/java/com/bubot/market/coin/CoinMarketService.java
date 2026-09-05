@@ -122,16 +122,32 @@ public class CoinMarketService extends AbstractMarketService {
     // ============================================================
     // 다중 거래소 통합 로직 (Price Precision)
     // ============================================================
-    @SuppressWarnings("unchecked")
+    private static final int PRECISION_TTL_SECONDS = 3600;
+    private static final int PRECISION_RETRY_SECONDS = 60;
+
+    /**
+     * 가격 소수 자릿수 — 거래소별로 따로 캐시한다. 한쪽(Binance 차단 등)이 실패해 빈 결과가 나와도 다른 쪽과 묶여
+     * 1시간 굳지 않고, 빈 결과는 1분 뒤 다시 조회한다(3차 리뷰 P1: 부분 실패 결과를 3,600초 캐시하던 문제).
+     */
     public Map<String, Integer> getPricePrecision() {
-        String cacheKey = "price_precision_merged";
+        Map<String, Integer> result = new HashMap<>(precisionPart("price_precision_bitget", this::loadBitgetPrecision));
+        result.putAll(precisionPart("price_precision_binance", this::loadBinancePrecision));
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Integer> precisionPart(String cacheKey, java.util.function.Supplier<Map<String, Integer>> loader) {
         if (isCacheValid(cacheKey)) {
             return (Map<String, Integer>) cache.get(cacheKey);
         }
+        Map<String, Integer> part = loader.get();
+        putCache(cacheKey, part, part.isEmpty() ? PRECISION_RETRY_SECONDS : PRECISION_TTL_SECONDS);
+        return part;
+    }
 
+    /** Bitget futures contracts → pricePlace */
+    private Map<String, Integer> loadBitgetPrecision() {
         Map<String, Integer> result = new HashMap<>();
-
-        // 1. Bitget futures contracts → pricePlace
         for (String productType : List.of("USDT-FUTURES", "USDC-FUTURES")) {
             try {
                 Object data = bitgetMarketService.getClient().get()
@@ -163,7 +179,12 @@ public class CoinMarketService extends AbstractMarketService {
             }
         }
 
-        // 2. Binance futures exchangeInfo → PRICE_FILTER tickSize
+        return result;
+    }
+
+    /** Binance futures exchangeInfo → PRICE_FILTER tickSize (guard 경유, 차단 중 raw 호출 금지) */
+    private Map<String, Integer> loadBinancePrecision() {
+        Map<String, Integer> result = new HashMap<>();
         try {
             Object data = binanceMarketService.getBinanceFuturesExchangeInfo(); // guard 경유 — 차단 중 raw 호출 금지
 
@@ -193,7 +214,6 @@ public class CoinMarketService extends AbstractMarketService {
             log.warn("Binance futures exchangeInfo 조회 실패: {}", e.getMessage());
         }
 
-        putCache(cacheKey, result, 3600);
         return result;
     }
 

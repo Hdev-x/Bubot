@@ -74,26 +74,27 @@ public class BinanceRestGuard {
                 Throwable c = e.getCause();
                 throw c instanceof Exception ex ? ex : e;
             } catch (TimeoutException e) {
-                return staleOr(hit, now, staleMaxMs, emptyValue);
+                return staleOr(key, staleMaxMs, emptyValue); // 대기한 만큼 나이가 늘었으니 지금 시각으로 다시 판정(3차 리뷰 P1)
             }
         }
         try {
             // 소유자가 된 뒤 다시 확인 — 첫 검사와 putIfAbsent 사이에 다른 소유자가 캐시를 채웠거나 차단이 시작됐을 수 있다(리뷰 2차 P1).
+            beforeOwnerRecheck();
             now = System.currentTimeMillis();
             hit = cache.get(key);
             if (isFresh(hit, now, ttlMs)) return complete(mine, hit.data);
-            if (now < blockedUntil.get()) return complete(mine, staleOr(hit, now, staleMaxMs, emptyValue));
+            if (now < blockedUntil.get()) return complete(mine, staleOr(key, staleMaxMs, emptyValue));
 
             Object data = upstream.get();
             if (data != null) {
                 put(key, data);
                 return complete(mine, data);
             }
-            // 상류가 null(빈 응답)이면 있던 캐시를 지우지 않고 그대로 준다(리뷰 2차 P1).
-            return complete(mine, staleOr(hit, now, staleMaxMs, emptyValue));
+            // 상류가 null(빈 응답)이면 있던 캐시를 지우지 않고 그대로 준다(리뷰 2차 P1). 나이는 응답 시점 기준(3차 리뷰 P1).
+            return complete(mine, staleOr(key, staleMaxMs, emptyValue));
         } catch (RuntimeException e) {
             if (noteRateLimit(e)) {
-                return complete(mine, staleOr(hit, now, staleMaxMs, emptyValue));
+                return complete(mine, staleOr(key, staleMaxMs, emptyValue));
             }
             mine.completeExceptionally(e);
             throw e;
@@ -101,6 +102,9 @@ public class BinanceRestGuard {
             inflight.remove(key, mine);
         }
     }
+
+    /** 테스트 seam — 소유권 획득 직후·재확인 직전. 운영 코드는 아무것도 하지 않는다. */
+    void beforeOwnerRecheck() {}
 
     private static Object complete(CompletableFuture<Object> f, Object out) {
         f.complete(out);

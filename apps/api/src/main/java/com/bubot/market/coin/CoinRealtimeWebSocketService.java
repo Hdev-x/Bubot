@@ -274,7 +274,9 @@ public class CoinRealtimeWebSocketService {
             }
             connecting = true;
             try {
-                socket = WsConnect.open(httpClient, BITGET_PUBLIC_WS, this);
+                WebSocket opened = WsConnect.open(httpClient, BITGET_PUBLIC_WS, this);
+                if (stopped || shuttingDown) { opened.abort(); return; } // 연결 중 stop()이 왔으면 살려두지 않는다(3차 리뷰 P1)
+                socket = opened;
             } catch (Exception e) {
                 reconnect.fail();
                 log.warn("Bitget WebSocket 연결 실패({}회째): {}", reconnect.attempts(), e.getMessage());
@@ -385,7 +387,7 @@ public class CoinRealtimeWebSocketService {
             }
         }
 
-        private void stop() {
+        private synchronized void stop() { // connect()와 같은 lock
             stopped = true;
             WebSocket current = socket;
             if (current != null && !current.isOutputClosed()) {

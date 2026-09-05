@@ -77,7 +77,9 @@ public class BinanceFuturesRealtimeWebSocketService implements WebSocket.Listene
         if (shuttingDown) return;
         connecting = true;
         try {
-            webSocket = WsConnect.open(httpClient, BINANCE_FUTURES_WS, this);
+            WebSocket opened = WsConnect.open(httpClient, BINANCE_FUTURES_WS, this);
+            if (shuttingDown) { opened.abort(); return; } // 연결 중 stop()이 왔으면 살려두지 않는다(3차 리뷰 P1)
+            webSocket = opened;
         } catch (Exception e) {
             reconnect.fail();
             log.warn("Binance Futures WS 연결 실패({}회째): {}", reconnect.attempts(), e.getMessage());
@@ -255,7 +257,7 @@ public class BinanceFuturesRealtimeWebSocketService implements WebSocket.Listene
     }
 
     @PreDestroy
-    public void stop() {
+    public synchronized void stop() { // connect()와 같은 lock — 진행 중 연결이 끝난 뒤 닫히거나, 끝난 연결이 위 검사로 abort된다
         shuttingDown = true;
         WebSocket socket = webSocket;
         if (socket != null) socket.sendClose(WebSocket.NORMAL_CLOSURE, "shutdown");

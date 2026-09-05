@@ -83,6 +83,10 @@ deliveries:
         locator: "tsc ok · lint 0(경고 249) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop 차트 canvas 7개 렌더링·Mobile 로그인 화면 로드. 현재가 태그·카운트다운은 Binance IP 차단(~02:03)으로 캔들이 비어 비로그인에서 확인 불가 — 사용자 확인으로. 목표 줄 수 1,100은 초기화·데이터 effect 유지로 1,332에서 마감(PLAN 표 갱신)"
         revision: working-tree
         observed_at: 2026-09-05
+      - kind: command
+        locator: "[2026-09-05 정정 실행] AC-005 역방향 import 1건(shared/utils/pivots.test.ts → chart) 을 chart/analysis/pivots.test.ts로 이동, AC-002 RSI 오판·OrderPage 순서 예외 기록(2차 리뷰 수정 PR #63)"
+        revision: 04adac5
+        observed_at: 2026-09-05
 milestones:
   - id: large-files-split-done
     title: "큰 파일 분해 완료"

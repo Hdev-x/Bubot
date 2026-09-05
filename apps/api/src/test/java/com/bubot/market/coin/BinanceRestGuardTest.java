@@ -139,29 +139,33 @@ class BinanceRestGuardTest {
 
     @Test
     void 소유자가_된_뒤_차단이_시작됐으면_상류를_부르지_않는다() throws Exception {
-        // 첫 검사 통과 → in-flight 소유자 → (그 사이 다른 스레드가 429를 기록) → 재확인에서 차단을 보고 상류 생략
-        BinanceRestGuard g = new BinanceRestGuard();
+        // 첫 검사(차단 없음) 통과 → in-flight 소유자 획득 → [그 사이 다른 요청이 429를 기록] → 재확인에서 차단을 보고 상류 생략.
+        // beforeOwnerRecheck 테스트 seam으로 "첫 검사와 재확인 사이"를 정확히 고정한다(3차 리뷰 P2: 이전 테스트는 이 순서를 만들지 못했다).
         AtomicInteger calls = new AtomicInteger();
-        CountDownLatch ownerInside = new CountDownLatch(1);
-        CountDownLatch blockRecorded = new CountDownLatch(1);
-        Thread owner = new Thread(() -> {
-            try {
-                g.get("a", 0, () -> {
-                    calls.incrementAndGet();
-                    ownerInside.countDown();
-                    try { blockRecorded.await(); } catch (InterruptedException ignored) { /* test */ }
-                    throw status(429, "60");
-                }, Map.of());
-            } catch (Exception e) { throw new RuntimeException(e); }
-        });
-        owner.start();
-        ownerInside.await();
-        g.noteRateLimit(429, "60"); // 다른 key의 요청이 먼저 429를 받은 상황
-        blockRecorded.countDown();
-        owner.join(5_000);
-        // 차단이 기록된 뒤 새 key의 요청은 소유자가 되더라도 상류로 나가지 않는다
-        Object v = g.get("b", 0, () -> { calls.incrementAndGet(); return Map.of("v", 1); }, Map.of());
-        assertEquals(Map.of(), v);
-        assertEquals(1, calls.get(), "차단 뒤 상류 호출 없음");
+        BinanceRestGuard g = new BinanceRestGuard() {
+            @Override void beforeOwnerRecheck() { noteRateLimit(429, "60"); }
+        };
+        Object v = g.get("a", 0, () -> { calls.incrementAndGet(); return Map.of("v", 1); }, Map.of());
+        assertEquals(Map.of(), v, "재확인에서 차단을 봤으므로 빈 값");
+        assertEquals(0, calls.get(), "소유자가 됐어도 재확인 뒤에는 상류를 부르지 않는다");
+        assertTrue(g.isBlocked());
+    }
+
+    @Test
+    void stale_나이는_상류_응답_시점_기준으로_판정한다() throws Exception {
+        // 요청 시작 때 10ms 된 캐시가 상류 대기 60ms 뒤 429를 받으면 70ms 된 값 — 30ms 제한을 넘겼으니 빈 값(3차 리뷰 P1)
+        BinanceRestGuard g = new BinanceRestGuard();
+        g.get("k", 0, () -> Map.of("v", "old"), Map.of());
+        Thread.sleep(10);
+        Object v = g.get("k", 0, 30, () -> {
+            try { Thread.sleep(60); } catch (InterruptedException ignored) { /* test */ }
+            throw status(429, "60");
+        }, Map.of());
+        assertEquals(Map.of(), v, "대기 전 시각으로 판정하면 old가 나온다");
+        // null 응답도 같은 규칙
+        BinanceRestGuard g2 = new BinanceRestGuard();
+        g2.get("k", 0, () -> Map.of("v", "old"), Map.of());
+        Object v2 = g2.get("k", 0, 30, () -> { try { Thread.sleep(60); } catch (InterruptedException ignored) { /* test */ } return null; }, Map.of());
+        assertEquals(Map.of(), v2);
     }
 }
