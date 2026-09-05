@@ -51,7 +51,7 @@ deliveries:
         revision: working-tree
         observed_at: 2026-09-05
       - kind: command
-        locator: "tests 30(+1 시가 우선·폴백) · tsc · lint 0(경고 250, main과 같은 항목·줄 이동만) · build 2종 · 번들 문자열 0 · check:css 0 · labs tsc. Desktop 비로그인 dev 서버: 캔버스 7, 헤더·호가 중앙·탭 타이틀 같은 현재가, 등락 -0.05%(main 기준과 동일 방식). 콘솔 createRoot·removeChild 오류는 main에서도 동일(기존). 로그인 후 거래소 4종·현물/선물 전환은 사용자 확인"
+        locator: "tests 30(+1 시가 우선·폴백) · tsc · lint 0(경고 250, main과 같은 항목·줄 이동만) · build 2종 · 번들 문자열 0 · check:css 0 · labs tsc. Desktop 비로그인 dev 서버: 캔버스 7, 헤더·호가 중앙·탭 타이틀 같은 현재가, 등락 -0.05%(main 기준과 동일 방식). 콘솔 createRoot·removeChild 오류는 main에서도 동일(기존). 로그인 후 거래소 4종·현물/선물 전환은 사용자 확인. 전환 시 헤더는 24h 티커·일봉·시가총액까지 기다려 차트보다 늦게 바뀐다(d02 전과 동일, 사용자 관찰 2026-09-05 — PR 본문의 '헤더가 먼저' 문구는 오류로 정정)"
         revision: working-tree
         observed_at: 2026-09-05
   - id: wp-08-d03-candles-cleanup
@@ -116,7 +116,7 @@ useLivePrice({ symbol, exchange, isFutures, enabled = true }): {
 
 - `DesktopApp`: `useLivePrice` → `useDesktopCandles` → `useOrderbookSnapshot` → `useHeaderSnapshot`. 호가·헤더·탭 타이틀에 `price`·`dailyOpen`·`readySymbol`을 넘긴다.
 - `useDesktopCandles`: `priceFromTicker` 제거. 반환에서 `livePrice`·`dailyOpenPrice`·`loadedSymbol` 대신 캔들만(`candles`·`timeframe`·`loadCandles`·`handleVisibleRangeChange`). 차트 소수점 스테이징(`chartDecimalsRef`)은 캔들 배열의 종목(`candlesKey`)을 따라야 하므로 `useCoinCandles`가 `candlesSymbol`을 추가로 반환한다(새 상태 아님, 기존 `candlesKeyRef` 노출).
-- `loadedSymbol` 재정의: 헤더·호가는 `readySymbol === symbol`, 차트 소수점은 `candlesSymbol === symbol`. 둘을 분리해 "현재가는 왔는데 캔들은 아직"인 상태에서 헤더가 먼저 바뀌는 것을 허용한다(현행은 캔들까지 기다렸다). 사용자 육안 확인 항목.
+- `loadedSymbol` 재정의: 헤더·호가는 `readySymbol === symbol`, 차트 소수점·지표는 `candlesSymbol === symbol`. [2026-09-05 정정] 헤더 체감 순서는 바뀌지 않는다 — 헤더는 `allReady`가 24h 티커·일봉 2개·시가총액까지 기다리므로 d02 전과 같이 차트보다 늦게 바뀐다(사용자 관찰로 확인). 분리의 효과는 현재가가 차트 TF·캔들 fetch 실패에 묶이지 않는 것이다.
 - 등락 기준이 캔들 일봉시가(`loadCandles('1Dutc', 2)`)에서 티커 `openUtc`로 바뀐다. 거래소마다 UTC 기준이 같으므로 값은 같아야 하며, 다르면 d02 evidence에 기록하고 사용자에게 보고한다.
 
 ### useCoinCandles 정리 (d03)
