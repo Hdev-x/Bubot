@@ -83,7 +83,7 @@ export default function App() {
       }
       document.title = `${selectedSymbol} ${formattedPrice}${rateStr}`;
     } else {
-      document.title = 'Botz';
+      document.title = 'Bubit';
     }
   }, [selectedSymbol, currentTicker, selectedTickDecimals]);
 

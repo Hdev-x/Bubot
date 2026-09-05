@@ -1,4 +1,4 @@
-# Bubot 문서 색인
+# Bubit 문서 색인
 
 `docs/`는 목적·명령·규칙·명세 같은 **정본 문서**다. 현재 상태·결정·미결·계획은 `../work-status/`, 과정 기록은 Private Worklog가 소유한다.
 역할 구분과 기록 경계는 [DOCUMENTATION.md](DOCUMENTATION.md)가 정본이다.

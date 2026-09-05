@@ -1,4 +1,4 @@
-# Bubot 실행·검증 명령
+# Bubit 실행·검증 명령
 
 ## API (`apps/api`)
 

@@ -8,7 +8,7 @@ self.addEventListener('push', function(event) {
   if (event.data) {
     try {
       const data = event.data.json();
-      const title = data.title || 'Bullum 알림';
+      const title = data.title || 'Bubit 알림';
       const options = {
         body: data.body || '새로운 신호가 포착되었습니다.',
         icon: '/mobile/botz-icon-512.png',
@@ -24,7 +24,7 @@ self.addEventListener('push', function(event) {
       console.error('Push data parsing failed:', e);
       // JSON 파싱 실패 시 일반 텍스트로 처리
       event.waitUntil(
-        self.registration.showNotification('Bullum', {
+        self.registration.showNotification('Bubit', {
           body: event.data.text(),
           icon: '/mobile/botz-icon-512.png',
           data: { url: '/mobile/' }

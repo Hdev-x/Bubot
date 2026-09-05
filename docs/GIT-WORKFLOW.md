@@ -1,4 +1,4 @@
-# Bubot Git 규칙
+# Bubit Git 규칙
 
 > 채택: **GitHub Flow** (`main` 하나 + 작업 브랜치) · **Squash merge** · **태그 기반 릴리즈**
 > 확정일: 2026-09-03 (D-20260903-02). 변경은 사용자 결정으로만 하고 `work-status/DECISIONS.md`에 기록한다.

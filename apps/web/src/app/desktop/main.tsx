@@ -32,8 +32,8 @@ function Root() {
 // dev HMR 주의: 이 파일은 컴포넌트(Root)를 담고 있어 Vite React 플러그인이 HMR 경계로 삼는다. 훅·lib 파일이 바뀌면
 // main.tsx가 다시 실행되는데, 그때 createRoot를 또 부르면 같은 컨테이너에 앱이 두 개 그려져 탭 제목이 두 종목으로
 // 번갈아 바뀌었다(2026-09-06 사용자 관찰, 콘솔 'createRoot() on a container that has already been passed'). 루트는 하나만 만들어 재사용한다.
-declare global { interface Window { __bubotDesktopRoot?: Root } }
-const root = (window.__bubotDesktopRoot ??= createRoot(document.getElementById('desktop-root')!));
+declare global { interface Window { __bubitDesktopRoot?: Root } }
+const root = (window.__bubitDesktopRoot ??= createRoot(document.getElementById('desktop-root')!));
 root.render(
   <StrictMode>
     <Root />

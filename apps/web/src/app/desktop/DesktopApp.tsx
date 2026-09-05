@@ -307,7 +307,7 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
       const p = chartIsFutures ? '.P' : '';
       document.title = `${CHART_SYMBOL}${p} ${formattedPrice}${rateStr}`;
     } else {
-      document.title = 'Botz';
+      document.title = 'Bubit';
     }
   }, [CHART_SYMBOL, livePrice, dailyOpenPrice, chartIsFutures, pxDecimals]);
 
@@ -443,7 +443,7 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
       </div>
 
       <footer className="app-footer">
-        <span>© 2026 Bubot · Desktop</span>
+        <span>© 2026 Bubit · Desktop</span>
         <span>v0.1</span>
       </footer>
 

@@ -46,7 +46,7 @@ export default function LoginPage({ onSuccess }: Props) {
               <span style={styles.logoBox}>
                 <img src={botzMark} alt="" style={styles.logo} />
               </span>
-              <span style={styles.brandText}>Botz</span>
+              <span style={styles.brandText}>Bubit</span>
             </div>
             <button type="button" style={styles.linkButton}>회원가입</button>
           </header>

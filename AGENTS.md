@@ -1,4 +1,4 @@
-# Bubot AI 작업 규칙
+# Bubit AI 작업 규칙
 
 ## 세션 시작
 

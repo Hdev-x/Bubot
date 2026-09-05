@@ -1,4 +1,4 @@
-# Bubot Planning Overlay
+# Bubit Planning Overlay
 
 > `COMMON.md`의 프로젝트별 확장이다. 공통 계층·상태·정본·Delivery 안전 하한을 완화하지 않는다.
 

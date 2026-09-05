@@ -1,4 +1,4 @@
-# Bubot Roadmap
+# Bubit Roadmap
 
 > 일정이나 기능 개수보다 사용자 가치와 검증 Gate를 기준으로 다음 단계로 이동한다.
 > 오늘의 목표·할 일은 `CURRENT.md`가 소유한다. Track의 완료 상태 정본은 각 `work-status/work/**/PLAN.md`의 `state`다.
