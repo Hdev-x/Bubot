@@ -25,6 +25,7 @@ npm test
 npm run build        # Mobile → dist/
 npm run build:desktop    # Desktop → dist-desktop/
 npm run lint         # error 0 · warning 320 baseline(2026-09-03), CI 포함
+npm run check:css    # 셸 CSS cascade 순서 검사(원본 대비·진입점 import 순서·번들 선행), 빌드 뒤 실행하면 번들까지, CI 포함
 ```
 
 ## Worker·Shared 회귀 (루트)

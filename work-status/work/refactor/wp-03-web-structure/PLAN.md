@@ -12,7 +12,7 @@ acceptance:
   - "AC-001: 목표 트리(docs/architecture/WEB-STRUCTURE-REVIEW.md 4절)와 실제 폴더가 일치하고 src/components·src/web·src/pages·src/utils·src/drawing가 남지 않는다."
   - "AC-002: import 방향이 app → chart/hooks → api → shared로만 향한다 (역방향 grep 0)."
   - "AC-003: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0이 유지된다."
-  - "AC-004: d03~d05는 Mobile·Desktop 주요 화면의 재편 전후 스크린샷이 동일하다 (레이아웃·색 변화 없음)."
+  - "AC-004: d03~d05는 Mobile·Desktop 주요 화면이 재편 전후 동일하다 (레이아웃·색 변화 없음). [2026-09-05 정식 변경, 사용자 결정 2026-09-03] 확인 방법은 스크린샷 파일 대조가 아니라 로컬 기동(API 8081·Vite 5174/5175) 후 사용자 로그인 육안 확인이다. 원안의 스크린샷 대조는 실행하지 않았다(리뷰 P2 #11)."
   - "AC-005: 클래스 이름·로직은 바꾸지 않는다. 변경은 파일 위치·import 경로·CSS 파일 분할·client.ts 분리뿐이다."
 deliveries:
   - id: wp-03-d00-dead-code
@@ -141,7 +141,7 @@ milestones:
     depends_on: [wp-03-d06-shared]
     acceptance:
       - "GATE-AC-001: AC-001~AC-003 자동 검사 통과."
-      - "GATE-AC-002: AC-004 스크린샷 대조와 로컬 기동에서 Mobile·Desktop 핵심 화면 동작 확인."
+      - "GATE-AC-002: AC-004 육안 확인(로컬 기동, 로그인 후 Mobile·Desktop 핵심 화면 동작) — 2026-09-05 AC-004 정식 변경에 맞춰 문구 정정."
     unlocks: []
     evidence:
       - kind: command
@@ -149,7 +149,7 @@ milestones:
         revision: f31cc27
         observed_at: 2026-09-03
       - kind: manual-check
-        locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Vite 5174/5175)에서 로그인 후 Mobile·Desktop 화면을 확인함(2026-09-03). AC-004의 스크린샷 파일 대조는 실행하지 않고 사용자 육안 확인으로 대체(waived, 사용자 결정 2026-09-03). 2026-09-05 리뷰 P2 #11 지적에 따라 명시"
+        locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Vite 5174/5175)에서 로그인 후 Mobile·Desktop 화면을 확인함(2026-09-03). AC-004의 스크린샷 파일 대조는 실행하지 않고 사용자 육안 확인으로 대체(사용자 결정 2026-09-03). 2026-09-05 리뷰 P2 #11 지적에 따라 AC-004를 육안 확인 기준으로 정식 변경(Evidence만으로 required Acceptance를 낮추지 않기 위해)"
         revision: f31cc27
         observed_at: 2026-09-03
 extensions: {}

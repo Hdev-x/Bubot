@@ -10,10 +10,10 @@ supersedes: []
 outcome: "641·990·911·1,585줄짜리 파일 4개가 역할 단위 파일로 나뉘어 각 파일이 한 화면에서 읽히고, 새 파일은 400줄 이하다. 동작·화면은 분해 전과 동일하다."
 acceptance:
   - "AC-001: 새로 만든 파일은 모두 400줄 이하. 원본은 목표 줄 수(아래 표) 이하로 줄고, 남는 이유가 문서화된다."
-  - "AC-002: 동작 불변 — 상태·effect·의존성 배열·계산 로직은 위치만 옮기고 내용을 바꾸지 않는다. 새 상태·effect 0. [2026-09-05 정정] d04에서 RSI 데이터 effect가 차트 초기화 effect보다 앞으로 옮겨져 첫 렌더 RSI 페인이 비는 회귀가 있었다(리뷰 P1 #3) — PR #60에서 원위치. 독립 effect(키보드 리스너)의 순서 변경은 허용 예외로 둔다."
+  - "AC-002: 동작 불변 — 상태·effect·의존성 배열·계산 로직은 위치만 옮기고 내용을 바꾸지 않는다. 새 상태·effect 0. [2026-09-05 정정] d04에서 RSI 데이터 effect가 차트 초기화 effect보다 앞으로 옮겨져 첫 렌더 RSI 페인이 비는 회귀가 있었다(리뷰 P1 #3) — PR #60에서 원위치. 독립 effect의 순서 변경은 허용 예외로 둔다 — d04 키보드 리스너, d03 OrderPage의 scale·price effect가 현물가 훅·원가 state보다 앞으로 이동(2차 리뷰 P2 #17 지적으로 2026-09-05 추가 기록)."
   - "AC-003: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0·labs tsc가 유지되고, Desktop·Mobile dev 서버가 렌더링된다."
   - "AC-004: 공용 파일(MarketChart·useAutoPatterns)을 건드린 Delivery는 Desktop과 Mobile 양쪽에서 사용자가 육안 확인한다. 앱 전용 파일은 해당 앱만."
-  - "AC-005: import 방향은 app → chart/hooks → api → shared, chart 내부는 MarketChart → hooks/overlays/drawing → analysis만."
+  - "AC-005: import 방향은 app → chart/hooks → api → shared, chart 내부는 MarketChart → hooks/overlays/drawing → analysis만. [2026-09-05 정정] 완료 시 '역방향 grep 0'은 shared/utils/pivots.test.ts의 chart import 1건을 놓쳤다(2차 리뷰 P2) — 2차 리뷰 수정 PR에서 chart/analysis/pivots.test.ts로 이동."
 deliveries:
   - id: wp-07-d01-drawing-toolbar
     title: "DrawingToolbar(641) → ColorPicker · DrawingFloatBar · DrawingSettings 3파일 (Desktop 전용, 기계적)"
@@ -76,7 +76,7 @@ deliveries:
     pull_requests: [58]
     evidence:
       - kind: parity-check
-        locator: "MarketChart.tsx 1,585 → 1,332줄(삭제 266 + 훅 호출 13줄). chart/hooks/useDrawingMagnet(70, 반환 magnetRef·snapPriceRef)·useRsiPane(135, 반환 ensureRsiSeries — 차트 초기화 effect가 씀)·useValueOverlay(89)·useRankLines(44, RANK_TIERS·RankLine 동반). 옛 파일에 없던 줄은 훅 시그니처·타입·return뿐. effect 본문·의존성 배열 변경 0. 순서 변화: 키보드 effect가 차트 초기화 effect보다 앞으로, RSI 데이터 effect가 거래량 effect보다 앞으로(독립 대상이라 영향 없음). exhaustive-deps 경고 +12(ref props)"
+        locator: "MarketChart.tsx 1,585 → 1,332줄(삭제 266 + 훅 호출 13줄). chart/hooks/useDrawingMagnet(70, 반환 magnetRef·snapPriceRef)·useRsiPane(135, 반환 ensureRsiSeries — 차트 초기화 effect가 씀)·useValueOverlay(89)·useRankLines(44, RANK_TIERS·RankLine 동반). 옛 파일에 없던 줄은 훅 시그니처·타입·return뿐. effect 본문·의존성 배열 변경 0. 순서 변화: 키보드 effect가 차트 초기화 effect보다 앞으로, RSI 데이터 effect가 거래량 effect보다 앞으로 — 당시 '독립 대상이라 영향 없음'으로 판정했으나 오판: RSI 데이터 effect는 초기화 effect가 만든 페인에 의존해 첫 렌더 RSI가 비었다(리뷰 P1 #3, PR #60 원위치, AC-002 정정 참조). exhaustive-deps 경고 +12(ref props)"
         revision: working-tree
         observed_at: 2026-09-05
       - kind: command

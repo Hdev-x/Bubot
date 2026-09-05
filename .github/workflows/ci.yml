@@ -22,6 +22,8 @@ jobs:
         working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # check:css가 원본 CSS 순서(commit f31cc27)를 읽는다
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -32,6 +34,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run build:desktop
+      - run: npm run check:css # 셸 CSS 로드 순서·번들 순서 검사(빌드 뒤)
 
   api:
     name: API test

@@ -98,7 +98,7 @@ public class CoinRealtimeWebSocketService {
     }
 
     private JsonNode fetchTickerRows(URI endpoint) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder(endpoint).GET().build();
+        HttpRequest request = HttpRequest.newBuilder(endpoint).timeout(Duration.ofSeconds(10)).GET().build();
         String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
         return objectMapper.readTree(body).path("data");
     }
@@ -194,21 +194,23 @@ public class CoinRealtimeWebSocketService {
         }
     }
 
-    private void handleMessage(String message) {
+    /** @return 유효한 ticker 데이터를 1건 이상 처리했으면 true — 구독 ack·pong·오류 프레임은 '수신'으로 세지 않는다(리뷰 2차 P1). */
+    private boolean handleMessage(String message) {
         if ("pong".equalsIgnoreCase(message)) {
-            return;
+            return false;
         }
         try {
             JsonNode root = objectMapper.readTree(message);
             JsonNode dataNode = root.get("data");
             JsonNode argNode = root.get("arg");
             if (dataNode == null || !dataNode.isArray() || argNode == null) {
-                return;
+                return false;
             }
 
             String symbol = argNode.path("instId").asText();
             String instType = argNode.path("instType").asText();
             boolean isFutures = instType.endsWith("FUTURES");
+            boolean handled = false;
             for (JsonNode item : dataNode) {
                 double price = item.path("lastPr").asDouble();
                 double openUtc = item.path("openUtc").asDouble();
@@ -228,12 +230,15 @@ public class CoinRealtimeWebSocketService {
                 // [코얼레싱] 읽기 스레드에서는 송출하지 않고 최신값만 버퍼에 적재 → 백프레셔 방지.
                 // 같은 topic의 더 최신 값으로 덮어쓰며, 실제 송출은 flush()가 일괄 처리한다.
                 pendingBroadcasts.put(topic, payload);
+                handled = true;
                 if (firstTickerLogged.compareAndSet(false, true)) {
                     log.info("Bitget 전체 실시간 ticker 수신 시작: {} {} {}", instType, symbol, price);
                 }
             }
+            return handled;
         } catch (Exception e) {
             log.debug("Bitget WebSocket 메시지 파싱 실패: {}", e.getMessage());
+            return false;
         }
     }
 
@@ -286,7 +291,13 @@ public class CoinRealtimeWebSocketService {
             lastMsgAt = System.currentTimeMillis();
             try {
                 String message = objectMapper.writeValueAsString(Map.of("op", "subscribe", "args", subscriptionArgs));
-                webSocket.sendText(message, true);
+                // 구독 전송 실패를 관찰한다 — 실패하면 소켓을 끊어 maintain()이 재연결하게(리뷰 2차 P1)
+                webSocket.sendText(message, true).whenComplete((r, ex) -> {
+                    if (ex != null) {
+                        log.warn("Bitget ticker 구독 전송 실패 - 재연결: {}", ex.getMessage());
+                        webSocket.abort();
+                    }
+                });
             } catch (Exception e) {
                 log.warn("Bitget ticker 구독 실패: {}", e.getMessage());
             }
@@ -301,8 +312,7 @@ public class CoinRealtimeWebSocketService {
             }
             String message = messageBuffer.toString();
             messageBuffer.setLength(0);
-            if (!"pong".equalsIgnoreCase(message)) lastMsgAt = System.currentTimeMillis(); // pong은 수신으로 세지 않음(리뷰 P1 #4)
-            handleMessage(message);
+            if (handleMessage(message)) lastMsgAt = System.currentTimeMillis(); // 유효 ticker만 수신으로 셈(pong·ack 제외, 리뷰 P1 #4·2차 P1)
             webSocket.request(1);
             return null;
         }
@@ -360,7 +370,7 @@ public class CoinRealtimeWebSocketService {
 
         @Override
         public CompletionStage<?> onClose(WebSocket webSocket, int statusCode, String reason) {
-            if (!stopped && !shuttingDown) {
+            if (!stopped && !shuttingDown && webSocket == socket) { // 교체된 옛 소켓의 종료는 무시(리스너 소유권)
                 log.warn("Bitget WebSocket 종료: status={}, reason={}", statusCode, reason);
                 scheduleReconnect();
             }
@@ -369,7 +379,7 @@ public class CoinRealtimeWebSocketService {
 
         @Override
         public void onError(WebSocket webSocket, Throwable error) {
-            if (!stopped && !shuttingDown) {
+            if (!stopped && !shuttingDown && webSocket == socket) {
                 log.warn("Bitget WebSocket 오류: {}", error.getMessage());
                 scheduleReconnect();
             }

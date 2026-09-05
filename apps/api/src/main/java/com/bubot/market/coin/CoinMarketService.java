@@ -165,11 +165,7 @@ public class CoinMarketService extends AbstractMarketService {
 
         // 2. Binance futures exchangeInfo → PRICE_FILTER tickSize
         try {
-            Object data = binanceMarketService.getFuturesClient().get()
-                    .uri("/fapi/v1/exchangeInfo")
-                    .retrieve()
-                    .bodyToMono(Object.class)
-                    .block(Duration.ofSeconds(10));
+            Object data = binanceMarketService.getBinanceFuturesExchangeInfo(); // guard 경유 — 차단 중 raw 호출 금지
 
             if (data instanceof Map<?, ?> root) {
                 Object symbolsField = ((Map<?, ?>) root).get("symbols");

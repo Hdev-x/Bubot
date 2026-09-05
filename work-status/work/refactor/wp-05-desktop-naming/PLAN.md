@@ -7,9 +7,9 @@ state: completed
 updated: 2026-09-04
 depends_on: [wp-04-css-cleanup]
 supersedes: []
-outcome: "Desktop 앱을 가리키던 'web' 이름(파일·컴포넌트·빌드 스크립트·산출물 폴더)이 'desktop'으로 바뀌어 app/desktop 폴더 이름과 일치한다. URL /web과 apps/web 폴더는 그대로다. 동작·화면은 변화 없다."
+outcome: "Desktop 앱을 가리키던 'web' 이름(파일·컴포넌트·빌드 스크립트·산출물 폴더)이 'desktop'으로 바뀌어 app/desktop 폴더 이름과 일치한다. URL /web과 apps/web 폴더는 그대로다. 동작·화면은 변화 없다. [2026-09-05 정식 변경] 예외로 남기는 이름: localStorage 키 web_*(사용자 데이터 호환), CSS 클래스·keyframes web-*·wm-*(클래스 이름 변경은 wp-04 규칙상 후속). markup·문구 변경 2건: root id web-root→desktop-root, 푸터 'Bullum · Web'→'Bubot · Desktop'."
 acceptance:
-  - "AC-001: apps/web 안에서 Desktop 앱을 뜻하는 'web' 이름이 0이다. 남는 'web'은 apps/web(프론트엔드 전체), URL /web(배포 경로, T-05), WebSocket, labs 보존 코드뿐이다 (git grep으로 잔여 목록 확인)."
+  - "AC-001: apps/web 안에서 Desktop 앱을 뜻하는 'web' 이름이 0이다. 남는 'web'은 apps/web(프론트엔드 전체), URL /web(배포 경로, T-05), WebSocket, labs 보존 코드뿐이다 (git grep으로 잔여 목록 확인). [2026-09-05 정식 변경] 추가 예외: localStorage 키 web_*, CSS 클래스·keyframes web-*·wm-*. 이벤트명 web-favs-changed는 예외로 두지 않고 desktop-favs-changed로 바꾼다(리뷰 P2 #13)."
   - "AC-002: 각 Delivery 후 tests 22·build 2종·lint error 0·번들 제외 문자열 0·labs tsc가 유지되고, dev 서버 Mobile·Desktop이 로드된다."
   - "AC-003: 변경은 rename·import 경로·식별자 치환·설정 문자열뿐이다. 로직·마크업·CSS 값은 바꾸지 않는다. 예외(2026-09-05 기록, 리뷰 P2 #15): d02에서 dev 서버 리라이트를 정확한 /web/ 비교에서 쿼리스트링 포함 경로로 넓힌 것은 기능 변경이다(PR #41에 명시)."
   - "AC-004: docs/COMMANDS.md·README·STRUCTURE.md의 명령·경로가 실제와 일치한다."
@@ -71,14 +71,18 @@ milestones:
     state: passed
     depends_on: [wp-05-d03-docs]
     acceptance:
-      - "GATE-AC-001: AC-001~AC-004 확인 (잔여 grep 목록이 예외 4종뿐, Gate 통과, 문서 일치)."
+      - "GATE-AC-001: AC-001~AC-004 확인 (잔여 grep 목록이 AC-001 예외(원안 4종 + 2026-09-05 추가 2종)뿐, Gate 통과, 문서 일치)."
       - "GATE-AC-002: 사용자가 로컬 기동에서 Desktop 로그인·차트·패널을 육안 확인."
     unlocks: []
     evidence:
       - kind: command
-        locator: "GATE-AC-001: [2026-09-05 정정] 완료 시 적은 '잔여 grep = Tomcat WEBAPPS 4줄뿐'은 틀렸다 — 검사 명령이 파일 경로 apps/web를 걸러내며 모든 줄을 지웠다(리뷰 P2 #13). 실제로 web-root·webChartRef·useWebFavorites·WEB_TIMEFRAMES·WEB_DRAW_TOOLS·푸터 'Web'이 남아 있었고 PR #62에서 정리. 남기는 예외(의도): localStorage 키 web_*(사용자 데이터), CSS 클래스·keyframes web-*·wm-*(클래스 이름 변경은 wp-04 규칙상 후속), 이벤트명 web-favs-changed, URL /web·static/web(T-05). 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success, 문서 명령·경로 일치(d03)"
+        locator: "GATE-AC-001: 완료 시 기록 '잔여 grep = Tomcat WEBAPPS 4줄뿐' — 검사 명령이 파일 경로 apps/web를 걸러내며 모든 줄을 지운 잘못된 기록(아래 2026-09-05 정정 참조). 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success, 문서 명령·경로 일치(d03)는 사실"
         revision: main
         observed_at: 2026-09-04
+      - kind: command
+        locator: "[2026-09-05 정정, 리뷰 P2 #13] 실제로 web-root·webChartRef·useWebFavorites·WEB_TIMEFRAMES·WEB_DRAW_TOOLS·푸터 'Web'이 남아 있었고 PR #62에서 정리. 남기는 예외는 AC-001·Outcome에 정식 반영(localStorage web_*, CSS web-*·wm-*, URL /web·static/web). 이벤트명 web-favs-changed→desktop-favs-changed는 2차 리뷰 수정 PR에서"
+        revision: 45f2d89
+        observed_at: 2026-09-05
       - kind: manual-check
         locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Desktop 5174 새 config)에서 Desktop 로그인·차트·패널 확인(2026-09-04)"
         revision: main

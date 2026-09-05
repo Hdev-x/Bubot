@@ -27,7 +27,8 @@ import java.util.function.Supplier;
  *  - 같은 key 요청은 ttlMs 안에서는 캐시를 돌려준다(클라이언트 N개 → 상류 요청 1개).
  *  - 같은 key의 동시 요청은 한 번만 상류로 나가고 결과·예외를 공유한다(in-flight future, 리뷰 P1 #9).
  *  - 429/418을 받으면 Retry-After(초)만큼(없으면 429=30초, 418=300초) 상류 요청을 멈추고,
- *    캐시가 있으면 오래된 값이라도 돌려준다. 없으면 emptyValue. 차단 시각 갱신은 원자적(리뷰 P1 #8).
+ *    캐시가 staleMaxMs 안이면 오래된 값이라도 돌려준다. 없으면 emptyValue. 차단 시각 갱신은 원자적(리뷰 P1 #8).
+ *  - in-flight 소유자가 된 뒤 캐시·차단을 다시 확인하고, 상류가 null이면 기존 캐시를 지우지 않는다(리뷰 2차 P1).
  *  - 캐시는 MAX_ENTRIES를 넘으면 오래된 항목부터 지운다(리뷰 P1 #7).
  */
 @Slf4j
@@ -48,12 +49,20 @@ public class BinanceRestGuard {
     private final AtomicLong blockedUntil = new AtomicLong(0);
     private volatile long lastBlockLogAt;
 
-    /** 캐시·차단·단일 비행을 거쳐 상류를 호출한다. 429/418은 여기서 처리하고 나머지 예외는 그대로 던진다. */
+    /** staleMaxMs 없는 호출 — 차단·실패 시 마지막 값을 나이 제한 없이 돌려준다(티커처럼 비면 곤란한 데이터). */
     public Object get(String key, long ttlMs, Supplier<Object> upstream, Object emptyValue) throws Exception {
+        return get(key, ttlMs, Long.MAX_VALUE, upstream, emptyValue);
+    }
+
+    /**
+     * 캐시·차단·단일 비행을 거쳐 상류를 호출한다. 429/418은 여기서 처리하고 나머지 예외는 그대로 던진다.
+     * @param staleMaxMs 차단·실패 시 돌려줄 수 있는 캐시의 최대 나이(ms). 호가처럼 오래된 값이 해로운 데이터는 짧게.
+     */
+    public Object get(String key, long ttlMs, long staleMaxMs, Supplier<Object> upstream, Object emptyValue) throws Exception {
         long now = System.currentTimeMillis();
         Entry hit = cache.get(key);
-        if (hit != null && now - hit.at < ttlMs) return hit.data;
-        if (now < blockedUntil.get()) return hit != null ? hit.data : emptyValue;
+        if (isFresh(hit, now, ttlMs)) return hit.data;
+        if (now < blockedUntil.get()) return staleOr(hit, now, staleMaxMs, emptyValue);
 
         CompletableFuture<Object> mine = new CompletableFuture<>();
         CompletableFuture<Object> existing = inflight.putIfAbsent(key, mine);
@@ -65,20 +74,26 @@ public class BinanceRestGuard {
                 Throwable c = e.getCause();
                 throw c instanceof Exception ex ? ex : e;
             } catch (TimeoutException e) {
-                return hit != null ? hit.data : emptyValue;
+                return staleOr(hit, now, staleMaxMs, emptyValue);
             }
         }
         try {
+            // 소유자가 된 뒤 다시 확인 — 첫 검사와 putIfAbsent 사이에 다른 소유자가 캐시를 채웠거나 차단이 시작됐을 수 있다(리뷰 2차 P1).
+            now = System.currentTimeMillis();
+            hit = cache.get(key);
+            if (isFresh(hit, now, ttlMs)) return complete(mine, hit.data);
+            if (now < blockedUntil.get()) return complete(mine, staleOr(hit, now, staleMaxMs, emptyValue));
+
             Object data = upstream.get();
-            if (data != null) put(key, data);
-            Object out = data != null ? data : emptyValue;
-            mine.complete(out);
-            return out;
+            if (data != null) {
+                put(key, data);
+                return complete(mine, data);
+            }
+            // 상류가 null(빈 응답)이면 있던 캐시를 지우지 않고 그대로 준다(리뷰 2차 P1).
+            return complete(mine, staleOr(hit, now, staleMaxMs, emptyValue));
         } catch (RuntimeException e) {
             if (noteRateLimit(e)) {
-                Object out = hit != null ? hit.data : emptyValue;
-                mine.complete(out);
-                return out;
+                return complete(mine, staleOr(hit, now, staleMaxMs, emptyValue));
             }
             mine.completeExceptionally(e);
             throw e;
@@ -87,10 +102,27 @@ public class BinanceRestGuard {
         }
     }
 
-    /** 상류 실패 시 호출자가 빈 값 대신 쓸 마지막 성공 값. 없으면 emptyValue. */
+    private static Object complete(CompletableFuture<Object> f, Object out) {
+        f.complete(out);
+        return out;
+    }
+
+    private static boolean isFresh(Entry hit, long now, long ttlMs) {
+        return hit != null && now - hit.at < ttlMs;
+    }
+
+    private static Object staleOr(Entry hit, long now, long staleMaxMs, Object emptyValue) {
+        return hit != null && now - hit.at <= staleMaxMs ? hit.data : emptyValue;
+    }
+
+    /** 상류 실패 시 호출자가 빈 값 대신 쓸 마지막 성공 값. 없으면 emptyValue. 나이 제한 없음. */
     public Object staleOr(String key, Object emptyValue) {
-        Entry hit = cache.get(key);
-        return hit != null ? hit.data : emptyValue;
+        return staleOr(key, Long.MAX_VALUE, emptyValue);
+    }
+
+    /** 마지막 성공 값이 maxAgeMs 안이면 그 값, 아니면 emptyValue. */
+    public Object staleOr(String key, long maxAgeMs, Object emptyValue) {
+        return staleOr(cache.get(key), System.currentTimeMillis(), maxAgeMs, emptyValue);
     }
 
     private void put(String key, Object data) {
