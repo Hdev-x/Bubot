@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import type { Root } from 'react-dom/client';
 import './styles/mobile.css'; // 앱 셸 CSS를 화면 컴포넌트보다 먼저 로드 — 컴포넌트 옆 CSS가 뒤에 와서 원본 cascade(셸 → 화면) 유지 (리뷰 P0 수정)
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -35,7 +36,10 @@ if (import.meta.env.DEV && 'serviceWorker' in navigator) {
 
 import { CurrencyProvider } from '../../shared/contexts/CurrencyContext';
 
-createRoot(document.getElementById('root')!).render(
+// dev HMR로 main.tsx가 다시 실행돼도 React 루트는 하나만 재사용한다(Desktop main.tsx와 같은 이유 — 중복 createRoot 방지).
+declare global { interface Window { __bubotMobileRoot?: Root } }
+const root = (window.__bubotMobileRoot ??= createRoot(document.getElementById('root')!));
+root.render(
   <StrictMode>
     <ErrorBoundary>
       <CurrencyProvider>
