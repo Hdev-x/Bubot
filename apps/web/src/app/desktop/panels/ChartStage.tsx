@@ -3,6 +3,7 @@ import type { AuthUser } from '../../../api/server/authApi';
 import MarketChart from '../../../chart/MarketChart';
 import type { IndicatorLayer, TFKey, OBOptions } from '../../../chart/overlays/ChartOverlay';
 import type { useMtfCandles } from '../../../chart/hooks/useMtfCandles';
+import { priceKeyOf } from '../../../chart/hooks/marketKey';
 import type { Candle } from '../../../shared/types/market';
 import { getIntervalSeconds, type Tf } from '../lib/timeframes';
 import type { useDesktopCandles } from '../hooks/useDesktopCandles';
@@ -17,10 +18,10 @@ import { RsiSettingsPanel } from './RsiSettingsPanel';
 export type ChartDataGroup = {
   candles: Candle[];
   timeframe: Tf;
-  candlesSymbol: string | null | undefined; // 표시 중인 캔들의 심볼(wp-08 d02 전엔 loadedSymbol=현재가·캔들 로드 완료 종목)
+  candlesKey: string | null | undefined; // 표시 중인 캔들의 마켓 키(거래소|현선물|심볼|TF, wp-09 d01)
   handleVisibleRangeChange: ReturnType<typeof useDesktopCandles>['handleVisibleRangeChange'];
   mtfCandles: ReturnType<typeof useMtfCandles>['mtfCandles'];
-  mtfSymbol: ReturnType<typeof useMtfCandles>['mtfSymbol'];
+  mtfKey: ReturnType<typeof useMtfCandles>['mtfKey'];
   chartTickDecimals: number;
   obOptions: OBOptions;
 };
@@ -48,7 +49,7 @@ export function ChartStage({ draw, indi, view, rsi, rank, solo, data, sel, user,
   const { rsiOn, rsiSettings, setRsiSettings, rsiSettingsOpen, setRsiSettingsOpen } = rsi;
   const { rankMasterOn, rankTiers } = rank;
   const { soloOn, focusTracker, highlightTracker } = solo;
-  const { candles, timeframe, candlesSymbol, handleVisibleRangeChange, mtfCandles, mtfSymbol, chartTickDecimals, obOptions } = data;
+  const { candles, timeframe, candlesKey, handleVisibleRangeChange, mtfCandles, mtfKey, chartTickDecimals, obOptions } = data;
   const CHART_SYMBOL = sel.symbol;
   const CHART_PRODUCT = sel.productType;
   const chartSel = sel;
@@ -127,9 +128,9 @@ export function ChartStage({ draw, indi, view, rsi, rank, solo, data, sel, user,
                       active
                       indicatorSettings={effIndicatorSettings}
                       indicatorLayers={
-                        // 지표 데이터(mtfSymbol)가 표시 중인 차트 캔들(candlesSymbol)과 일치할 때만 그림 —
+                        // 지표 데이터(mtfKey)가 표시 중인 차트 캔들(candlesKey, TF 제외)과 같은 선택일 때만 그림 —
                         // 전환 중 옛 지표가 새 차트에 잠깐 얹혀 튀는 것 방지(안정화 후 표시).
-                        mtfSymbol === candlesSymbol
+                        candlesKey != null && mtfKey === priceKeyOf(candlesKey)
                           ? (['1M', '1W', '3D', '1D'] as TFKey[])
                               .filter((tf) => !!mtfCandles[tf])
                               .map((tf) => ({ tf, candles: mtfCandles[tf]! } satisfies IndicatorLayer))

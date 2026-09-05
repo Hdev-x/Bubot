@@ -27,6 +27,7 @@ import { type Section, type InvestTab } from './lib/sections';
 import { useDesktopCandles } from './hooks/useDesktopCandles';
 import { useLivePrice } from '../../hooks/market/useLivePrice';
 import { useCandleLoader } from '../../chart/hooks/useCandleLoader';
+import { chartKey, priceKey } from '../../chart/hooks/marketKey';
 import { useOrderbookSnapshot } from './hooks/useOrderbookSnapshot';
 import { useHeaderSnapshot } from './hooks/useHeaderSnapshot';
 import { useDrawingState } from './hooks/useDrawingState';
@@ -196,9 +197,12 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const { price: livePrice, dailyOpen: dailyOpenPrice, readySymbol: loadedSymbol } = useLivePrice({
     symbol: CHART_SYMBOL, exchange: chartSel.exchange, isFutures: chartIsFutures, loadDailyOpen,
   });
-  const { timeframe, candles, candlesSymbol, handleVisibleRangeChange } = useDesktopCandles({
+  const { timeframe, candles, candlesKey, handleVisibleRangeChange } = useDesktopCandles({
     activeTf, symbol: CHART_SYMBOL, productType: CHART_PRODUCT, exchange: chartSel.exchange, isBinance: chartIsBinance, isFutures: chartIsFutures, loadCandles,
   });
+  // 현재 선택의 마켓 키(wp-09 d01) — 캔들·지표 스테이징이 '내 데이터가 이 선택 것인지'를 이 키로 판정한다
+  const currentPriceKey = priceKey(chartSel.exchange, chartIsFutures, CHART_SYMBOL);
+  const currentChartKey = chartKey(chartSel.exchange, chartIsFutures, CHART_SYMBOL, timeframe.granularity);
   const [depthOpen, setDepthOpen] = useState(false); // 자릿수(묶음) 선택 드롭다운
   const ob = useOrderbookSnapshot({
     symbol: CHART_SYMBOL, exchange: chartSel.exchange, isFutures: chartIsFutures, isKrw: chartIsKrw, livePrice, loadedSymbol,
@@ -253,12 +257,12 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
     frameForTf(activeTf);
   }, [soloOn, focusTracker, candles.length, activeTf, frameForTf]);
 
-  // 차트 소수점도 "표시 중인 캔들(candlesSymbol)"과 함께만 바뀌게 스테이징 — 데이터보다 소수점이 먼저 바뀌어
+  // 차트 소수점도 "표시 중인 캔들(candlesKey)"과 함께만 바뀌게 스테이징 — 데이터보다 소수점이 먼저 바뀌어
   // 옛 캔들이 새 소수점으로 재포맷되며 가격축 폭이 흔들리는 것 방지. KRW는 원(정수)=0.
-  // (wp-08 d02: 현재가 준비(loadedSymbol)와 캔들 준비(candlesSymbol)를 분리 — 헤더·호가는 현재가만 오면 바뀌고, 차트 소수점은 캔들을 따른다)
+  // (wp-08 d02: 현재가 준비(loadedSymbol)와 캔들 준비(candlesKey)를 분리 — 헤더·호가는 현재가만 오면 바뀌고, 차트 소수점은 캔들을 따른다)
   const chartDecimalsTarget = chartIsKrw ? krwDec : getTickDecimals(CHART_SYMBOL);
   const chartDecimalsRef = useRef(chartDecimalsTarget);
-  if (candlesSymbol === CHART_SYMBOL) chartDecimalsRef.current = chartDecimalsTarget;
+  if (candlesKey === currentChartKey) chartDecimalsRef.current = chartDecimalsTarget;
   const chartTickDecimals = chartDecimalsRef.current;
 
   // 관심 미니 시세창 — hidden(숨김) / float(떠있는 창) / dock(왼쪽 사이드바). 비로그인은 관심 잠금이라 항상 숨김.
@@ -280,8 +284,8 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   }, [dockOpen]);
 
   const [obOptions] = useState<OBOptions>(DEFAULT_OB_OPTIONS);
-  // atomic: 활성 TF 전부 로드 후 한번에 커밋 + 그 심볼(mtfSymbol) 반환. 표시 중인 차트 캔들(candlesSymbol)과 일치할 때만 그림.
-  const { mtfCandles, mtfSymbol } = useMtfCandles(CHART_SYMBOL, effIndicatorSettings, loadCandles, true);
+  // atomic: 활성 TF 전부 로드 후 한번에 커밋 + 그 마켓 키(mtfKey) 반환. 표시 중인 차트 캔들(candlesKey)과 같은 선택일 때만 그림.
+  const { mtfCandles, mtfKey } = useMtfCandles(CHART_SYMBOL, effIndicatorSettings, loadCandles, true, currentPriceKey);
 
   const lastCandle = candles[candles.length - 1];
   // 크로스헤어가 가리키는 캔들의 OHLC (없으면 마지막 캔들)
@@ -363,7 +367,7 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const rsi = { rsiOn, setRsiOn, rsiSettings, setRsiSettings, rsiSettingsOpen, setRsiSettingsOpen };
   const rank = { rankMasterOn, setRankMasterOn, rankTiers, setRankTiers };
   const solo = { soloOn, focusTracker, setFocusTracker, setSoloActive, frameForTf, soloUserViewRef, highlightTracker };
-  const chartData = { candles, timeframe, candlesSymbol, handleVisibleRangeChange, mtfCandles, mtfSymbol, chartTickDecimals, obOptions };
+  const chartData = { candles, timeframe, candlesKey, handleVisibleRangeChange, mtfCandles, mtfKey, chartTickDecimals, obOptions };
   const sel = { ...chartSel, productType: CHART_PRODUCT };
 
   return (
