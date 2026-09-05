@@ -8,10 +8,10 @@ import type { RsiSettings } from '../../shared/utils/rsiCandles';
 
 // MarketChart 전용 — RSI 캔들(하단 페인1) 시리즈 생성·제거·데이터·기준선. MarketChart.tsx에서 옮김 (wp-07 d04).
 // ref들은 MarketChart가 소유한다(차트 재생성 effect가 showRsiCandlesRef·rsiSeriesRef를 같이 씀).
-export function useRsiPane({ chartRef, candlesRef, candles, rsiSettings, showRsiCandles, toChartTime, rsiSeriesRef, rsiPriceLinesRef, rsiSettingsRef, showRsiCandlesRef, rsiLastCountRef, rsiLastTimeRef }: {
+// candles 변경 시 그리는 effect는 순서 때문에 MarketChart에 남아 있다(초기화·거래량 effect 뒤).
+export function useRsiPane({ chartRef, candlesRef, rsiSettings, showRsiCandles, toChartTime, rsiSeriesRef, rsiPriceLinesRef, rsiSettingsRef, showRsiCandlesRef, rsiLastCountRef, rsiLastTimeRef }: {
   chartRef: RefObject<IChartApi | null>;
   candlesRef: RefObject<Candle[]>;
-  candles: Candle[];
   rsiSettings: RsiSettings;
   showRsiCandles: boolean;
   toChartTime: (time: string | number) => Time;
@@ -124,12 +124,6 @@ export function useRsiPane({ chartRef, candlesRef, candles, rsiSettings, showRsi
     drawRsi(candlesRef.current);
 
   }, [rsiSettings, applyRsiLines, drawRsi]);
-
-  // RSI 캔들 데이터 — candles 변경마다 그림(시리즈 있을 때만). 실시간은 마지막 봉만 update.
-  useEffect(() => {
-    if (!rsiSeriesRef.current) return;
-    drawRsi(candles);
-  }, [candles, drawRsi]);
 
   return { ensureRsiSeries, destroyRsiSeries, drawRsi };
 }

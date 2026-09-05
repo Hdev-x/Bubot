@@ -1,9 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import './styles/mobile.css'; // 앱 셸 CSS를 화면 컴포넌트보다 먼저 로드 — 컴포넌트 옆 CSS가 뒤에 와서 원본 cascade(셸 → 화면) 유지 (리뷰 P0 수정)
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import UpdateToast from './components/UpdateToast';
-import './styles/mobile.css';
 
 // iOS 핀치/더블탭 줌 차단 (홈화면 웹앱 뷰포트 줌 풀림 방지)
 document.addEventListener('gesturestart', (e) => e.preventDefault());
