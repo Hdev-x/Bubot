@@ -26,11 +26,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,812 → 1,529줄. 새 파일 8개 298줄: lib/timeframes(63)·orderbook(20)·format(22)·drawTools(33)·indicatorDefaults(25), panels/ObjectTree(56)·MiniCandles(20)·SidebarBits(59). DesktopApp 변경은 삭제 288줄 + import 8줄, 본문 변경 0. 옮긴 코드는 export 추가·React.ReactNode→ReactNode 외 동일. SECTIONS·INVEST_TABS·CHATS·CHART_FALLBACK 위치: CHART_FALLBACK은 timeframes로, 나머지는 d02까지 잔류"
-        revision: working-tree
+        revision: 82203cc
         observed_at: 2026-09-04
       - kind: command
         locator: "tsc ok · lint 0(불필요해진 import 4개 제거 후) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. Desktop dev 서버 렌더링, computed style 대조 325 요소 중 14 diff는 OHLC·호가 게이지·클래스 없는 span(실시간)뿐"
-        revision: working-tree
+        revision: 82203cc
         observed_at: 2026-09-04
   - id: wp-06-d02-shell
     title: "셸 영역 컴포넌트 — DesktopHeader · IconRail · Sidebar(InvestSection 포함)"
@@ -43,11 +43,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,529 → 1,216줄(삭제 331 + 호출 21줄 + import). 새 파일: panels/DesktopHeader(73, props 8)·IconRail(35, props 4)·Sidebar(59, props 7 + invest 묶음)·InvestSection(272, 묶음 5개: main 9·spot 6·currency 5·view 9·actions 2), lib/sections(10: Section·SECTIONS·INVEST_TABS·InvestTab — IconRail과 Sidebar가 같이 써서 Sidebar 대신 lib로). JSX 본문·핸들러·effect 내용 변경 0, menuRef는 바깥 클릭 effect가 써서 부모 소유 유지"
-        revision: working-tree
+        revision: 7a4758a
         observed_at: 2026-09-04
       - kind: command
         locator: "tsc ok · lint 0(이동으로 불필요해진 import 6개 제거) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. Desktop 렌더링(header·rail 4버튼·sidebar), computed style 325 요소 중 14 diff는 실시간 값뿐. 비로그인 상호작용: 레일 '실시간' 클릭 → 사이드바 open·제목 '실시간'·MarketPanel 렌더, 접기 버튼 → 닫힘"
-        revision: working-tree
+        revision: 7a4758a
         observed_at: 2026-09-04
   - id: wp-06-d03-hooks
     title: "데이터 훅 — useHeaderSnapshot · useOrderbookSnapshot · useDesktopCandles"
@@ -60,11 +60,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,216 → 1,035줄(삭제 197 + 훅 호출 16줄). hooks/useDesktopCandles(36)·useOrderbookSnapshot(95)·useHeaderSnapshot(116). 승인 표 그대로, 추가로 funding을 호가 훅 반환값에 넣음(JSX가 OB 없을 때 폴백으로 씀). 상태·effect·의존성 배열 내용 변경 0. 훅 호출 순서는 캔들 → 호가(원래 호가 블록이 앞)로 바뀜 — 두 블록은 독립 구독이라 영향 없음"
-        revision: working-tree
+        revision: 076e542
         observed_at: 2026-09-04
       - kind: command
         locator: "tsc ok · lint 0(불필요 import 14개 제거) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭에서 Desktop 로드: 종목 헤더 H 스냅샷(전날 종가·당일 시가·24h 고저·거래량) 표시, 호가 12행, 제목 현재가 갱신, 콘솔 오류는 로그인 전 ws-coin뿐. computed style 325 요소 중 14 diff는 실시간 값뿐"
-        revision: working-tree
+        revision: 076e542
         observed_at: 2026-09-04
   - id: wp-06-d04a-chart-hooks
     title: "차트 상태 훅 — useDrawingState · useIndicatorState · useChartViewState (툴바·무대 props 묶음)"
@@ -77,11 +77,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,035 → 1,002줄(삭제 50 + 훅 호출·구조 분해 12줄). hooks/useDrawingState(24)·useIndicatorState(38)·useChartViewState(27). 상태 선언 20개·ref 3개·eff* 5개·isCustomTheme·toggleIndiGroup을 위치만 이동, 초기값·저장 키·본문 변경 0. DesktopApp은 당분간 훅 반환을 전부 구조 분해해 JSX가 기존 이름을 그대로 씀(d04b에서 묶음째 전달). 드롭다운 바깥 클릭 effect·visibleTFs·TF 폴백 effect는 잔류. 훅 호출 위치가 원래 선언 위치(89~113)와 같아 다른 훅과의 순서 변화는 chartTheme·isLogScale·priceLineOn·지표 설정 4개가 앞으로 당겨지는 것뿐"
-        revision: working-tree
+        revision: e7d94b6
         observed_at: 2026-09-04
       - kind: command
         locator: "tsc ok · lint 0(불필요 import 5줄 정리) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop: 렌더링, 툴바 TF 버튼 1H→4H 클릭 시 active 전환, 호가 12행, 콘솔 오류는 로그인 전 ws-coin뿐"
-        revision: working-tree
+        revision: e7d94b6
         observed_at: 2026-09-04
   - id: wp-06-d04b-chart
     title: "차트 영역 컴포넌트 — SymbolHeader · ChartStage · ChartToolbar (묶음 props)"
@@ -94,11 +94,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 1,002 → 539줄(삭제 485 + 묶음 객체 5개·컴포넌트 호출 27줄). panels/SymbolHeader(65, props 6)·ChartToolbar(364, 묶음 6 + 개별 6)·ChartStage(153, 묶음 8 + 개별 6)·chartProps.ts(38, 묶음 타입). JSX 본문·핸들러 변경 0. 표와 다른 점: 툴바에 onLoginClick 추가(지표·설정 버튼이 비로그인 시 호출), 무대 data 묶음에 obOptions 추가, 개별로 잡혔던 trade·section·spot은 className 문자열 오탐이라 제외. d04a의 구조 분해는 바깥 클릭 effect·useMtfCandles·TF 폴백이 쓰는 9개만 남김"
-        revision: working-tree
+        revision: ffca646
         observed_at: 2026-09-05
       - kind: command
         locator: "tsc ok · lint 0(불필요 import 15줄 정리) · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop: 종목 헤더(H 스냅샷)·툴바 TF 13개·4H 클릭 전환·OHLC 오버레이·차트 canvas·호가 12행, 콘솔 오류는 로그인 전 ws-coin뿐"
-        revision: working-tree
+        revision: ffca646
         observed_at: 2026-09-05
   - id: wp-06-d05-middle
     title: "가운데 영역 — OrderbookPanel · RightPanel, 문서 갱신"
@@ -111,11 +111,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "DesktopApp.tsx 539 → 451줄. panels/OrderbookPanel(54, props: ob 훅 객체·depthOpen·setDepthOpen·exchange)·RightPanel(63, props: user, CHATS 목업 상수 동반 이동). JSX·핸들러 변경 0. useOrderbookSnapshot 반환은 객체 ob로 받고 krwDec·getTickDecimals만 풀어 씀. STRUCTURE.md 트리 갱신"
-        revision: working-tree
+        revision: a2160da
         observed_at: 2026-09-05
       - kind: command
         locator: "tsc ok · lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. 새 탭 Desktop: 호가 12행·오른쪽 패널 채팅 6개·비로그인 입력 잠금, 콘솔 오류는 로그인 전 ws-coin뿐. 잔여: DesktopApp 451줄로 AC-001 목표 400줄을 51줄 초과(solo 포커스·dock 애니메이션·바깥 클릭 effect·캡쳐 핸들러 잔류). 기존 panels/DrawingToolbar.tsx 641줄은 이 WP 범위 밖"
-        revision: working-tree
+        revision: a2160da
         observed_at: 2026-09-05
 milestones:
   - id: desktop-app-split-done
@@ -129,11 +129,11 @@ milestones:
     evidence:
       - kind: command
         locator: "GATE-AC-001: main 기준 DesktopApp.tsx 451줄(AC-001 목표 400 초과 51줄 — 2026-09-05 사용자 결정으로 451에서 닫음, 잔여는 solo 포커스·dock 애니메이션·바깥 클릭 effect·캡쳐 핸들러), 새 파일 21개 모두 400줄 이하(최대 ChartToolbar 364), import 방향 app→chart/hooks/api/shared만(역방향 grep 0). 각 PR tsc·lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success"
-        revision: main
+        revision: a2160da
         observed_at: 2026-09-05
       - kind: manual-check
         locator: "GATE-AC-002: 사용자가 Delivery마다 로그인 후 해당 영역 상호작용을 확인(d01~d05, 2026-09-04~05): 프로필 메뉴·관심창·사이드바 탭·토글, 종목 전환 시 헤더·호가, 툴바 드롭다운·드로잉·RSI·신뢰선·캡쳐, 호가 묶음 드롭다운·채팅 입력"
-        revision: main
+        revision: a2160da
         observed_at: 2026-09-05
 extensions: {}
 ---

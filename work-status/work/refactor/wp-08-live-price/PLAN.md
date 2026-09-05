@@ -10,8 +10,8 @@ supersedes: []
 outcome: "Desktop의 현재가(헤더·호가 중앙·탭 타이틀)는 차트 TF·캔들 로드와 무관한 전용 훅 useLivePrice(거래소 티커 REST seed + 티커 WS)에서 나오고, DesktopApp은 '현재가 → 캔들·호가·헤더' 순으로 조립된다. useCoinCandles는 캔들 전용으로 줄어들고(priceFromTicker·헤더 티커 의존 제거), Mobile 차트의 현재가(차트 TF 종가)는 그대로다."
 acceptance:
   - "AC-001: hooks/market/useLivePrice.ts가 신설되고(≤ 150줄), 거래소 4종(BITGET·BINANCE·UPBIT·BITHUMB)·현물/선물에서 seed(fetchHeaderTicker) → WS(subscribe*Tickers·subscribeKrwTickers) 순으로 현재가를 준다. 종목 전환 직후엔 옛 종목 값을 유지하다 새 seed가 오면 한 번에 바뀐다(스테이지드 스왑 유지)."
-  - "AC-002: Desktop에서 헤더 현재가·등락, 호가 중앙가, 탭 타이틀이 useLivePrice 값을 쓰고, useDesktopCandles는 priceFromTicker 없이 캔들·일봉시가만 담당한다. DesktopApp 훅 호출 순서는 useLivePrice → useDesktopCandles → useOrderbookSnapshot → useHeaderSnapshot."
-  - "AC-003: '준비된 종목만 표시'(loadedSymbol) 판정은 '현재가 seed 완료 && 일봉시가 로드 완료'로 정의하고 헤더·호가·차트 소수점 스테이징이 이 판정을 쓴다. 전환 중 옛 종목·새 종목 값이 섞여 보이지 않는다(육안)."
+  - "AC-002: Desktop에서 헤더 현재가·등락, 호가 중앙가, 탭 타이틀이 useLivePrice 값을 쓰고, useDesktopCandles는 priceFromTicker 없이 캔들·일봉시가만 담당한다. DesktopApp 훅 호출 순서는 useCandleLoader → useLivePrice(loadDailyOpen) → useDesktopCandles(loadCandles) → useOrderbookSnapshot → useHeaderSnapshot. [2026-09-05 정식 변경, d02 1안] 등락 기준(dailyOpen)은 티커 openUtc가 아니라 캔들 1Dutc 시가(loadDailyOpen)이며 티커 값은 폴백 — Binance 티커 openPrice가 24h 롤링이라 다른 거래소와 어긋나기 때문."
+  - "AC-003: '준비된 종목만 표시' 판정을 둘로 나눈다 [2026-09-05 정식 변경, d02]: 헤더·호가·탭 타이틀은 readySymbol(현재가·일봉 시가 seed 완료), 차트 소수점·지표(mtf) 스테이징은 candlesSymbol(표시 중인 캔들의 심볼). 전환 중 옛 종목·새 종목 값이 섞여 보이지 않는다(육안). 헤더 체감 순서는 allReady(24h 티커·일봉·시가총액)를 기다려 d02 전과 같다."
   - "AC-004: useCoinCandles에서 priceFromTicker·fetchHeaderTicker 의존이 사라지고 남는 livePrice는 '차트 TF 마지막 종가'만 뜻한다. Mobile CoinChartPage 동작·표시는 변경 전과 같다."
   - "AC-005: 각 Delivery 후 tests(22 + 신규)·build 2종·lint error 0·번들 제외 문자열 0·check:css·labs tsc가 유지되고, Desktop·Mobile dev 서버가 렌더링된다. d02·d03은 사용자가 로그인 후 양 앱 육안 확인(전환·현재가·등락·호가 중앙)."
   - "AC-006: import 방향 app → chart/hooks → api → shared 유지. useLivePrice는 hooks/market/에 두고 chart/를 import하지 않는다."
@@ -123,17 +123,17 @@ useLivePrice({ symbol, exchange, isFutures, enabled = true }): {
 }
 ```
 
-- seed: `fetchHeaderTicker(exchange, symbol, isFutures)` → `last`·`openUtc`. 응답이 현재 종목 것일 때만 커밋(전환 중 늦은 응답 폐기).
+- seed: `fetchHeaderTicker(exchange, symbol, isFutures)` → `last`. `dailyOpen`은 호출자가 준 `loadDailyOpen`(Desktop: `loadCandles('1Dutc', 2)` 마지막 시가)이 우선이고 티커 `openUtc`는 폴백 [2026-09-05 d02 1안 — 원안 '티커 openUtc'는 Binance에서 24h 롤링 값이라 폐기]. 둘을 `Promise.all`로 함께 기다린 뒤 커밋. 응답이 현재 종목 것일 때만 커밋(전환 중 늦은 응답 폐기).
 - WS: Bitget·Binance는 서버 중계 `subscribeBitget{Futures,Spot}Tickers`·`subscribeBinance{Futures,Spot}Tickers`(`RealtimeTicker.price`), 업비트·빗썸은 `subscribeKrwTickers`. seed 전 틱은 무시(`readySymbol` 가드) — 현행 `loadedKeyRef` 가드와 같은 목적.
 - `enabled=false`면 구독 해제·값 유지. Mobile은 이 훅을 쓰지 않는다(현행 차트 종가 유지).
 - 테스트(vitest): 구독 함수를 모의해 seed→틱 순서, 전환 중 늦은 seed 폐기, 옛 값 유지 → 교체, KRW 분기.
 
 ### Desktop 전환 (d02)
 
-- `DesktopApp`: `useLivePrice` → `useDesktopCandles` → `useOrderbookSnapshot` → `useHeaderSnapshot`. 호가·헤더·탭 타이틀에 `price`·`dailyOpen`·`readySymbol`을 넘긴다.
-- `useDesktopCandles`: `priceFromTicker` 제거. 반환에서 `livePrice`·`dailyOpenPrice`·`loadedSymbol` 대신 캔들만(`candles`·`timeframe`·`loadCandles`·`handleVisibleRangeChange`). 차트 소수점 스테이징(`chartDecimalsRef`)은 캔들 배열의 종목(`candlesKey`)을 따라야 하므로 `useCoinCandles`가 `candlesSymbol`을 추가로 반환한다(새 상태 아님, 기존 `candlesKeyRef` 노출).
-- `loadedSymbol` 재정의: 헤더·호가는 `readySymbol === symbol`, 차트 소수점·지표는 `candlesSymbol === symbol`. [2026-09-05 정정] 헤더 체감 순서는 바뀌지 않는다 — 헤더는 `allReady`가 24h 티커·일봉 2개·시가총액까지 기다리므로 d02 전과 같이 차트보다 늦게 바뀐다(사용자 관찰로 확인). 분리의 효과는 현재가가 차트 TF·캔들 fetch 실패에 묶이지 않는 것이다.
-- 등락 기준이 캔들 일봉시가(`loadCandles('1Dutc', 2)`)에서 티커 `openUtc`로 바뀐다. 거래소마다 UTC 기준이 같으므로 값은 같아야 하며, 다르면 d02 evidence에 기록하고 사용자에게 보고한다.
+- `DesktopApp`: `useCandleLoader` → `useLivePrice(loadDailyOpen)` → `useDesktopCandles(loadCandles)` → `useOrderbookSnapshot` → `useHeaderSnapshot`. 호가·헤더·탭 타이틀에 `price`·`dailyOpen`·`readySymbol`을 넘긴다 [실행 시 변경: `useCandleLoader` 호출을 조립 파일로 올림 — 1안에 필요].
+- `useDesktopCandles`: `priceFromTicker` 제거, `loadCandles`를 인자로 받음. 반환은 `candles`·`candlesSymbol`·`timeframe`·`handleVisibleRangeChange`. 차트 소수점·지표 스테이징은 `useCoinCandles`가 반환하는 `candlesSymbol`을 따른다 [실행 시 변경: 렌더 중 ref 접근 lint 규칙 때문에 ref 노출이 아니라 state 미러 — `candlesKeyRef` 설정 2곳에서 함께 갱신].
+- `loadedSymbol` 재정의(AC-003 정식 변경): 헤더·호가는 `readySymbol === symbol`, 차트 소수점·지표는 `candlesSymbol === symbol`. [2026-09-05 정정] 헤더 체감 순서는 바뀌지 않는다 — 헤더는 `allReady`가 24h 티커·일봉 2개·시가총액까지 기다리므로 d02 전과 같이 차트보다 늦게 바뀐다(사용자 관찰로 확인). 분리의 효과는 현재가가 차트 TF·캔들 fetch 실패에 묶이지 않는 것이다.
+- 등락 기준: 원안은 티커 `openUtc`로 바꾸는 것이었으나 Binance에서 -2.04%(24h 롤링) vs -0.02%(캔들 시가)로 달라 사용자 결정(1안)으로 캔들 1Dutc 시가를 유지한다(d02 Evidence).
 
 ### useCoinCandles 정리 (d03)
 

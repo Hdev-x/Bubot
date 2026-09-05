@@ -25,11 +25,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "git mv 10개(DesktopApp·DesktopLogin·DesktopSignup +css, panels/MarketPanel·WatchlistPanel·FavoritesPanel·DrawingToolbar·RsiSettingsPanel), 식별자 12종 단어 경계 치환 13 파일 47줄, labs 변경 0(snapFloat 경로 유지). app/desktop에 Web* 식별자 0. 표와 다른 점: Watchlist·RsiSettings는 기존 타입 이름과 충돌해 *Panel 접미어"
-        revision: working-tree
+        revision: 5be977f
         observed_at: 2026-09-04
       - kind: command
         locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc. dev 서버 Desktop /web/ 새 모듈 이름으로 렌더링(차트·패널 5), Mobile 200. 조사 중 5174 서버에서 Mobile 진입점을 열면 virtual:pwa-register 500이 나는 것은 Desktop config에 PWA 플러그인이 없는 기존 동작(d02에서 리라이트 정리)"
-        revision: working-tree
+        revision: 5be977f
         observed_at: 2026-09-04
   - id: wp-05-d02-build
     title: "진입점·빌드 이름 — web.html, vite.config.web.js, build:web, dist-web, CI·ops 스크립트"
@@ -42,11 +42,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "git mv web.html→desktop.html, vite.config.web.js→vite.config.desktop.js. package.json(bubot-web, dev:desktop, build:desktop), eslint ignores·.gitignore(dist-desktop·.vite-desktop), ci.yml(build:desktop), ops/front-end.sh(config·문구), ops/deploy.sh(build:desktop·dist-desktop·desktop.html→index.html, static/web 경로 유지). base '/web/'·URL 유지. dev 리라이트를 쿼리스트링 포함 경로로 확장"
-        revision: working-tree
+        revision: 7d34980
         observed_at: 2026-09-04
       - kind: command
         locator: "lint 0 · tests 22 · build · build:desktop(dist-desktop/desktop.html) · 번들 문자열 0 · labs tsc. Desktop dev 서버를 vite.config.desktop.js로 재기동: /web/ 와 /web/?r=2 모두 desktop.html(main.tsx desktop) 서빙, 차트 렌더링. Mobile 5175 200"
-        revision: working-tree
+        revision: 7d34980
         observed_at: 2026-09-04
   - id: wp-05-d03-docs
     title: "문서 갱신, web-mockup.html 처리, 잔여 'web' 목록 확정"
@@ -59,11 +59,11 @@ deliveries:
     evidence:
       - kind: document
         locator: "COMMANDS·README·GIT-WORKFLOW·STRUCTURE 트리·ROADMAP·CURRENT 갱신. web-mockup.html → docs/design/desktop-mockup.html(사용자 결정: 이동), DESIGN.md에 항목"
-        revision: working-tree
+        revision: ce8b0a4
         observed_at: 2026-09-04
       - kind: command
         locator: "잔여 grep(git grep -niE '\\bweb\\b|web[-.]|Web[A-Z]' apps/web ops .github, WebSocket·apps/web 경로·URL /web·labs 제외) = ops/deploy.sh의 Tomcat WEBAPPS 변수 4줄뿐(서버 경로, 무관). AC-001 충족 — [정정 포인터] 이 주장은 틀렸다. milestone Evidence 2026-09-05 항목 참조. 원인 '경로 필터가 모든 줄을 지웠다'는 당시 명령을 재실행해 확인한 것이 아닌 추정"
-        revision: working-tree
+        revision: ce8b0a4
         observed_at: 2026-09-04
 milestones:
   - id: desktop-naming-done
@@ -77,7 +77,7 @@ milestones:
     evidence:
       - kind: command
         locator: "GATE-AC-001: 완료 시 기록 '잔여 grep = Tomcat WEBAPPS 4줄뿐' — 잘못된 기록(아래 2026-09-05 정정 참조). 원인은 (추정) 검사 명령이 파일 경로 apps/web를 걸러내며 모든 줄을 지운 것으로 보이나 당시 명령을 재실행해 확인하지는 않았다. 각 PR lint 0·tests 22·build 2종·번들 문자열 0·labs tsc·CI success, 문서 명령·경로 일치(d03)는 사실"
-        revision: main
+        revision: ce8b0a4
         observed_at: 2026-09-04
       - kind: command
         locator: "[2026-09-05 정정, 리뷰 P2 #13] 실제로 web-root·webChartRef·useWebFavorites·WEB_TIMEFRAMES·WEB_DRAW_TOOLS·푸터 'Web'이 남아 있었고 PR #62에서 정리. 이 revision에서는 식별자 정리만 수행. 예외의 AC-001·Outcome 반영과 이벤트명 변경은 04adac5 항목"
@@ -89,7 +89,7 @@ milestones:
         observed_at: 2026-09-05
       - kind: manual-check
         locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Desktop 5174 새 config)에서 Desktop 로그인·차트·패널 확인(2026-09-04)"
-        revision: main
+        revision: ce8b0a4
         observed_at: 2026-09-04
 extensions: {}
 ---

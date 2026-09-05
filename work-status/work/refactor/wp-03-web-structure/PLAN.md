@@ -26,7 +26,7 @@ deliveries:
     evidence:
       - kind: command
         locator: "8개 파일 삭제(참조 0 확인), styles.css 8개 구역 2,076줄 삭제 — 구역 밖 정의 없는 범용 선택자 0, 삭제 후 파일이 '원본 − 구역'과 바이트 동일; lint 0·tests 22·build 2종·번들 문자열 0. '멀티봇 대시보드' 구역은 자산 화면 클래스 88개 사용 중이라 보존"
-        revision: working-tree
+        revision: 94aed4e
         observed_at: 2026-09-03
   - id: wp-03-d01-api
     title: "api/ → client.ts + server/ + exchange/"
@@ -39,11 +39,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "17 rename(server 6 · exchange 10 · config/chartPolicy), client.ts 신설(authApi에서 토큰·인증 헤더·authedGetJson/Mutate 분리), importer 46+labs 13 파일은 import 경로 줄만 변경"
-        revision: working-tree
+        revision: 0ace61e
         observed_at: 2026-09-03
       - kind: command
         locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc 통과"
-        revision: working-tree
+        revision: 0ace61e
         observed_at: 2026-09-03
   - id: wp-03-d02-hooks
     title: "hooks/ → market/ · account/ · ui/, 차트 훅은 chart/hooks"
@@ -56,11 +56,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "20 rename(market 6 · account 4 · ui 5 · chart/hooks 5), importer 32 + labs 3 파일은 import 경로 줄만 변경, 비-import 변경 0"
-        revision: working-tree
+        revision: eab6fd8
         observed_at: 2026-09-03
       - kind: command
         locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc 통과"
-        revision: working-tree
+        revision: eab6fd8
         observed_at: 2026-09-03
   - id: wp-03-d03-chart
     title: "chart/ 신설 — MarketChart·overlays·indicators·settings·drawing·analysis + 동반 CSS 추출"
@@ -73,11 +73,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "27 rename(MarketChart · overlays 4 · chart-hooks 2 · indicators 8 · IndicatorSheet · ChartSettingsSheet · drawing 6 · analysis 4), importer 20 + labs 1은 import 줄만; ChartSettingsSheet.css 신설(styles.css·web.css의 동일 복사본 127줄 통합, 선택자 겹침 0·상위 특이도 override만 존재)"
-        revision: working-tree
+        revision: 06e4c6c
         observed_at: 2026-09-03
       - kind: command
         locator: "lint 0 · tests 22 · build 2종(두 번들 모두 설정 시트 CSS 포함) · 번들 문자열 0 · labs tsc"
-        revision: working-tree
+        revision: 06e4c6c
         observed_at: 2026-09-03
   - id: wp-03-d04-app-mobile
     title: "app/mobile — 진입점·pages·components·sheets, styles.css 통째 이동"
@@ -90,11 +90,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "44 rename(main·App·sw.js·pages 5·components 12→sheets 5+7·coin-list 9·trade 14·ApiKeyManager·styles.css→styles/mobile.css), importer 32 + labs 2는 import 줄만; index.html 스크립트 경로·vite PWA srcDir 갱신"
-        revision: working-tree
+        revision: 2e525af
         observed_at: 2026-09-03
       - kind: command
         locator: "lint 0 · tests 22 · build(sw.js 생성 확인)·build:web · 번들 문자열 0 · labs tsc; dev 서버 Mobile 새 진입점 로드·mobile.css 989 규칙 적용·콘솔 오류는 기존 ws-coin뿐"
-        revision: working-tree
+        revision: 2e525af
         observed_at: 2026-09-03
   - id: wp-03-d05-app-desktop
     title: "app/desktop — 진입점·panels, web.css 통째 이동"
@@ -107,11 +107,11 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "12 rename(main·WebApp·WebLogin·WebSignup·panels 7·web.css→styles/desktop.css), importer 10 + labs 1은 import 줄만; web.html 스크립트 경로 갱신"
-        revision: working-tree
+        revision: 88634ed
         observed_at: 2026-09-03
       - kind: command
         locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc; dev 서버 Desktop 새 진입점 로드·desktop.css 733 규칙·차트 렌더링·콘솔 오류는 기존 ws-coin뿐"
-        revision: working-tree
+        revision: 88634ed
         observed_at: 2026-09-03
   - id: wp-03-d06-shared
     title: "shared/ 정리(types·constants·contexts·utils), 의존 방향 규칙 문서화"
@@ -124,15 +124,15 @@ deliveries:
     evidence:
       - kind: parity-check
         locator: "13 rename(types 2·constants 1·contexts 1·utils 9 → shared/), importer 43 + labs 12는 import 줄만(94줄 +/-). chart/analysis 재수출은 유지"
-        revision: working-tree
+        revision: f31cc27
         observed_at: 2026-09-03
       - kind: command
         locator: "lint 0 · tests 22 · build 2종 · 번들 문자열 0 · labs tsc; dev 서버 Mobile·Desktop 로드"
-        revision: working-tree
+        revision: f31cc27
         observed_at: 2026-09-03
       - kind: document
         locator: "STRUCTURE.md 트리·의존 방향, PROJECT.md 의존 방향 절, README 한 줄, WEB-STRUCTURE-REVIEW 4절 결과 주석"
-        revision: working-tree
+        revision: f31cc27
         observed_at: 2026-09-03
 milestones:
   - id: web-structure-locked

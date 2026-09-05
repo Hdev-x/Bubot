@@ -60,6 +60,6 @@ Mobile(탭 앱)과 Desktop(패널 배치)은 화면이 다르지만 차트·훅�
 
 - `apps/web → shared`, `labs/trading/worker → shared`, `ops/verify → labs/trading/worker · shared`
 - `labs/trading/web → apps/web`(`@web/*` alias) · `shared` — 보존 코드가 Beta 공용 모듈을 참조하는 단방향
-- `apps`는 `labs`를 import하지 않는다 (CI 번들 검사·grep으로 확인)
+- `apps`는 `labs`를 import하지 않는다 (각 Delivery Gate에서 번들 grep으로 수동 확인 — CI 자동 검사는 아님)
 - `apps/web/src` 내부는 `app → chart/hooks → api → shared` 방향만 허용한다. 루트 `shared/` 계산 엔진은 `chart/analysis/`를 통해서만 가져온다. 앱 전역 CSS는 `app/*/styles/`, 공용 컴포넌트 CSS는 컴포넌트 옆에 둔다
 - API의 `backtest`·`bot`·`push`·`trade/paper`·Admin·Internal·TradeConfig·Trade bean은 `@Profile("trading")`
