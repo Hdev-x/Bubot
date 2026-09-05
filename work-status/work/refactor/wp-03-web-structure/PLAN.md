@@ -149,9 +149,13 @@ milestones:
         revision: f31cc27
         observed_at: 2026-09-03
       - kind: manual-check
-        locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Vite 5174/5175)에서 로그인 후 Mobile·Desktop 화면을 확인함(2026-09-03). AC-004의 스크린샷 파일 대조는 실행하지 않고 사용자 육안 확인으로 대체(사용자 결정 2026-09-03). 2026-09-05 리뷰 P2 #11 지적에 따라 AC-004를 육안 확인 기준으로 정식 변경(Evidence만으로 required Acceptance를 낮추지 않기 위해)"
+        locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Vite 5174/5175)에서 로그인 후 Mobile·Desktop 화면을 확인함(2026-09-03). AC-004의 스크린샷 파일 대조는 실행하지 않고 사용자 육안 확인으로 대체"
         revision: f31cc27
         observed_at: 2026-09-03
+      - kind: document
+        locator: "AC-004·GATE-AC-002·진행 방식 절을 육안 확인 기준으로 정식 변경(리뷰 P2 #11, 3차 리뷰 P2). 승인 근거: 2026-09-03 사용자가 로컬 기동 육안 확인 후 각 PR merge를 승인했고('확인했어, 승인'), 스크린샷 대조를 대체한다는 별도 문구는 없었다 — 그래서 기준 변경 자체는 2026-09-05 사용자의 리뷰 수정 PR(E·F) 승인에 결속한다"
+        revision: 04adac5
+        observed_at: 2026-09-05
 extensions: {}
 ---
 
@@ -177,7 +181,7 @@ extensions: {}
 - 사용자와 Delivery 단위로 진행한다. 각 Delivery 시작 전에 이동 목록·import 변경 방식·검증을 설명하고 승인받는다.
 - 한 PR에 한 Delivery. `git mv` + 경로 치환, 내용 변경은 import 줄과 CSS 파일 분할뿐임을 diff로 확인한다.
 - Gate: `npm test`(22) · `npm run build` · `npm run build:web` · `npm run lint`(error 0) · 번들 grep(`/api/paper|/api/admin|/api/bot|backtest-runs|trade-configs` 0).
-  d03~d05는 `docs/images/` 외 임시 경로에 앞뒤 스크린샷을 저장해 대조한다.
+  d03~d05는 로컬 기동 후 사용자 육안 확인으로 전후를 대조한다(2026-09-03 사용자 결정, 원안의 스크린샷 저장·대조는 실행하지 않음 — AC-004 2026-09-05 정식 변경).
 
 ## Delivery Notes
 

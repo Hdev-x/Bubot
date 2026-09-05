@@ -62,7 +62,7 @@ deliveries:
         revision: working-tree
         observed_at: 2026-09-04
       - kind: command
-        locator: "잔여 grep(git grep -niE '\\bweb\\b|web[-.]|Web[A-Z]' apps/web ops .github, WebSocket·apps/web 경로·URL /web·labs 제외) = ops/deploy.sh의 Tomcat WEBAPPS 변수 4줄뿐(서버 경로, 무관). AC-001 충족"
+        locator: "잔여 grep(git grep -niE '\\bweb\\b|web[-.]|Web[A-Z]' apps/web ops .github, WebSocket·apps/web 경로·URL /web·labs 제외) = ops/deploy.sh의 Tomcat WEBAPPS 변수 4줄뿐(서버 경로, 무관). AC-001 충족 — [정정 포인터] 이 주장은 틀렸다. milestone Evidence 2026-09-05 항목 참조. 원인 '경로 필터가 모든 줄을 지웠다'는 당시 명령을 재실행해 확인한 것이 아닌 추정"
         revision: working-tree
         observed_at: 2026-09-04
 milestones:
@@ -82,6 +82,10 @@ milestones:
       - kind: command
         locator: "[2026-09-05 정정, 리뷰 P2 #13] 실제로 web-root·webChartRef·useWebFavorites·WEB_TIMEFRAMES·WEB_DRAW_TOOLS·푸터 'Web'이 남아 있었고 PR #62에서 정리. 남기는 예외는 AC-001·Outcome에 정식 반영(localStorage web_*, CSS web-*·wm-*, URL /web·static/web). 이벤트명 web-favs-changed→desktop-favs-changed는 2차 리뷰 수정 PR에서"
         revision: 45f2d89
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "AC-001 추가 예외·Outcome 문구 정식 변경, 이벤트명 web-favs-changed → desktop-favs-changed, 미사용 .web-list-chg 삭제·.web-monitoring 규칙 labs css 이동(2차 리뷰 수정 PR #63)"
+        revision: 04adac5
         observed_at: 2026-09-05
       - kind: manual-check
         locator: "GATE-AC-002: 사용자가 로컬 기동(API 8081·Desktop 5174 새 config)에서 Desktop 로그인·차트·패널 확인(2026-09-04)"

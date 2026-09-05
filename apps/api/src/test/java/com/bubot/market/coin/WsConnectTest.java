@@ -30,7 +30,7 @@ class WsConnectTest {
     @Test
     void 정상_경로에서는_모든_이벤트를_그대로_위임한다() {
         CountingListener inner = new CountingListener();
-        WsConnect.GuardedListener g = new WsConnect.GuardedListener(inner);
+        WsConnect.Attempt g = new WsConnect.Attempt(inner);
         WebSocket ws = mock(WebSocket.class);
         g.onOpen(ws);
         g.onText(ws, "x", true);
@@ -48,7 +48,7 @@ class WsConnectTest {
     void 타임아웃으로_포기한_뒤_늦게_열린_유령_소켓은_abort하고_서비스에_넘기지_않는다() {
         // 리뷰 2차 P1: 예전 코드는 future.cancel() 뒤 thenAccept(abort)를 걸었는데 취소된 future는 그 콜백을 실행하지 않는다.
         CountingListener inner = new CountingListener();
-        WsConnect.GuardedListener g = new WsConnect.GuardedListener(inner);
+        WsConnect.Attempt g = new WsConnect.Attempt(inner);
         g.abandon();
         WebSocket ghost = mock(WebSocket.class);
         g.onOpen(ghost);
@@ -59,5 +59,20 @@ class WsConnectTest {
         assertTrue(g.isAbandoned());
         assertEquals(0, inner.opens.get() + inner.texts.get() + inner.closes.get() + inner.errors.get(),
                 "같은 서비스 listener가 두 소켓의 이벤트를 받지 않는다");
+    }
+
+    @Test
+    void 열린_뒤에_포기하면_이미_받은_소켓을_abort한다() {
+        // 3차 리뷰 P1: 타임아웃 처리 직전에 onOpen이 먼저 통과한 소켓은 플래그만으로는 정리되지 않았다.
+        CountingListener inner = new CountingListener();
+        WsConnect.Attempt g = new WsConnect.Attempt(inner);
+        WebSocket late = mock(WebSocket.class);
+        g.onOpen(late);                 // 정상 위임됨(서비스는 구독까지 했을 수 있다)
+        assertEquals(1, inner.opens.get());
+        g.abandon();                    // open()이 타임아웃으로 포기
+        verify(late).abort();
+        g.onText(late, "x", true);
+        g.onClose(late, 1000, "");
+        assertEquals(0, inner.texts.get() + inner.closes.get(), "포기 뒤 이벤트는 차단");
     }
 }

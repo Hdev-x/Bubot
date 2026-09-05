@@ -150,6 +150,7 @@ public class BinanceKlineRelayService {
         private final ReconnectPolicy reconnect = new ReconnectPolicy(3_000, 60_000);
         private volatile long lastMsgAt;
         private volatile boolean connecting;
+        private final Object refLock = new Object(); // refCounts·zeroSince·subscribed 전이를 함께 보호(3차 리뷰 P1: decref의 get/put이 incref와 겹치면 활성 구독을 0으로 덮었다)
 
         Conn(String market, URI uri) { this.market = market; this.uri = uri; }
 
@@ -157,7 +158,9 @@ public class BinanceKlineRelayService {
             if (shuttingDown) return;
             connecting = true;
             try {
-                ws = WsConnect.open(httpClient, uri, this);
+                WebSocket opened = WsConnect.open(httpClient, uri, this);
+                if (shuttingDown) { opened.abort(); return; } // 연결 중 stop()이 왔으면 살려두지 않는다(3차 리뷰 P1)
+                ws = opened;
             } catch (Exception e) {
                 reconnect.fail();
                 log.warn("Binance kline relay({}) 연결 실패({}회째): {}", market, reconnect.attempts(), e.getMessage());
@@ -168,30 +171,40 @@ public class BinanceKlineRelayService {
         }
 
         void incref(String stream) {
-            refCounts.merge(stream, 1, Integer::sum);
-            zeroSince.remove(stream);
-            if (subscribed.add(stream)) sendSub(stream); // 처음 보는 스트림만 실제 SUBSCRIBE
+            boolean needSub;
+            synchronized (refLock) {
+                refCounts.merge(stream, 1, Integer::sum);
+                zeroSince.remove(stream);
+                needSub = subscribed.add(stream); // 처음 보는 스트림만 실제 SUBSCRIBE
+            }
+            if (needSub) sendSub(stream); // 전송(최대 5초 대기)은 lock 밖에서
         }
 
         void decref(String stream) {
-            Integer v = refCounts.get(stream);
-            if (v == null) return;
-            if (v <= 1) { refCounts.put(stream, 0); zeroSince.put(stream, System.currentTimeMillis()); }
-            else refCounts.put(stream, v - 1);
+            synchronized (refLock) {
+                Integer v = refCounts.get(stream);
+                if (v == null) return;
+                if (v <= 1) { refCounts.put(stream, 0); zeroSince.put(stream, System.currentTimeMillis()); }
+                else refCounts.put(stream, v - 1);
+            }
         }
 
         void maintain() {
             // 1) 유예 지난 0-구독 스트림 UNSUBSCRIBE
             long now = System.currentTimeMillis();
-            for (Map.Entry<String, Long> e : new HashMap<>(zeroSince).entrySet()) {
-                if (now - e.getValue() < IDLE_UNSUB_MS) continue;
-                String stream = e.getKey();
-                zeroSince.remove(stream);
-                if (refCounts.getOrDefault(stream, 0) == 0) {
-                    refCounts.remove(stream);
-                    if (subscribed.remove(stream)) sendUnsub(stream);
+            List<String> toUnsub = new ArrayList<>();
+            synchronized (refLock) {
+                for (Map.Entry<String, Long> e : new HashMap<>(zeroSince).entrySet()) {
+                    if (now - e.getValue() < IDLE_UNSUB_MS) continue;
+                    String stream = e.getKey();
+                    zeroSince.remove(stream);
+                    if (refCounts.getOrDefault(stream, 0) == 0) {
+                        refCounts.remove(stream);
+                        if (subscribed.remove(stream)) toUnsub.add(stream);
+                    }
                 }
             }
+            for (String stream : toUnsub) sendUnsub(stream); // 전송은 lock 밖에서
             // 2) 재연결 필요 판단
             WebSocket s = ws;
             if (reconnect.isPending() || connecting) return;
@@ -294,7 +307,7 @@ public class BinanceKlineRelayService {
             });
         }
 
-        void close() {
+        synchronized void close() { // connect()와 같은 lock
             WebSocket s = ws;
             if (s != null) s.sendClose(WebSocket.NORMAL_CLOSURE, "shutdown");
         }
