@@ -27,8 +27,8 @@
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. wp-08 d02 PR 사용자 로그인 확인(Desktop 거래소 4종·현물/선물 전환) 후 merge
-2. wp-08 d03 useCoinCandles 정리(priceFromTicker·헤더 티커 제거) → Mobile 확인
+1. wp-08 d03 PR 사용자 Mobile 로그인 확인(차트 현재가·등락) 후 merge, wp-08 Milestone 판정·닫기
+2. wp-06 AC-001(DesktopApp ≤451줄, 현재 461) 정정 여부 결정
 3. T-05 준비: 배포 대상·도메인·DB 위치 결정(OQ-20260903-04)
 
 ## Deferred
@@ -40,7 +40,7 @@
 
 ## 활성 Work Package
 
-- [refactor/wp-08-live-price](work/refactor/wp-08-live-price/PLAN.md) — active, d02 review(PR 대기)
+- [refactor/wp-08-live-price](work/refactor/wp-08-live-price/PLAN.md) — active, d03 review(PR 대기)
 
 ## 완료된 Work Package (링크만)
 

@@ -57,12 +57,20 @@ deliveries:
   - id: wp-08-d03-candles-cleanup
     title: "useCoinCandles 정리 — priceFromTicker·헤더 티커 제거, 현재가는 차트 종가만 (Mobile 확인)"
     kind: git
-    state: planned
+    state: review
     repository: .
     depends_on: [wp-08-d02-desktop]
     branch: refactor/lp-d03-candles-cleanup
     pull_requests: []
-    evidence: []
+    evidence:
+      - kind: parity-check
+        locator: "useCoinCandles.ts만 변경(387줄 유지). priceFromTicker 옵션·fetchHeaderTicker import·Promise.all의 티커 seed 분기 제거, 로드 effect deps에서 priceFromTicker·exchange·isBinance·isFutures 제거(티커 seed에만 쓰이던 것; exchange·isBinance·isFutures는 WS effect에서 계속 사용). livePrice = 차트 TF 마지막 종가(Mobile 경로, 변경 전 기본값과 동일). 저장소 전체 priceFromTicker 참조 0, fetchHeaderTicker 사용처는 useLivePrice·useHeaderSnapshot 2곳"
+        revision: working-tree
+        observed_at: 2026-09-05
+      - kind: command
+        locator: "tests 30 · tsc · lint 0(경고 250) · build 2종 · 번들 문자열 0 · check:css 0 · labs tsc. dev 서버: Mobile 5175 로그인 화면 로드(스타일시트 12, 콘솔 오류는 비로그인 ws-coin만), Desktop 5174 캔버스 7·탭 타이틀 -0.02%. Mobile 차트 현재가·등락은 로그인 후 사용자 확인"
+        revision: working-tree
+        observed_at: 2026-09-05
 milestones:
   - id: live-price-split-done
     title: "현재가 구독 분리 완료"
