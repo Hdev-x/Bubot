@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,10 +59,60 @@ class BinanceRestGuardTest {
     }
 
     @Test
-    void 다른_오류는_그대로_던지고_차단하지_않는다() {
+    void 다른_오류는_그대로_던지고_차단하지_않으며_staleOr로_마지막_값을_준다() throws Exception {
         BinanceRestGuard g = new BinanceRestGuard();
+        g.get("k", 0, () -> Map.of("v", "old"), Map.of());
         assertThrows(IllegalStateException.class, () -> g.get("k", 0, () -> { throw new IllegalStateException("boom"); }, Map.of()));
         assertFalse(g.isBlocked());
         assertFalse(g.noteRateLimit(status(500, null)));
+        assertEquals(Map.of("v", "old"), g.staleOr("k", Map.of()), "관심종목처럼 빈 목록 대신 마지막 값이 필요할 때");
+        assertEquals(Map.of(), g.staleOr("none", Map.of()));
+    }
+
+    @Test
+    void 긴_차단이_짧은_차단에_덮이지_않는다() {
+        BinanceRestGuard g = new BinanceRestGuard();
+        g.noteRateLimit(418, "4000");
+        long longUntil = g.blockedUntil();
+        g.noteRateLimit(429, "5");
+        assertEquals(longUntil, g.blockedUntil(), "accumulateAndGet(max)라 더 긴 차단이 남는다");
+    }
+
+    @Test
+    void 동시_요청은_상류_한_번의_결과를_공유한다() throws Exception {
+        BinanceRestGuard g = new BinanceRestGuard();
+        AtomicInteger calls = new AtomicInteger();
+        CountDownLatch release = new CountDownLatch(1);
+        List<Object> results = new ArrayList<>();
+        List<Thread> ts = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            Thread t = new Thread(() -> {
+                try {
+                    Object v = g.get("k", 0, () -> {
+                        calls.incrementAndGet();
+                        try { release.await(); } catch (InterruptedException ignored) { /* test */ }
+                        return Map.of("v", 1);
+                    }, Map.of());
+                    synchronized (results) { results.add(v); }
+                } catch (Exception e) { throw new RuntimeException(e); }
+            });
+            ts.add(t); t.start();
+        }
+        Thread.sleep(200);
+        release.countDown();
+        for (Thread t : ts) t.join(5_000);
+        assertEquals(8, results.size());
+        assertEquals(1, calls.get(), "8개 동시 요청 → 상류 1회");
+        assertTrue(results.stream().allMatch(v -> v.equals(Map.of("v", 1))));
+    }
+
+    @Test
+    void 캐시는_상한을_넘으면_오래된_항목을_지운다() throws Exception {
+        BinanceRestGuard g = new BinanceRestGuard();
+        for (int i = 0; i < BinanceRestGuard.MAX_ENTRIES + 50; i++) {
+            final int n = i;
+            g.get("k" + n, 0, () -> Map.of("n", n), Map.of());
+        }
+        assertTrue(g.cacheSize() <= BinanceRestGuard.MAX_ENTRIES, "endTime 페이징 키가 무한히 쌓이지 않는다: " + g.cacheSize());
     }
 }

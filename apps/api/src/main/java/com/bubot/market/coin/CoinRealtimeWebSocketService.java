@@ -253,6 +253,7 @@ public class CoinRealtimeWebSocketService {
         private final ReconnectPolicy reconnect = new ReconnectPolicy(3_000, 60_000);
         private volatile boolean stopped;
         private volatile long lastMsgAt;
+        private volatile boolean connecting;
 
         private BitgetConnection(List<Map<String, String>> subscriptionArgs) {
             this.subscriptionArgs = subscriptionArgs;
@@ -266,12 +267,15 @@ public class CoinRealtimeWebSocketService {
             if (stopped || shuttingDown) {
                 return;
             }
+            connecting = true;
             try {
                 socket = WsConnect.open(httpClient, BITGET_PUBLIC_WS, this);
             } catch (Exception e) {
                 reconnect.fail();
                 log.warn("Bitget WebSocket 연결 실패({}회째): {}", reconnect.attempts(), e.getMessage());
                 scheduleReconnect();
+            } finally {
+                connecting = false;
             }
         }
 
@@ -297,7 +301,7 @@ public class CoinRealtimeWebSocketService {
             }
             String message = messageBuffer.toString();
             messageBuffer.setLength(0);
-            lastMsgAt = System.currentTimeMillis();
+            if (!"pong".equalsIgnoreCase(message)) lastMsgAt = System.currentTimeMillis(); // pong은 수신으로 세지 않음(리뷰 P1 #4)
             handleMessage(message);
             webSocket.request(1);
             return null;
@@ -318,7 +322,7 @@ public class CoinRealtimeWebSocketService {
         }
 
         private void maintain() {
-            if (stopped || shuttingDown || reconnect.isPending()) {
+            if (stopped || shuttingDown || reconnect.isPending() || connecting) {
                 return;
             }
             WebSocket current = socket;

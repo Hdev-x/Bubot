@@ -52,7 +52,11 @@ public class BinanceFuturesRealtimeWebSocketService implements WebSocket.Listene
     @Value("${app.coin.websocket.enabled:true}")
     private boolean enabled;
 
-    public BinanceFuturesRealtimeWebSocketService(SimpMessagingTemplate messagingTemplate, ObjectMapper objectMapper) {
+    private final BinanceRestGuard guard;
+    private volatile boolean connecting;
+
+    public BinanceFuturesRealtimeWebSocketService(SimpMessagingTemplate messagingTemplate, ObjectMapper objectMapper, BinanceRestGuard guard) {
+        this.guard = guard;
         this.messagingTemplate = messagingTemplate;
         this.objectMapper = objectMapper;
     }
@@ -68,12 +72,15 @@ public class BinanceFuturesRealtimeWebSocketService implements WebSocket.Listene
     }
 
     private synchronized void connect() {
+        connecting = true;
         try {
             webSocket = WsConnect.open(httpClient, BINANCE_FUTURES_WS, this);
         } catch (Exception e) {
             reconnect.fail();
             log.warn("Binance Futures WS 연결 실패({}회째): {}", reconnect.attempts(), e.getMessage());
             scheduleReconnect();
+        } finally {
+            connecting = false;
         }
     }
 
@@ -89,7 +96,14 @@ public class BinanceFuturesRealtimeWebSocketService implements WebSocket.Listene
     private void subscribeDailyKlines(WebSocket webSocket) {
         try {
             HttpRequest request = HttpRequest.newBuilder(BINANCE_FUTURES_TICKERS).GET().build();
-            String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            if (guard.isBlocked()) { log.warn("Binance Futures 구독 목록 REST 생략 — Binance 차단 중"); return; }
+            HttpResponse<String> res = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (res.statusCode() != 200) {
+                guard.noteRateLimit(res.statusCode(), res.headers().firstValue("Retry-After").orElse(null));
+                log.warn("Binance Futures 구독 목록 REST {} — 구독 생략", res.statusCode());
+                return;
+            }
+            String body = res.body();
             JsonNode tickers = objectMapper.readTree(body);
             List<String> params = new ArrayList<>();
             for (JsonNode ticker : tickers) {
@@ -189,7 +203,7 @@ public class BinanceFuturesRealtimeWebSocketService implements WebSocket.Listene
     @Scheduled(fixedDelay = 10_000)
     public void reconnectIfNeeded() {
         WebSocket socket = webSocket;
-        if (!enabled || reconnect.isPending()) {
+        if (!enabled || reconnect.isPending() || connecting) {
             return;
         }
         if (socket == null || socket.isInputClosed() || socket.isOutputClosed()) {
