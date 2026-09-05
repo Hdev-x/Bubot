@@ -27,7 +27,7 @@
 
 > 우선순위 순이다. 각 항목은 반드시 한 줄로 쓰고 완료하면 지운다.
 
-1. wp-08 d01 `useLivePrice` 훅 신설 + 테스트 (호출부 변경 없음)
+1. wp-08 d01 PR 사용자 확인 후 merge
 2. wp-08 d02 시작 전 props 표·loadedSymbol 재정의 확정 → Desktop 전환
 3. T-05 준비: 배포 대상·도메인·DB 위치 결정(OQ-20260903-04)
 
@@ -40,7 +40,7 @@
 
 ## 활성 Work Package
 
-- [refactor/wp-08-live-price](work/refactor/wp-08-live-price/PLAN.md) — ready, d01 대기
+- [refactor/wp-08-live-price](work/refactor/wp-08-live-price/PLAN.md) — active, d01 review(PR 대기)
 
 ## 완료된 Work Package (링크만)
 
