@@ -71,6 +71,9 @@ export function useCoinCandles({
   const [dailyOpenPrice, setDailyOpenPrice] = useState<number | null>(null);
   // 실제 데이터(캔들+현재가+일봉시가) 로드가 끝난 심볼. 헤더가 "준비된 종목"만 표시하도록(스테이지드 스왑).
   const [loadedSymbol, setLoadedSymbol] = useState<string | null>(null);
+  // 화면 candles 배열이 어느 심볼 것인지 — candlesKeyRef의 심볼 부분을 state로 미러(렌더 중 ref 접근 금지 규칙).
+  // Desktop 차트 소수점·지표 스테이징이 쓴다 (wp-08 d02). candlesKeyRef를 설정하는 곳에서 함께 갱신.
+  const [candlesSymbol, setCandlesSymbol] = useState<string | null>(null);
   const isLoadingMore = useRef(false);
   const prevSymbolKeyRef = useRef<string | null>(null);
   // "로드가 끝난 심볼|TF" 키. WS 틱은 이 키가 현재와 일치할 때만 반영한다.
@@ -112,6 +115,7 @@ export function useCoinCandles({
         if (nextCandles.length) {
           setCandles(nextCandles);
           candlesKeyRef.current = symbolKey; // 캔들 배열이 이 심볼|TF 것임 → WS 봉 반영 허용
+          setCandlesSymbol(symbol);
           setOpenPrice(nextCandles[nextCandles.length - 1]?.open ?? null);
         } else {
           setCandles(prev => prev.length ? prev : fallbackCandles);
@@ -300,6 +304,7 @@ export function useCoinCandles({
           return [...byTime.values()].sort((a, b) => Number(a.time) - Number(b.time));
         });
         candlesKeyRef.current = requestKey;
+        setCandlesSymbol(symbol);
         setLivePrice(nextCandles[nextCandles.length - 1]?.close ?? null);
         setOpenPrice(nextCandles[nextCandles.length - 1]?.open ?? null);
       } else {
@@ -376,6 +381,7 @@ export function useCoinCandles({
 
   return {
     candles,
+    candlesSymbol,
     livePrice,
     openPrice,
     dailyOpenPrice,

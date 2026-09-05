@@ -49,6 +49,12 @@ describe('livePriceState', () => {
     expect(applyTick(seeded, BTC, 0)).toBe(seeded);
   });
 
+  it('호출자가 준 일봉 시가가 티커 openUtc보다 우선하고, 없으면 티커 값으로 폴백한다', () => {
+    expect(applySeed(EMPTY_LIVE_PRICE, BTC, BTC, ticker(100, 90), 95).dailyOpen).toBe(95);
+    expect(applySeed(EMPTY_LIVE_PRICE, BTC, BTC, ticker(100, 90), null).dailyOpen).toBe(90);
+    expect(applySeed(EMPTY_LIVE_PRICE, BTC, BTC, ticker(100, 90), 0).dailyOpen).toBe(90);
+  });
+
   it('현물/선물·거래소가 다르면 다른 키다', () => {
     expect(livePriceKey('BITGET', 'BTCUSDT', true)).not.toBe(livePriceKey('BITGET', 'BTCUSDT', false));
     expect(livePriceKey('BITGET', 'BTCUSDT', true)).not.toBe(livePriceKey('BINANCE', 'BTCUSDT', true));

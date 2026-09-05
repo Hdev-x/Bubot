@@ -25,6 +25,8 @@ import { IconRail } from './panels/IconRail';
 import { Sidebar } from './panels/Sidebar';
 import { type Section, type InvestTab } from './lib/sections';
 import { useDesktopCandles } from './hooks/useDesktopCandles';
+import { useLivePrice } from '../../hooks/market/useLivePrice';
+import { useCandleLoader } from '../../chart/hooks/useCandleLoader';
 import { useOrderbookSnapshot } from './hooks/useOrderbookSnapshot';
 import { useHeaderSnapshot } from './hooks/useHeaderSnapshot';
 import { useDrawingState } from './hooks/useDrawingState';
@@ -155,7 +157,7 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const chartIsKrw = chartSel.exchange === 'UPBIT' || chartSel.exchange === 'BITHUMB';
   const chartIsFutures = chartSel.isFutures;
 
-  // (탭 타이틀 effect는 pxDecimals 선언 뒤 — 차트 livePrice(전 거래소 WS) 기반으로 실시간 갱신)
+  // (탭 타이틀 effect는 pxDecimals 선언 뒤 — livePrice(거래소 티커 WS) 기반으로 실시간 갱신)
 
   const CHART_PRODUCT = (chartIsFutures && !chartIsKrw) ? 'USDT-FUTURES' : undefined; // KRW 거래소는 현물만
   const chartBase = CHART_SYMBOL.replace(/USDT$|USDC$|KRW$/, '');
@@ -186,9 +188,16 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const highlightTracker = soloOn ? focusTracker : null;
   const focusScrollKeyRef = useRef<string>('');
 
-  // ── 실데이터 — 차트 캔들 + 호가 (useDesktopCandles → useOrderbookSnapshot 순서로 현재가를 넘긴다) ──
-  const { timeframe, loadCandles, candles, livePrice, dailyOpenPrice, loadedSymbol, handleVisibleRangeChange } = useDesktopCandles({
-    activeTf, symbol: CHART_SYMBOL, productType: CHART_PRODUCT, exchange: chartSel.exchange, isBinance: chartIsBinance, isFutures: chartIsFutures,
+  // ── 실데이터 — 로더 → 현재가 → 차트 캔들 → 호가 → 헤더 (wp-08 d02: 현재가는 차트 TF·캔들 로드와 무관한 useLivePrice에서) ──
+  // livePrice: 거래소 티커 seed(REST last) + 티커 WS. dailyOpenPrice: 캔들 1Dutc 시가(Binance 티커 openPrice는 24h 롤링이라 쓰지 않음, 사용자 결정 2026-09-05).
+  // loadedSymbol: 현재가·일봉 시가 seed가 끝난 종목(스테이지드 스왑).
+  const loadCandles = useCandleLoader({ symbol: CHART_SYMBOL, productType: CHART_PRODUCT, exchange: chartSel.exchange });
+  const loadDailyOpen = useCallback(() => loadCandles('1Dutc', 2).then((cs) => cs[cs.length - 1]?.open ?? null), [loadCandles]);
+  const { price: livePrice, dailyOpen: dailyOpenPrice, readySymbol: loadedSymbol } = useLivePrice({
+    symbol: CHART_SYMBOL, exchange: chartSel.exchange, isFutures: chartIsFutures, loadDailyOpen,
+  });
+  const { timeframe, candles, candlesSymbol, handleVisibleRangeChange } = useDesktopCandles({
+    activeTf, symbol: CHART_SYMBOL, productType: CHART_PRODUCT, exchange: chartSel.exchange, isBinance: chartIsBinance, isFutures: chartIsFutures, loadCandles,
   });
   const [depthOpen, setDepthOpen] = useState(false); // 자릿수(묶음) 선택 드롭다운
   const ob = useOrderbookSnapshot({
@@ -244,11 +253,12 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
     frameForTf(activeTf);
   }, [soloOn, focusTracker, candles.length, activeTf, frameForTf]);
 
-  // 차트 소수점도 "표시 중인 캔들(loadedSymbol)"과 함께만 바뀌게 스테이징 — 데이터보다 소수점이 먼저 바뀌어
+  // 차트 소수점도 "표시 중인 캔들(candlesSymbol)"과 함께만 바뀌게 스테이징 — 데이터보다 소수점이 먼저 바뀌어
   // 옛 캔들이 새 소수점으로 재포맷되며 가격축 폭이 흔들리는 것 방지. KRW는 원(정수)=0.
+  // (wp-08 d02: 현재가 준비(loadedSymbol)와 캔들 준비(candlesSymbol)를 분리 — 헤더·호가는 현재가만 오면 바뀌고, 차트 소수점은 캔들을 따른다)
   const chartDecimalsTarget = chartIsKrw ? krwDec : getTickDecimals(CHART_SYMBOL);
   const chartDecimalsRef = useRef(chartDecimalsTarget);
-  if (loadedSymbol === CHART_SYMBOL) chartDecimalsRef.current = chartDecimalsTarget;
+  if (candlesSymbol === CHART_SYMBOL) chartDecimalsRef.current = chartDecimalsTarget;
   const chartTickDecimals = chartDecimalsRef.current;
 
   // 관심 미니 시세창 — hidden(숨김) / float(떠있는 창) / dock(왼쪽 사이드바). 비로그인은 관심 잠금이라 항상 숨김.
@@ -270,7 +280,7 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   }, [dockOpen]);
 
   const [obOptions] = useState<OBOptions>(DEFAULT_OB_OPTIONS);
-  // atomic: 활성 TF 전부 로드 후 한번에 커밋 + 그 심볼(mtfSymbol) 반환. 표시 중인 차트(loadedSymbol)와 일치할 때만 그림.
+  // atomic: 활성 TF 전부 로드 후 한번에 커밋 + 그 심볼(mtfSymbol) 반환. 표시 중인 차트 캔들(candlesSymbol)과 일치할 때만 그림.
   const { mtfCandles, mtfSymbol } = useMtfCandles(CHART_SYMBOL, effIndicatorSettings, loadCandles, true);
 
   const lastCandle = candles[candles.length - 1];
@@ -280,8 +290,8 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const pxDecimals = chartIsKrw ? krwDec : getTickDecimals(CHART_SYMBOL);
   const fmtPx = (n: number | null | undefined) => (n == null ? '—' : n.toLocaleString('en-US', { minimumFractionDigits: pxDecimals, maximumFractionDigits: pxDecimals }));
 
-  // 브라우저 탭 타이틀 — 차트 현재가(livePrice, 전 거래소 WS)로 실시간 갱신.
-  // 소수 자릿수는 차트 헤더와 동일한 종목별 정밀도(pxDecimals), 등락률도 헤더와 동일 기준(일봉시가).
+  // 브라우저 탭 타이틀 — 현재가(livePrice, 거래소 티커 WS)로 실시간 갱신.
+  // 소수 자릿수는 차트 헤더와 동일한 종목별 정밀도(pxDecimals), 등락률도 헤더와 동일 기준(캔들 1Dutc 시가).
   useEffect(() => {
     if (CHART_SYMBOL && livePrice != null) {
       const formattedPrice = livePrice.toLocaleString('en-US', {
@@ -353,7 +363,7 @@ export default function DesktopApp({ user, onLoginClick, onLogout }: { user: Aut
   const rsi = { rsiOn, setRsiOn, rsiSettings, setRsiSettings, rsiSettingsOpen, setRsiSettingsOpen };
   const rank = { rankMasterOn, setRankMasterOn, rankTiers, setRankTiers };
   const solo = { soloOn, focusTracker, setFocusTracker, setSoloActive, frameForTf, soloUserViewRef, highlightTracker };
-  const chartData = { candles, timeframe, loadedSymbol, handleVisibleRangeChange, mtfCandles, mtfSymbol, chartTickDecimals, obOptions };
+  const chartData = { candles, timeframe, candlesSymbol, handleVisibleRangeChange, mtfCandles, mtfSymbol, chartTickDecimals, obOptions };
   const sel = { ...chartSel, productType: CHART_PRODUCT };
 
   return (

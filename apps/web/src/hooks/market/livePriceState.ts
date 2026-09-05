@@ -24,10 +24,14 @@ export function readySymbolOf(state: LivePriceState): string | null {
   return state.readyKey.split('|')[1] ?? null;
 }
 
-/** REST seed 도착. 요청한 키가 현재 키와 다르면(전환 중 늦은 응답) 버린다. last가 없으면 변화 없음. */
-export function applySeed(state: LivePriceState, currentKey: string, seedKey: string, ticker: BitgetTicker | null): LivePriceState {
+/**
+ * REST seed 도착. 요청한 키가 현재 키와 다르면(전환 중 늦은 응답) 버린다. last가 없으면 변화 없음.
+ * dailyOpen은 호출자가 준 값(캔들 1Dutc 시가)이 있으면 그것, 없으면 티커 openUtc.
+ * (Binance 24h 티커의 openPrice는 UTC 시가가 아니라 24시간 전 가격이라 등락 기준으로 쓰면 다른 거래소와 어긋난다 — 사용자 결정 2026-09-05, wp-08 d02)
+ */
+export function applySeed(state: LivePriceState, currentKey: string, seedKey: string, ticker: BitgetTicker | null, dailyOpen?: number | null): LivePriceState {
   if (seedKey !== currentKey || !ticker || !ticker.last) return state;
-  return { price: ticker.last, dailyOpen: ticker.openUtc || null, readyKey: currentKey };
+  return { price: ticker.last, dailyOpen: dailyOpen || ticker.openUtc || null, readyKey: currentKey };
 }
 
 /** WS 틱. 현재 키의 seed가 끝난 뒤에만 반영한다. 같은 값이면 같은 객체를 돌려 렌더를 아낀다. */

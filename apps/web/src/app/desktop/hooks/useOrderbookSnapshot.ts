@@ -9,7 +9,7 @@ import { depthLabelFor, aggregateLevels } from '../lib/orderbook';
 import type { DesktopExchange } from './useDesktopCandles';
 
 // Desktop 호가 — 구독·펀딩·묶음(aggregate)·자릿수·통합 스냅샷(OB). DesktopApp에서 옮김 (wp-06 d03).
-// livePrice·loadedSymbol은 useDesktopCandles 결과를 받는다(현재가는 캔들 티커와 통일).
+// livePrice·loadedSymbol은 useLivePrice 결과(거래소 티커 현재가·seed 완료 종목)를 받는다 — wp-08 d02 전엔 useDesktopCandles 결과였다.
 export function useOrderbookSnapshot({ symbol, exchange, isFutures, isKrw, livePrice, loadedSymbol }: {
   symbol: string;
   exchange: DesktopExchange;
@@ -55,7 +55,7 @@ export function useOrderbookSnapshot({ symbol, exchange, isFutures, isKrw, liveP
   const depthOptions = depthSteps.map((i) => ({ scale: `scale${i}` as DepthPrecision, label: depthLabelFor(i, symbolDecimals) }));
   const depthLabel = depthLabelFor(scaleIndex, symbolDecimals);
 
-  // 호가 중앙 현재가 = 캔들 종가(livePrice)로 헤더와 통일. livePrice 없을 때만 호가 mid 폴백.
+  // 호가 중앙 현재가 = 티커 현재가(livePrice)로 헤더와 통일. livePrice 없을 때만 호가 mid 폴백.
   const centerPrice = livePrice ?? midPrice;
   // KRW 표시 소수자리 = 마켓 리스트와 동일 함수(krwDecimals(현재가)) — 저가 코인(100원 미만) 소수자리 일치.
   // (차트축·헤더·호가가 전부 이 값을 써서 실시간마켓과 어긋나지 않음. 100원 이상은 0자리라 무영향)
